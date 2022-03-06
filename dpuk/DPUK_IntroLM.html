@@ -651,7 +651,8 @@ class: inverse, center, middle
 
 
 ```r
-lm(score ~ hours, data = test)
+res &lt;- lm(score ~ hours, data = test)
+summary(res)
 ```
 
 ```
@@ -659,9 +660,20 @@ lm(score ~ hours, data = test)
 ## Call:
 ## lm(formula = score ~ hours, data = test)
 ## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.6182 -1.0773 -0.7454  1.1773  2.4364 
+## 
 ## Coefficients:
-## (Intercept)        hours  
-##       0.400        1.055
+##             Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)   0.4000     1.1111   0.360   0.7282  
+## hours         1.0545     0.3581   2.945   0.0186 *
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.626 on 8 degrees of freedom
+## Multiple R-squared:  0.5201,	Adjusted R-squared:  0.4601 
+## F-statistic:  8.67 on 1 and 8 DF,  p-value: 0.01858
 ```
 
 ---
@@ -1072,8 +1084,8 @@ class: inverse, center, middle
 &lt;h2 style="text-align: left;opacity:0.3;"&gt;Part 4: Comparing models &lt;/h2&gt;
 
 ---
-#  Multiple regression 
-+ The aim of a linear model is to explain variance in an outcome
+#  Linear model with more predictors (multiple regression)
++ The aim of a linear model is to explain variance in an outcome.
 
 + In simple linear models, we have a single predictor, but the model can accommodate (in principle) any number of predictors. 
 
@@ -1130,6 +1142,111 @@ class: inverse, center, middle
 # Example with interpretations 
 
 
+
+.pull-left[
++ Suppose I am conducting a study on work place factors that predict salary.
+
++ `\(y\)` = salary (unit = thousands of pounds)
+
++ `\(x_1\)` = years of service
+
++ `\(x_2\)` = Department (0 = Store managers, 1 = Accounts)
+
++ `\(x_3\)` = Location (0 = Birmingham, 1 = London)
+]
+
+.pull-right[
+
+
+```r
+salary3 %&gt;%
+  slice(1:10)
+```
+
+```
+## # A tibble: 10 x 5
+##    ID    salary department location    serv
+##    &lt;chr&gt;  &lt;dbl&gt; &lt;fct&gt;      &lt;fct&gt;      &lt;dbl&gt;
+##  1 ID101     45 Accounts   London       2.2
+##  2 ID102     47 Manager    London       4.5
+##  3 ID103     40 Manager    London       2.4
+##  4 ID104     49 Accounts   London       4.6
+##  5 ID105     55 Accounts   London       4.8
+##  6 ID106     40 Manager    Birmingham   4.4
+##  7 ID107     51 Accounts   Birmingham   4.3
+##  8 ID108     49 Manager    London       5  
+##  9 ID109     44 Accounts   London       2.4
+## 10 ID110     50 Accounts   Birmingham   4.6
+```
+
+]
+
+
+---
+# Our model
+
+```r
+res_multi &lt;- lm(salary ~ serv + department + location, data = salary3)
+```
+
+---
+# Our model
+
+```r
+summary(res_multi)
+```
+
+```
+## 
+## Call:
+## lm(formula = salary ~ serv + department + location, data = salary3)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -7.4895 -2.5605 -0.5627  2.7387  9.4569 
+## 
+## Coefficients:
+##                    Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)         41.6839     1.0966  38.011  &lt; 2e-16 ***
+## serv                 2.9531     0.2922  10.105  &lt; 2e-16 ***
+## departmentManager   -6.9522     0.8113  -8.570 1.75e-13 ***
+## locationBirmingham  -6.2827     0.8446  -7.439 4.30e-11 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 3.776 on 96 degrees of freedom
+## Multiple R-squared:  0.7099,	Adjusted R-squared:  0.7008 
+## F-statistic: 78.31 on 3 and 96 DF,  p-value: &lt; 2.2e-16
+```
+
+---
+# Our model
+
+.pull-left[
++ `\(b_0\)`: The predicted salary for member of accounts, in London, with 0 years service is £41,684 
+
++ `\(b_1\)`: For each year of service, salary increases by £2953, holding deparment and location constant.
+
++ `\(b_2\)`: Holding years of service and location constant, store managers earn £6952 pounds less than accounts.
+
++ `\(b_3\)`: Holding years of service and department constant, those in Birmingham earn £6283 pounds less than those in London.
+
+]
+
+.pull-right[
+
+
+```
+##                    Estimate Std. Error t value
+## (Intercept)          41.684      1.097  38.011
+## serv                  2.953      0.292  10.105
+## departmentManager    -6.952      0.811  -8.570
+## locationBirmingham   -6.283      0.845  -7.439
+```
+
+
+]
+
 ---
 class: inverse, center, middle
 
@@ -1146,13 +1263,17 @@ class: inverse, center, middle
 
 --
 
-+ In the context of our example from last lecture, we could ask, 
++ In the context of examples, we could ask, 
 
 &gt; **Is study time a useful predictor of test score?**
 
+&gt; **Is years of service a useful predictor of salary controlling for department and location**
+
 --
 
-+ The above is a research question/hypothesis. As we have done before, we need to turn this into a testable statistical hypothesis.
++ The above are research questions. 
+
++ If we want to evaluate them, we need to turn them into testable statistical hypothesis.
 
 ---
 #  Evaluating individual predictors 
@@ -1185,31 +1306,13 @@ class: inverse, center, middle
 ---
 # Research question and hypotheses
 
-+ **Research questions** are statements of what we intend to study. 
-
-+ A good question defines:
-
---
-
-  + Constructs under study
-  + the relationship being tested
-  + A direction of relationship
-  + target populations etc.
-
-&gt; **Does increased study time improve test scores in school age children?**
-
---
-
 + **Statistical hypotheses** are testable mathematical statements.
 
---
 
   + In typical testing in Psychology, we define have a **null ( `\(H_0\)` )** and an **alternative ( `\(H_1\)` )** hypothesis.
   + `\(H_0\)` is precise, and states a specific value for the effect of interest.
   + `\(H_1\)` is not specific, and simply says "something else other than the null is more likely"
 
-???
-Flag here that if these comments are completely alien to them, they should go back and recap the hypothesis testing material from dapR1-lectures 12 to 15 (20-21) or 12-14 (19-20).
 
 ---
 # Defining null
@@ -1229,30 +1332,6 @@ Flag here that if these comments are completely alien to them, they should go ba
 `$$H_0: \beta_1 = 0$$`
 `$$H_1: \beta_1 \neq 0$$`
 
-???
-+ For the null to be testable, we need to formally define it. 
-+ Point out here the difference in the specificity of the hypotheses. `\(H_0\)` is that the `\(b_1\)` takes a specific value. `\(H_1\)` is that `\(b_1\)` has some value that is not this specific value. i..e one is directly testable, the other is not.
-
-
----
-class: center, middle
-# Time for a break
-
-**Quiz time**
-
-We are about to look at hypothesis tests for coefficients.
-
-So our quiz is on the concept of the standard error
-
-
----
-class: center, middle
-# Welcome Back!
-
-**Where we left off... **
-
-We have defined a null, now let's look at constructing the test
-
 
 ---
 # Point estimate and test statistic
@@ -1268,18 +1347,39 @@ We have defined a null, now let's look at constructing the test
   + `\(\hat \beta\)` = any beta coefficient we have calculated
   + `\(SE(\hat \beta)\)` = standard error of `\(\beta\)` 
 
---
-
-+ **Recall** that the standard error describes the spread of the sampling distribution.
-  + The standard error (SE) provides a measure of sampling variability
++ The standard error (SE) provides a measure of sampling variability
   + Smaller SE's suggest more precise estimate (=good)
-  
-???
-+ brief reminders on test statistics
-  + every quantity we wish to calculate a significance test for needs an test statistic.
-  + the test statistic is a value that has a known sampling distribution
-+ If sampling distribution is unfamiliar, again, recap the hypothesis testing material
 
+---
+# Back to the example
+
+
+```r
+summary(res_multi)
+```
+
+```
+## 
+## Call:
+## lm(formula = salary ~ serv + department + location, data = salary3)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -7.4895 -2.5605 -0.5627  2.7387  9.4569 
+## 
+## Coefficients:
+##                    Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)         41.6839     1.0966  38.011  &lt; 2e-16 ***
+## serv                 2.9531     0.2922  10.105  &lt; 2e-16 ***
+## departmentManager   -6.9522     0.8113  -8.570 1.75e-13 ***
+## locationBirmingham  -6.2827     0.8446  -7.439 4.30e-11 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 3.776 on 96 degrees of freedom
+## Multiple R-squared:  0.7099,	Adjusted R-squared:  0.7008 
+## F-statistic: 78.31 on 3 and 96 DF,  p-value: &lt; 2.2e-16
+```
 
 ---
 #  SE( `\(\hat \beta_1\)` )
@@ -1291,176 +1391,6 @@ We have defined a null, now let's look at constructing the test
 	+ `\(SS_{Residual}\)` is the residual sum of squares
 	+ `\(n\)` is the sample size
 	+ `\(k\)` is the number of predictors (= 1 for simple linear regression)
-
-+ **Given the above, think about what things would make the SE smaller.**
-
---
-
-+ From this formula, we can see that the SE's for `\(\beta\)` will be smaller when:
-	+ Residual variance ( `\(SS_{Residual}\)` ) is smaller
-	+ Sample size, `\(n\)`, is larger
-
-
----
-# Back to the example
-
-`$$t = \frac{\hat \beta_1}{SE(\hat \beta_1)}$$`
-
-+ Let's calculate `\(t\)` for our example.
-+ We will use some values we have already calculated
-  + `\(\hat \beta_1 = 1.055\)` 
-
---
-
-+ So we need `\(SE(\hat \beta_1)\)`
-
-`$$SE(\hat \beta_1) = \sqrt{\frac{SS_{Residual}/(n-k-1)}{\sum(x_i - \bar{x})^2}}$$`
-
-+ `\(n\)` = 10
-+ `\(k\)` = 1
-+ `\(\sum(x_i - \bar{x})^2\)` = 20.625
-
----
-# Back to the example
-+ So all we have left is `\(SS_{Residual}\)`.
-
-+ From earlier this week, we know:
-
-`$$SS_{Residual} = \sum_{i=1}^{n}(y_i - \hat{y}_i)^2$$`
-
-+ `\(SS_{Residual}\)` = residual sum of squares = sum of the squared residuals
-
-
-```r
-res &lt;- lm(score ~ hours, data = test)
-SSRes = sum(res$residuals^2)
-SSRes
-```
-
-```
-## [1] 21.16364
-```
-
----
-# Back to our example
-
-+ So pull all this together:
-
-`$$SE(\hat \beta_1) = \sqrt{\frac{SS_{Residual}/(n-k-1)}{\sum(x_i - \bar{x})^2}} 
-= \sqrt{\frac{21.16364 / (10-1-1)}{20.625}} = \sqrt{\frac{2.65455}{20.625}} = 0.35814$$`
-
---
-
-+ and finally
-
-`$$t = \frac{\hat \beta_1}{SE(\hat \beta_1)} = \frac{1.055}{0.35814} = 2.945773 = 2.95$$`
-
-
----
-# Sampling distribution for the null
-
-+ Now we have our `\(t\)`-statistic, we need to evaluate it.
-
-+ For that, we need sampling distribution for the null.
-
-+ For `\(\beta\)`, this is a `\(t\)`-distribution with `\(n-k-1\)` degrees of freedom.
-	+ Where `\(k\)` is the number of predictors, and the additional -1 represents the intercept.
-
---
-
-+ So for linear models with 1 predictor this is `\(n-2\)`
-  + In our case = 8
-
----
-#  A decision about the null 
-+ So we have a `\(t\)`-value associated with our `\(\beta\)` coefficient.
-	+ t = 2.95
-
-+ And we know we will evaluate it against a `\(t\)`-distribution with 8 df.
-
-+ As with all tests we need to set our `\(\alpha\)`.
-	+ Let's take 0.05 two tailed.
-
---
-
-+ Now we need a critical value to compare our observed `\(t\)`-value to.
-
----
-# Visualize the null
-
-.pull-left[
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-27-1.png)&lt;!-- --&gt;
-
-]
-
-.pull-right[
-
-+ Critical value and `\(p\)`-value:
-
-```r
-tibble(
-  LowerCrit = round(qt(0.025, 8), 3),
-  UpperCrit = round(qt(0.975, 8), 3),
-  Exactp = (1 - pt(2.95, 8)) * 2
-)
-```
-
-```
-## # A tibble: 1 x 3
-##   LowerCrit UpperCrit Exactp
-##       &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;
-## 1     -2.31      2.31 0.0184
-```
-
-]
-
-???
-+ discuss this plot.
-+ remind them of 2-tailed
-+ areas
-+ % underneath each end
-+ comment on how it would be different one tailed
-+ remind about what X is, thus where the line is
-
----
-# `lm` in R
-
-.pull-left[
-
-```r
-summary(res)
-```
-
-```
-## 
-## Call:
-## lm(formula = score ~ hours, data = test)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -1.6182 -1.0773 -0.7454  1.1773  2.4364 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)  
-## (Intercept)   0.4000     1.1111   0.360   0.7282  
-## hours         1.0545     0.3581   2.945   0.0186 *
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 1.626 on 8 degrees of freedom
-## Multiple R-squared:  0.5201,	Adjusted R-squared:  0.4601 
-## F-statistic:  8.67 on 1 and 8 DF,  p-value: 0.01858
-```
-]
-
-.pull-right[
-+ So in our example, we **reject the null**.
-+ **Spend a little bit of time looking at this output, and comparing the various values to those things we calculated in our example.**
-  + Some we haven't yet looked at. 
-  + They are coming next.
-
-]
-
 
 ---
 #  Standard errors: Multiple predictors
@@ -1494,6 +1424,93 @@ summary(res)
 ???
 + Well return to this later when we discuss multi-collinearity issues
 
+
+
+
+---
+# Back to the example
+
+
+```r
+summary(res_multi)
+```
+
+```
+## 
+## Call:
+## lm(formula = salary ~ serv + department + location, data = salary3)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -7.4895 -2.5605 -0.5627  2.7387  9.4569 
+## 
+## Coefficients:
+##                    Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)         41.6839     1.0966  38.011  &lt; 2e-16 ***
+## serv                 2.9531     0.2922  10.105  &lt; 2e-16 ***
+## departmentManager   -6.9522     0.8113  -8.570 1.75e-13 ***
+## locationBirmingham  -6.2827     0.8446  -7.439 4.30e-11 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 3.776 on 96 degrees of freedom
+## Multiple R-squared:  0.7099,	Adjusted R-squared:  0.7008 
+## F-statistic: 78.31 on 3 and 96 DF,  p-value: &lt; 2.2e-16
+```
+
+
+---
+# Sampling distribution for the null
+
++ Now we have our `\(t\)`-statistic, we need to evaluate it.
+
++ For that, we need sampling distribution for the null.
+
++ For `\(\beta\)`, this is a `\(t\)`-distribution with `\(n-k-1\)` degrees of freedom.
+	+ Where `\(k\)` is the number of predictors, and the additional -1 represents the intercept.
+
+--
+
++ So for our model above, we have 3 predictors, and n = 100 
+  + this is `\(n-k-1\)` = `\(100-3-1\)`
+  + 96
+
+---
+# Visualize our result: service
+
+.pull-left[
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-33-1.png)&lt;!-- --&gt;
+
+]
+
+.pull-right[
+
++ Critical value and `\(p\)`-value:
+
+```r
+tibble(
+  LowerCrit = round(qt(0.025, 96), 3),
+  UpperCrit = round(qt(0.975, 96), 3),
+  Exactp = (1 - pt(10.105, 96)) * 2
+)
+```
+
+```
+## # A tibble: 1 x 3
+##   LowerCrit UpperCrit Exactp
+##       &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;
+## 1     -1.98      1.98      0
+```
+
+]
+
+???
++ discuss this plot.
++ remind them of 2-tailed
++ areas
++ % underneath each end
++ comment on how it would be different one tailed
++ remind about what X is, thus where the line is
 
 
 ---
@@ -1560,149 +1577,10 @@ class: inverse, center, middle
 
 .pull-right[
 
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-30-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-35-1.png)&lt;!-- --&gt;
 
 ]
 
----
-# Calculations
-
-.pull-left[
-
-```r
-ss_tab &lt;- test %&gt;%
-    mutate(
-        y_dev = score - mean(score), 
-        y_dev2 = y_dev^2
-    )
-```
-
-
-```r
-ss_tab %&gt;%
-    summarize(
-        ss_tot = sum(y_dev2)
-    )
-```
-
-```
-## # A tibble: 1 x 1
-##   ss_tot
-##    &lt;dbl&gt;
-## 1   44.1
-```
-
-]
-
-.pull-right[
-
-&lt;table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
- &lt;thead&gt;
-  &lt;tr&gt;
-   &lt;th style="text-align:left;"&gt; student &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; hours &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; score &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; z_score &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; z_hours &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; y_dev &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; y_dev2 &lt;/th&gt;
-  &lt;/tr&gt;
- &lt;/thead&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; ID1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -1.0390341 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -1.4863011 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -2.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 5.29 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; ID2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.1355262 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -1.1560120 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.09 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; ID3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -1.0390341 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.8257228 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -2.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 5.29 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; ID4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.5872801 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.4954337 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -1.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.69 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; ID5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.5872801 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.1651446 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -1.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.69 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; ID6 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.2197357 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.1651446 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2.7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 7.29 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; ID7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.1355262 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.4954337 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.09 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; ID8 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 4.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.1355262 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.8257228 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.09 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; ID9 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 4.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.3162278 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.1560120 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.49 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; ID10 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 5.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 8 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2.1232436 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.4863011 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 4.7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 22.09 &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-
-]
 
 ---
 # Residual sum of squares
@@ -1719,162 +1597,10 @@ ss_tab %&gt;%
 
 .pull-right[
 
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-34-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-36-1.png)&lt;!-- --&gt;
 
 ]
 
----
-# Calculations
-
-.pull-left[
-
-```r
-ss_tab &lt;- ss_tab %&gt;%
-  mutate(
-    y_pred = round(res$fitted.values,2),
-    pred_dev = round((score - y_pred),2),
-    pred_dev2 = round(pred_dev^2,2)
-  )
-```
-
-
-```r
-ss_tab %&gt;%
-  summarize(
-    ss_tot = sum(y_dev2),
-*   ss_resid = sum(pred_dev2)
-  )
-```
-
-```
-## # A tibble: 1 x 2
-##   ss_tot ss_resid
-##    &lt;dbl&gt;    &lt;dbl&gt;
-## 1   44.1     21.2
-```
-
-]
-
-.pull-right[
-
-&lt;table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
- &lt;thead&gt;
-  &lt;tr&gt;
-   &lt;th style="text-align:left;"&gt; student &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; hours &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; score &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; y_dev &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; y_dev2 &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; y_pred &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; pred_dev &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; pred_dev2 &lt;/th&gt;
-  &lt;/tr&gt;
- &lt;/thead&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; ID1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -2.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 5.29 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.93 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.07 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.00 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; ID2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.09 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.45 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.55 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2.40 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; ID3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -2.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 5.29 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.98 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.98 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.96 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; ID4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -1.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.69 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2.51 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.51 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.26 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; ID5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -1.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.69 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.04 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -1.04 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.08 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; ID6 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2.7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 7.29 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.56 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2.44 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 5.95 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; ID7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.09 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 4.09 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -1.09 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.19 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; ID8 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 4.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -0.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.09 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 4.62 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -1.62 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2.62 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; ID9 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 4.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.49 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 5.15 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; -1.15 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.32 &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; ID10 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 5.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 8 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 4.7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 22.09 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 5.67 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 2.33 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 5.43 &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-
-]
 
 
 ---
@@ -1895,95 +1621,44 @@ ss_tab %&gt;%
 
 .pull-right[
 
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-38-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-37-1.png)&lt;!-- --&gt;
 
 ]
 
 
+
+
 ---
-# Calculations
-
-.pull-left[
-
-`$$SS_{Model} = SS_{Total} - SS_{Residual}$$`
+#  Coefficient of determination: Our example
 
 
 ```r
-ss_tab %&gt;%
-  summarize(
-    ss_tot = sum(y_dev2),
-    ss_resid = sum(pred_dev2)
-  ) %&gt;%
-* mutate(
-*   ss_mod = ss_tot - ss_resid
-  )
-```
-
-```
-## # A tibble: 1 x 3
-##   ss_tot ss_resid ss_mod
-##    &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;
-## 1   44.1     21.2   22.9
-```
-
-]
-
-.pull-right[
-
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-40-1.png)&lt;!-- --&gt;
-
-]
-
-
----
-#  Coefficient of determination 
-+ Now we can finally come back to `\(R^2\)`.
-
-`$$R^2 = 1 - \frac{SS_{Residual}}{SS_{Total}}$$`
-
-+ Or
-
-`$$R^2 = \frac{SS_{Model}}{SS_{Total}}$$`
-
-+ So in our example:
-
-`$$R^2 = \frac{SS_{Model}}{SS_{Total}} = \frac{22.9}{44.1} = 0.519$$`
-
-+ ** `\(R^2\)` = 0.519 means that 52% of the variation in test scores is accounted for by hours of revision.**
-
----
-#  Our example 
-
-
-```r
-res &lt;- lm(score ~ hours, data = test)
-summary(res)
+summary(res_multi)
 ```
 
 ```
 ## 
 ## Call:
-## lm(formula = score ~ hours, data = test)
+## lm(formula = salary ~ serv + department + location, data = salary3)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -1.6182 -1.0773 -0.7454  1.1773  2.4364 
+## -7.4895 -2.5605 -0.5627  2.7387  9.4569 
 ## 
 ## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)  
-## (Intercept)   0.4000     1.1111   0.360   0.7282  
-## hours         1.0545     0.3581   2.945   0.0186 *
+##                    Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)         41.6839     1.0966  38.011  &lt; 2e-16 ***
+## serv                 2.9531     0.2922  10.105  &lt; 2e-16 ***
+## departmentManager   -6.9522     0.8113  -8.570 1.75e-13 ***
+## locationBirmingham  -6.2827     0.8446  -7.439 4.30e-11 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 1.626 on 8 degrees of freedom
-## Multiple R-squared:  0.5201,	Adjusted R-squared:  0.4601 
-## F-statistic:  8.67 on 1 and 8 DF,  p-value: 0.01858
+## Residual standard error: 3.776 on 96 degrees of freedom
+## Multiple R-squared:  0.7099,	Adjusted R-squared:  0.7008 
+## F-statistic: 78.31 on 3 and 96 DF,  p-value: &lt; 2.2e-16
 ```
 
-???
-As at the end of last session, we can check this against the R-output:
-Be sure to flag small amounts of rounding difference from working through "by hand" and so presenting to less decimal places.
 
 ---
 #  Adjusted `\(R^2\)` 
@@ -2001,6 +1676,36 @@ Be sure to flag small amounts of rounding difference from working through "by ha
 
 + Adjusted `\(R^2\)` adjusts for both sample size ( `\(N\)` ) and number of predictors ( `\(k\)` )
 
+---
+# Adjusted R-square: Our example
+
+
+```r
+summary(res_multi)
+```
+
+```
+## 
+## Call:
+## lm(formula = salary ~ serv + department + location, data = salary3)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -7.4895 -2.5605 -0.5627  2.7387  9.4569 
+## 
+## Coefficients:
+##                    Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)         41.6839     1.0966  38.011  &lt; 2e-16 ***
+## serv                 2.9531     0.2922  10.105  &lt; 2e-16 ***
+## departmentManager   -6.9522     0.8113  -8.570 1.75e-13 ***
+## locationBirmingham  -6.2827     0.8446  -7.439 4.30e-11 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 3.776 on 96 degrees of freedom
+## Multiple R-squared:  0.7099,	Adjusted R-squared:  0.7008 
+## F-statistic: 78.31 on 3 and 96 DF,  p-value: &lt; 2.2e-16
+```
 
 
 ---
@@ -2014,10 +1719,6 @@ Be sure to flag small amounts of rounding difference from working through "by ha
 ---
 #  F-ratio
 + `\(F\)`-ratio tests the null hypothesis that all the regression slopes in a model are all zero
-  + We are currently talking about a model with only one `\(x\)`, thus one slope.
-  + But the `\(F\)`-ratio test will generalise.
-
---
 
 + `\(F\)`-ratio is a ratio of the explained to unexplained variance:
 
@@ -2030,86 +1731,6 @@ Be sure to flag small amounts of rounding difference from working through "by ha
 + **What are mean squares?**
   + Mean squares are sums of squares calculations divided by the associated degrees of freedom.
   + The degrees of freedom are defined by the number of "independent" values associated with the different calculations.
-
----
-# F-table
-
-&lt;table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
- &lt;thead&gt;
-  &lt;tr&gt;
-   &lt;th style="text-align:left;"&gt; SS &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; df &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; MS &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; Fratio &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; pvalue &lt;/th&gt;
-  &lt;/tr&gt;
- &lt;/thead&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Model &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; k &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; SS model/df model &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; MS model/ MS residual &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; F(df model,df residual) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Residual &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; n-k-1 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; SS residual/df residual &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Total &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-
----
-# Our example: F-table
-
-&lt;table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
- &lt;thead&gt;
-  &lt;tr&gt;
-   &lt;th style="text-align:left;"&gt; Component &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; SS &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; df &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; MS &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; Fratio &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; pvalue &lt;/th&gt;
-  &lt;/tr&gt;
- &lt;/thead&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Model &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 22.9 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 22.9 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 8.641509 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; F(1,8) &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Residual &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 21.2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 8 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 2.65 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; Total &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 44.1 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
 
 
 ---
@@ -2136,79 +1757,37 @@ Be sure to flag small amounts of rounding difference from working through "by ha
 
 + Testing the `\(F\)`-ratio evaluates statistical significance of the overall model
 
----
-# Visualize the test
-
-.pull-left[
-
-
-```
-## Warning: Computation failed in `stat_function()`:
-## 'what' must be a function or character string
-
-## Warning: Computation failed in `stat_function()`:
-## 'what' must be a function or character string
-```
-
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-44-1.png)&lt;!-- --&gt;
-]
-
-.pull-right[
-
-+ Critical value and `\(p\)`-value:
-
-```r
-tibble(
-  Crit = round(qf(0.95, 1, 8),3),
-  Exactp = 1-pf(8.64, 1, 8)
-)
-```
-
-```
-## # A tibble: 1 x 2
-##    Crit Exactp
-##   &lt;dbl&gt;  &lt;dbl&gt;
-## 1  5.32 0.0187
-```
-
-+ From this we would **reject the null**. 
-
-]
 
 ---
 #  Our example 
 
 
 ```r
-res &lt;- lm(score ~ hours, data = test)
-summary(res)
+summary(res_multi)
 ```
 
 ```
 ## 
 ## Call:
-## lm(formula = score ~ hours, data = test)
+## lm(formula = salary ~ serv + department + location, data = salary3)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -1.6182 -1.0773 -0.7454  1.1773  2.4364 
+## -7.4895 -2.5605 -0.5627  2.7387  9.4569 
 ## 
 ## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)  
-## (Intercept)   0.4000     1.1111   0.360   0.7282  
-## hours         1.0545     0.3581   2.945   0.0186 *
+##                    Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)         41.6839     1.0966  38.011  &lt; 2e-16 ***
+## serv                 2.9531     0.2922  10.105  &lt; 2e-16 ***
+## departmentManager   -6.9522     0.8113  -8.570 1.75e-13 ***
+## locationBirmingham  -6.2827     0.8446  -7.439 4.30e-11 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 1.626 on 8 degrees of freedom
-## Multiple R-squared:  0.5201,	Adjusted R-squared:  0.4601 
-## F-statistic:  8.67 on 1 and 8 DF,  p-value: 0.01858
+## Residual standard error: 3.776 on 96 degrees of freedom
+## Multiple R-squared:  0.7099,	Adjusted R-squared:  0.7008 
+## F-statistic: 78.31 on 3 and 96 DF,  p-value: &lt; 2.2e-16
 ```
-
-???
-As at the end of last session, we can check this against the R-output:
-Comment on the minor differences for rounding.
-
 
 
 ---
@@ -2228,34 +1807,6 @@ class: inverse, center, middle
 + We can't do this with the skills learned so far. 
 
 + We can using model comparison tools. 
-
----
-# Recall the `\(F\)`-test
-+ `\(F\)`-ratio is a ratio of the explained to unexplained variance:
-
-`$$F = \frac{MS_{Model}}{MS_{Residual}}$$`
-
-+ Where the mean squares (MS) are the sums of squares divided by the degrees of freedom. So we can also write:
-
-`$$F = \frac{SS_{Model}/df_{Model}}{SS_{Residual}/df_{residual}}$$`
-
----
-# F-ratio
-+ Bigger `\(F\)`-ratios indicate better models.
-  + It means the model variance is big compared to the residual variance.
-
-+ The null hypothesis for the model says that the best guess of any individuals `\(y\)` value is the mean of `\(y\)` plus error.
-	+ Or, that the `\(x\)` variables carry no information collectively about `\(y\)`.
-	+ Or, a test that all `\(\beta\)` = 0
-
-+ `\(F\)`-ratio will be close to 1 when the null hypothesis is true
-  + If there is equivalent residual to model variation, `\(F\)`=1
-	+ If there is more model than residual `\(F\)` &gt; 1
-
-+ `\(F\)`-ratio is then evaluated against an `\(F\)`-distribution with `\(df_{Model}\)` and `\(df_{Residual}\)` and a pre-defined `\(\alpha\)`
-
-+ Testing the `\(F\)`-ratio evaluates statistical significance of the overall model
-
 
 ---
 # `\(F\)`-test as an incremental test
@@ -2313,10 +1864,37 @@ $$
 ---
 # Example
 
+```r
+m0 &lt;- lm(salary ~1, data = salary3)
+m1 &lt;- lm(salary ~ location + department, data = salary3)
+m2 &lt;- lm(salary ~ location + department + serv, data = salary3)
+
+anova(m0, m1, m2)
+```
+
+```
+## Analysis of Variance Table
+## 
+## Model 1: salary ~ 1
+## Model 2: salary ~ location + department
+## Model 3: salary ~ location + department + serv
+##   Res.Df    RSS Df Sum of Sq       F    Pr(&gt;F)    
+## 1     99 4717.8                                   
+## 2     97 2824.4  2    1893.4  66.404 &lt; 2.2e-16 ***
+## 3     96 1368.6  1    1455.8 102.115 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
 
 ---
 # Other uses for `anova()`
 
++ Another main use of the `anova()` function is when analysing linear models with categorical variables with 2+ levels.
+
++ This type of model is common in experimental designs
+  + It is the type of model typically described in the literature as an ANOVA model (or analysed using ANOVA)
+  + Note ANOVA = linear model
 
 ---
 class: center, middle
@@ -2672,13 +2250,13 @@ m1 &lt;- lm(salary ~ perf + serv, data = salary2)
 
 .pull-left[
 
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-49-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-44-1.png)&lt;!-- --&gt;
 
 ]
 
 .pull-right[
 
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-50-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-45-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -2716,7 +2294,7 @@ lin_m1 &lt;- salary2 %&gt;%
 ]
 
 .pull-right[
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-52-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-47-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -2755,7 +2333,7 @@ crPlots(m1)
 
 ---
 #  `crPlots()`
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-54-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-49-1.png)&lt;!-- --&gt;
 
 
 ???
@@ -2800,14 +2378,14 @@ hist(m1$residuals)
 
 .pull-left[
 
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-57-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-52-1.png)&lt;!-- --&gt;
 
 ]
 
 
 .pull-right[
 
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-58-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-53-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -2844,12 +2422,12 @@ plot(m1, which = 1)
 #  Residual-vs-predicted values plot 
 
 .pull-left[
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-61-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-56-1.png)&lt;!-- --&gt;
 
 ]
 
 .pull-right[
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-62-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-57-1.png)&lt;!-- --&gt;
 ]
 
 
@@ -2995,7 +2573,7 @@ class: inverse, center, middle
 ]
 
 .pull-right[
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-65-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-60-1.png)&lt;!-- --&gt;
 
 ]
 

@@ -628,7 +628,8 @@ test <- tibble(
 ```
 
 ```{r}
-lm(score ~ hours, data = test)
+res <- lm(score ~ hours, data = test)
+summary(res)
 ```
 
 ---
@@ -1007,8 +1008,8 @@ class: inverse, center, middle
 <h2 style="text-align: left;opacity:0.3;">Part 4: Comparing models </h2>
 
 ---
-#  Multiple regression 
-+ The aim of a linear model is to explain variance in an outcome
+#  Linear model with more predictors (multiple regression)
++ The aim of a linear model is to explain variance in an outcome.
 
 + In simple linear models, we have a single predictor, but the model can accommodate (in principle) any number of predictors. 
 
@@ -1064,6 +1065,94 @@ $$y_i = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \beta_j x_{ji} + \epsilon_i$
 ---
 # Example with interpretations 
 
+```{r, echo=FALSE}
+set.seed(19981)
+dept <- rbinom(100, 1, 0.4)
+location <- rbinom(100, 1, 0.35)
+serv <- rnorm(100, 0, 1.4)
+serv <- serv+3.5
+dl <- dept*location
+
+omit <- rbinom(100, 1, .3)
+
+b0 = 20
+b1 = 3.1
+b2 = -4.5
+b3 = -4.2
+b4 = -6.5
+b5 = 2
+
+eps <- rnorm(100, 0, 4)
+
+salary <- b0 + (b1*serv) + (b2*dept) + (b3*location) + (b4*dl) + (b5*omit) + eps
+salary <- salary+20
+
+salary3 <- tibble(
+  ID = paste("ID", 101:200, sep=""),
+  salary = round(salary,0),
+  department = factor(dept,labels = c("Accounts", "Manager")),
+  location = factor(location, labels = c("London", "Birmingham")),
+  serv = round(serv,1)
+)
+```
+
+.pull-left[
++ Suppose I am conducting a study on work place factors that predict salary.
+
++ $y$ = salary (unit = thousands of pounds)
+
++ $x_1$ = years of service
+
++ $x_2$ = Department (0 = Store managers, 1 = Accounts)
+
++ $x_3$ = Location (0 = Birmingham, 1 = London)
+]
+
+.pull-right[
+
+```{r}
+salary3 %>%
+  slice(1:10)
+```
+
+]
+
+
+---
+# Our model
+```{r}
+res_multi <- lm(salary ~ serv + department + location, data = salary3)
+```
+
+---
+# Our model
+```{r}
+summary(res_multi)
+```
+
+---
+# Our model
+
+.pull-left[
++ $b_0$: The predicted salary for member of accounts, in London, with 0 years service is £41,684 
+
++ $b_1$: For each year of service, salary increases by £2953, holding deparment and location constant.
+
++ $b_2$: Holding years of service and location constant, store managers earn £6952 pounds less than accounts.
+
++ $b_3$: Holding years of service and department constant, those in Birmingham earn £6283 pounds less than those in London.
+
+]
+
+.pull-right[
+
+```{r, echo = FALSE}
+multi_sum <- summary(res_multi)
+round(multi_sum$coefficients,3)[,1:3]
+```
+
+
+]
 
 ---
 class: inverse, center, middle
@@ -1081,13 +1170,17 @@ class: inverse, center, middle
 
 --
 
-+ In the context of our example from last lecture, we could ask, 
++ In the context of examples, we could ask, 
 
 > **Is study time a useful predictor of test score?**
 
+> **Is years of service a useful predictor of salary controlling for department and location**
+
 --
 
-+ The above is a research question/hypothesis. As we have done before, we need to turn this into a testable statistical hypothesis.
++ The above are research questions. 
+
++ If we want to evaluate them, we need to turn them into testable statistical hypothesis.
 
 ---
 #  Evaluating individual predictors 
@@ -1120,31 +1213,13 @@ class: inverse, center, middle
 ---
 # Research question and hypotheses
 
-+ **Research questions** are statements of what we intend to study. 
-
-+ A good question defines:
-
---
-
-  + Constructs under study
-  + the relationship being tested
-  + A direction of relationship
-  + target populations etc.
-
-> **Does increased study time improve test scores in school age children?**
-
---
-
 + **Statistical hypotheses** are testable mathematical statements.
 
---
 
   + In typical testing in Psychology, we define have a **null ( $H_0$ )** and an **alternative ( $H_1$ )** hypothesis.
   + $H_0$ is precise, and states a specific value for the effect of interest.
   + $H_1$ is not specific, and simply says "something else other than the null is more likely"
 
-???
-Flag here that if these comments are completely alien to them, they should go back and recap the hypothesis testing material from dapR1-lectures 12 to 15 (20-21) or 12-14 (19-20).
 
 ---
 # Defining null
@@ -1164,30 +1239,6 @@ Flag here that if these comments are completely alien to them, they should go ba
 $$H_0: \beta_1 = 0$$
 $$H_1: \beta_1 \neq 0$$
 
-???
-+ For the null to be testable, we need to formally define it. 
-+ Point out here the difference in the specificity of the hypotheses. $H_0$ is that the $b_1$ takes a specific value. $H_1$ is that $b_1$ has some value that is not this specific value. i..e one is directly testable, the other is not.
-
-
----
-class: center, middle
-# Time for a break
-
-**Quiz time**
-
-We are about to look at hypothesis tests for coefficients.
-
-So our quiz is on the concept of the standard error
-
-
----
-class: center, middle
-# Welcome Back!
-
-**Where we left off... **
-
-We have defined a null, now let's look at constructing the test
-
 
 ---
 # Point estimate and test statistic
@@ -1203,18 +1254,15 @@ $$t = \frac{\hat \beta}{SE(\hat \beta)}$$
   + $\hat \beta$ = any beta coefficient we have calculated
   + $SE(\hat \beta)$ = standard error of $\beta$ 
 
---
-
-+ **Recall** that the standard error describes the spread of the sampling distribution.
-  + The standard error (SE) provides a measure of sampling variability
++ The standard error (SE) provides a measure of sampling variability
   + Smaller SE's suggest more precise estimate (=good)
-  
-???
-+ brief reminders on test statistics
-  + every quantity we wish to calculate a significance test for needs an test statistic.
-  + the test statistic is a value that has a known sampling distribution
-+ If sampling distribution is unfamiliar, again, recap the hypothesis testing material
 
+---
+# Back to the example
+
+```{r}
+summary(res_multi)
+```
 
 ---
 #  SE( $\hat \beta_1$ )
@@ -1226,163 +1274,6 @@ $$SE(\hat \beta_1) = \sqrt{\frac{ SS_{Residual}/(n-k-1)}{\sum(x_i - \bar{x})^2}}
 	+ $SS_{Residual}$ is the residual sum of squares
 	+ $n$ is the sample size
 	+ $k$ is the number of predictors (= 1 for simple linear regression)
-
-+ **Given the above, think about what things would make the SE smaller.**
-
---
-
-+ From this formula, we can see that the SE's for $\beta$ will be smaller when:
-	+ Residual variance ( $SS_{Residual}$ ) is smaller
-	+ Sample size, $n$, is larger
-
-
----
-# Back to the example
-
-$$t = \frac{\hat \beta_1}{SE(\hat \beta_1)}$$
-
-+ Let's calculate $t$ for our example.
-+ We will use some values we have already calculated
-  + $\hat \beta_1 = 1.055$ 
-
---
-
-+ So we need $SE(\hat \beta_1)$
-
-$$SE(\hat \beta_1) = \sqrt{\frac{SS_{Residual}/(n-k-1)}{\sum(x_i - \bar{x})^2}}$$
-
-+ $n$ = 10
-+ $k$ = 1
-+ $\sum(x_i - \bar{x})^2$ = 20.625
-
----
-# Back to the example
-+ So all we have left is $SS_{Residual}$.
-
-+ From earlier this week, we know:
-
-$$SS_{Residual} = \sum_{i=1}^{n}(y_i - \hat{y}_i)^2$$
-
-+ $SS_{Residual}$ = residual sum of squares = sum of the squared residuals
-
-```{r}
-res <- lm(score ~ hours, data = test)
-SSRes = sum(res$residuals^2)
-SSRes
-```
-
----
-# Back to our example
-
-+ So pull all this together:
-
-$$SE(\hat \beta_1) = \sqrt{\frac{SS_{Residual}/(n-k-1)}{\sum(x_i - \bar{x})^2}} 
-= \sqrt{\frac{21.16364 / (10-1-1)}{20.625}} = \sqrt{\frac{2.65455}{20.625}} = 0.35814$$
-
---
-
-+ and finally
-
-$$t = \frac{\hat \beta_1}{SE(\hat \beta_1)} = \frac{1.055}{0.35814} = 2.945773 = 2.95$$
-
-
----
-# Sampling distribution for the null
-
-+ Now we have our $t$-statistic, we need to evaluate it.
-
-+ For that, we need sampling distribution for the null.
-
-+ For $\beta$, this is a $t$-distribution with $n-k-1$ degrees of freedom.
-	+ Where $k$ is the number of predictors, and the additional -1 represents the intercept.
-
---
-
-+ So for linear models with 1 predictor this is $n-2$
-  + In our case = 8
-
----
-#  A decision about the null 
-+ So we have a $t$-value associated with our $\beta$ coefficient.
-	+ t = 2.95
-
-+ And we know we will evaluate it against a $t$-distribution with 8 df.
-
-+ As with all tests we need to set our $\alpha$.
-	+ Let's take 0.05 two tailed.
-
---
-
-+ Now we need a critical value to compare our observed $t$-value to.
-
----
-# Visualize the null
-
-.pull-left[
-```{r, echo=FALSE}
-ggplot() + 
-  xlim(-8, 8) +
-  stat_function(fun=dt,
-                geom = "line",
-                args = list(df=8)) +
-  stat_function(fun = dt, 
-                geom = "area",
-                xlim = c(qt(0.025, 8), -8),
-                alpha=.25,
-                fill = "blue",
-                args = list(df=8)) +
-    stat_function(fun = dt, 
-                geom = "area",
-                xlim = c(qt(0.975, 8), 8),
-                alpha=.25,
-                fill = "blue",
-                args = list(df=8)) +
-  geom_vline(xintercept = 2.95, col="red") +
-  xlab("\n t") +
-  ylab("") +
-  ggtitle("t-distribution (df=8); t-statistic (2.95; red line)")
-```
-
-]
-
-.pull-right[
-
-+ Critical value and $p$-value:
-```{r}
-tibble(
-  LowerCrit = round(qt(0.025, 8), 3),
-  UpperCrit = round(qt(0.975, 8), 3),
-  Exactp = (1 - pt(2.95, 8)) * 2
-)
-```
-
-]
-
-???
-+ discuss this plot.
-+ remind them of 2-tailed
-+ areas
-+ % underneath each end
-+ comment on how it would be different one tailed
-+ remind about what X is, thus where the line is
-
----
-# `lm` in R
-
-.pull-left[
-```{r}
-summary(res)
-```
-]
-
-.pull-right[
-+ So in our example, we **reject the null**.
-+ **Spend a little bit of time looking at this output, and comparing the various values to those things we calculated in our example.**
-  + Some we haven't yet looked at. 
-  + They are coming next.
-
-]
-
 
 ---
 #  Standard errors: Multiple predictors
@@ -1416,6 +1307,83 @@ $$SE(\hat \beta_j) = \sqrt{\frac{ SS_{Residual}/(n-k-1)}{\sum(x_{ij} - \bar{x_{i
 ???
 + Well return to this later when we discuss multi-collinearity issues
 
+
+
+
+---
+# Back to the example
+
+```{r}
+summary(res_multi)
+```
+
+
+---
+# Sampling distribution for the null
+
++ Now we have our $t$-statistic, we need to evaluate it.
+
++ For that, we need sampling distribution for the null.
+
++ For $\beta$, this is a $t$-distribution with $n-k-1$ degrees of freedom.
+	+ Where $k$ is the number of predictors, and the additional -1 represents the intercept.
+
+--
+
++ So for our model above, we have 3 predictors, and n = 100 
+  + this is $n-k-1$ = $100-3-1$
+  + 96
+
+---
+# Visualize our result: service
+
+.pull-left[
+```{r, echo=FALSE}
+ggplot() + 
+  xlim(-12, 12) +
+  stat_function(fun=dt,
+                geom = "line",
+                args = list(df=96)) +
+  stat_function(fun = dt, 
+                geom = "area",
+                xlim = c(qt(0.025, 96), -12),
+                alpha=.25,
+                fill = "blue",
+                args = list(df=96)) +
+    stat_function(fun = dt, 
+                geom = "area",
+                xlim = c(qt(0.975, 96), 12),
+                alpha=.25,
+                fill = "blue",
+                args = list(df=96)) +
+  geom_vline(xintercept = 10.105, col="red") +
+  xlab("\n t") +
+  ylab("") +
+  ggtitle("t-distribution (df=96); t-statistic (10.105; red line)")
+```
+
+]
+
+.pull-right[
+
++ Critical value and $p$-value:
+```{r}
+tibble(
+  LowerCrit = round(qt(0.025, 96), 3),
+  UpperCrit = round(qt(0.975, 96), 3),
+  Exactp = (1 - pt(10.105, 96)) * 2
+)
+```
+
+]
+
+???
++ discuss this plot.
++ remind them of 2-tailed
++ areas
++ % underneath each end
++ comment on how it would be different one tailed
++ remind about what X is, thus where the line is
 
 
 ---
@@ -1497,35 +1465,6 @@ test %>%
 
 ]
 
----
-# Calculations
-
-.pull-left[
-```{r}
-ss_tab <- test %>%
-    mutate(
-        y_dev = score - mean(score), 
-        y_dev2 = y_dev^2
-    )
-```
-
-```{r}
-ss_tab %>%
-    summarize(
-        ss_tot = sum(y_dev2)
-    )
-```
-
-]
-
-.pull-right[
-
-```{r, echo=FALSE}
-kable(ss_tab) %>%
-  kable_styling(., full_width = F)
-```
-
-]
 
 ---
 # Residual sum of squares
@@ -1558,37 +1497,6 @@ test %>%
 
 ]
 
----
-# Calculations
-
-.pull-left[
-```{r}
-ss_tab <- ss_tab %>%
-  mutate(
-    y_pred = round(res$fitted.values,2),
-    pred_dev = round((score - y_pred),2),
-    pred_dev2 = round(pred_dev^2,2)
-  )
-```
-
-```{r}
-ss_tab %>%
-  summarize(
-    ss_tot = sum(y_dev2),
-    ss_resid = sum(pred_dev2) #<<
-  )
-```
-
-]
-
-.pull-right[
-
-```{r, echo=FALSE}
-kable(ss_tab[-c(4,5)]) %>%
-  kable_styling(., full_width = F)
-```
-
-]
 
 
 ---
@@ -1626,72 +1534,15 @@ test %>%
 ]
 
 
+
+
 ---
-# Calculations
-
-.pull-left[
-
-$$SS_{Model} = SS_{Total} - SS_{Residual}$$
+#  Coefficient of determination: Our example
 
 ```{r}
-ss_tab %>%
-  summarize(
-    ss_tot = sum(y_dev2),
-    ss_resid = sum(pred_dev2)
-  ) %>%
-  mutate( #<<
-    ss_mod = ss_tot - ss_resid #<<
-  )
+summary(res_multi)
 ```
 
-]
-
-.pull-right[
-
-```{r, echo=FALSE}
-test %>%
-  ggplot(., aes(hours, score)) +
-  geom_point(color="red", size = 2) +
-  theme(axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
-  theme(axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 10, l = 0))) +
-  xlab("Hours of Study") +
-  ylab("Test Score") +
-  ggtitle("SS Model") +
-  geom_hline(aes(yintercept = mean(score)),color="blue", size=1) + 
-  geom_abline(aes(intercept=res$coefficients[1], slope=res$coefficients[2]), color="lightblue", size=1) + 
-  geom_segment(aes(x = hours, c(res$fitted.values), xend = hours, yend = c(rep(mean(score),10))), color = "red", lty =2)
-```
-
-]
-
-
----
-#  Coefficient of determination 
-+ Now we can finally come back to $R^2$.
-
-$$R^2 = 1 - \frac{SS_{Residual}}{SS_{Total}}$$
-
-+ Or
-
-$$R^2 = \frac{SS_{Model}}{SS_{Total}}$$
-
-+ So in our example:
-
-$$R^2 = \frac{SS_{Model}}{SS_{Total}} = \frac{22.9}{44.1} = 0.519$$
-
-+ ** $R^2$ = 0.519 means that 52% of the variation in test scores is accounted for by hours of revision.**
-
----
-#  Our example 
-
-```{r}
-res <- lm(score ~ hours, data = test)
-summary(res)
-```
-
-???
-As at the end of last session, we can check this against the R-output:
-Be sure to flag small amounts of rounding difference from working through "by hand" and so presenting to less decimal places.
 
 ---
 #  Adjusted $R^2$ 
@@ -1709,6 +1560,12 @@ $$\hat R^2 = 1 - (1 - R^2)\frac{N-1}{N-k-1}$$
 
 + Adjusted $R^2$ adjusts for both sample size ( $N$ ) and number of predictors ( $k$ )
 
+---
+# Adjusted R-square: Our example
+
+```{r}
+summary(res_multi)
+```
 
 
 ---
@@ -1722,10 +1579,6 @@ $$\hat R^2 = 1 - (1 - R^2)\frac{N-1}{N-k-1}$$
 ---
 #  F-ratio
 + $F$-ratio tests the null hypothesis that all the regression slopes in a model are all zero
-  + We are currently talking about a model with only one $x$, thus one slope.
-  + But the $F$-ratio test will generalise.
-
---
 
 + $F$-ratio is a ratio of the explained to unexplained variance:
 
@@ -1738,38 +1591,6 @@ $$F = \frac{MS_{Model}}{MS_{Residual}}$$
 + **What are mean squares?**
   + Mean squares are sums of squares calculations divided by the associated degrees of freedom.
   + The degrees of freedom are defined by the number of "independent" values associated with the different calculations.
-
----
-# F-table
-
-```{r, echo=FALSE}
-ftest <- tibble(
-  SS = c("Model", "Residual", "Total"),
-  df = c("k", "n-k-1", " "),
-  MS = c("SS model/df model", "SS residual/df residual", " "),
-  Fratio = c("MS model/ MS residual", " ", " "),
-  pvalue = c("F(df model,df residual)", "", "")
-)
-
-kable(ftest)%>%
-  kable_styling(., full_width = F)
-```
-
----
-# Our example: F-table
-
-```{r, echo=FALSE}
-tibble(
-  Component = c("Model", "Residual", "Total"),
-  SS = c(22.9,21.2,44.1),
-  df = c(1, 8, " "),
-  MS = c(22.9, 2.65, " "),
-  Fratio = c(8.641509, " ", " "),
-  pvalue = c("F(1,8)", "", "")
-) %>%
-  kable(.)%>%
-  kable_styling(., full_width = F)
-```
 
 
 ---
@@ -1796,56 +1617,13 @@ tibble(
 
 + Testing the $F$-ratio evaluates statistical significance of the overall model
 
----
-# Visualize the test
-
-.pull-left[
-
-```{r, echo=FALSE}
-ggplot() +
-  xlim(-1,10) + 
-  stat_function(fun=df,
-                geom = "line",
-                args = list(df1=1, df2=8)) +
-  stat_function(fun = df, 
-                geom = "area",
-                xlim = c(qf(0.95, 1,8), 10),
-                alpha=.25,
-                fill = "blue",
-                args = list(df1=1, df2=8)) +
-  geom_vline(xintercept = 8.641509, col="red") +
-  xlab("\n F") +
-  ylab("") +
-  ggtitle("F-distribution (1,8); f-ratio (8.64; red line)")
-```
-]
-
-.pull-right[
-
-+ Critical value and $p$-value:
-```{r}
-tibble(
-  Crit = round(qf(0.95, 1, 8),3),
-  Exactp = 1-pf(8.64, 1, 8)
-)
-```
-
-+ From this we would **reject the null**. 
-
-]
 
 ---
 #  Our example 
 
 ```{r}
-res <- lm(score ~ hours, data = test)
-summary(res)
+summary(res_multi)
 ```
-
-???
-As at the end of last session, we can check this against the R-output:
-Comment on the minor differences for rounding.
-
 
 
 ---
@@ -1865,34 +1643,6 @@ class: inverse, center, middle
 + We can't do this with the skills learned so far. 
 
 + We can using model comparison tools. 
-
----
-# Recall the $F$-test
-+ $F$-ratio is a ratio of the explained to unexplained variance:
-
-$$F = \frac{MS_{Model}}{MS_{Residual}}$$
-
-+ Where the mean squares (MS) are the sums of squares divided by the degrees of freedom. So we can also write:
-
-$$F = \frac{SS_{Model}/df_{Model}}{SS_{Residual}/df_{residual}}$$
-
----
-# F-ratio
-+ Bigger $F$-ratios indicate better models.
-  + It means the model variance is big compared to the residual variance.
-
-+ The null hypothesis for the model says that the best guess of any individuals $y$ value is the mean of $y$ plus error.
-	+ Or, that the $x$ variables carry no information collectively about $y$.
-	+ Or, a test that all $\beta$ = 0
-
-+ $F$-ratio will be close to 1 when the null hypothesis is true
-  + If there is equivalent residual to model variation, $F$=1
-	+ If there is more model than residual $F$ > 1
-
-+ $F$-ratio is then evaluated against an $F$-distribution with $df_{Model}$ and $df_{Residual}$ and a pre-defined $\alpha$
-
-+ Testing the $F$-ratio evaluates statistical significance of the overall model
-
 
 ---
 # $F$-test as an incremental test
@@ -1949,11 +1699,24 @@ $$
 
 ---
 # Example
+```{r}
+m0 <- lm(salary ~1, data = salary3)
+m1 <- lm(salary ~ location + department, data = salary3)
+m2 <- lm(salary ~ location + department + serv, data = salary3)
+
+anova(m0, m1, m2)
+
+```
 
 
 ---
 # Other uses for `anova()`
 
++ Another main use of the `anova()` function is when analysing linear models with categorical variables with 2+ levels.
+
++ This type of model is common in experimental designs
+  + It is the type of model typically described in the literature as an ANOVA model (or analysed using ANOVA)
+  + Note ANOVA = linear model
 
 ---
 class: center, middle
