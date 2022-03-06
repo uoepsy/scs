@@ -63,12 +63,176 @@ class: inverse, center, middle
 <h2 style="text-align: left;opacity:0.3;">Part 3: Single continuous predictor = correlation</h2>
 <h2 style="text-align: left;opacity:0.3;">Part 4: Single binary predictor = t-test</h2>
 
+---
+# What is a model?
++ Pretty much all statistics is about models.
+
++ A model is an idea about the way the world is.
+  + A formal representation of a system or relationships
+
++ Typically we represent models as functions.
+  + We input data
+  + Specify a set of relationships
+  + We output a prediction
+
+---
+# An Example
++ To think through these relations, we can use a simple example.
+
++ Suppose I have a model for growth of babies.<sup>1</sup>
+
+$$
+Length = 55 + 4 * Month
+$$
+
+.footnote[
+[1] Length is measured in cm.
+]
+
+---
+# Visualizing a model
+
+.pull-left[
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+fun1 <- function(x) 55 + (4*x)
+m1 <- ggplot(data = data.frame(x=0), aes(x=x)) +
+  stat_function(fun = fun1) +
+  xlim(0,24) +
+  ylim(0,150) +
+  ylab("Length (cm)") +
+  xlab("Age (months)") #+
+  #geom_point(colour = "red", size = 3) #+
+ # geom_segment(aes(x = x, y = fx, xend = x, yend = 0), 
+  #             arrow=arrow(type = "closed", length = unit(0.25, "cm"))) +
+  #geom_segment(aes(x = x, y = fx, xend = 0, yend = fx), 
+   #            arrow=arrow(type = "closed", length = unit(0.25, "cm")))
+m1
+```
+]
+
+.pull-right[
+
+{{content}}
+]
+
+--
++ The black line represents our model
+{{content}}
+
+--
++ The x-axis shows `Age` $(x)$
+{{content}}
+
+--
++ The y-axis values for `Length` our model predicts
+{{content}}
+
+
+
+---
+# Models as "a state of the world"
++ Let's suppose my model is true.
+  + That is, it is a perfect representation of how babies grow.
+  
++ My models creates predictions.
+
++ **IF** my model is a true representation of the world, **THEN** data from the world should closely match my predictions.
+
+
+---
+# Predictions and data
+
+.pull-left[
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+m1+
+  geom_segment(aes(x = 11, y = 99, xend = 11, yend = 0),
+               col = "red", lty = 2, 
+               arrow=arrow(type = "closed", length = unit(0.25, "cm"))) +
+  geom_segment(aes(x = 11, y = 99, xend = 0, yend = 99),
+               col = "red", lty = 2,
+               arrow=arrow(type = "closed", length = unit(0.25, "cm")))
+```
+]
+
+.pull-right[
+
+```{r, echo=FALSE}
+tibble(
+  Age = seq(10, 12, 0.25)
+) %>%
+  mutate(
+    Prediction = 55 + (Age*4)
+  ) %>%
+  kable(.) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F)
+```
+
+]
+
+???
++ Our predictions are points which fall on our line (representing the model, as a function)
++ Here the arrows are showing how we can use the model to find a predicted value.
++ we find the value of the input on the x-axis (here 11), read up to the line, then across to the y-axis
+
+
+
+
+---
+# Predictions and data
+
+.pull-left[
+
++ Consider the predictions when the children get a lot older...
+
+{{content}}
+
+]
+
+
+.pull-right[
+```{r, echo=FALSE}
+tibble(
+  Age = seq(216,300, 12)
+) %>%
+  mutate(
+    Year = Age/12,
+    Prediction = 55 + (Age*4),
+    Prediction_M = Prediction/100
+  ) %>%
+  kable(.) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F)
+```
+
+]
+
+--
++ What do you think this would mean for our actual data?
+{{content}}
+
+--
++ Will the data fall on the line?
+{{content}}
+
+
+---
+# How good is my model?
++ How might we judge how good our model is?
+
+  1. Model is represented as a function
+  
+  2. We see that as a line (or surface if we have more things to consider)
+  
+  3. That yields predictions (or values we expect if our model is true)
+  
+  4. We can collect data
+  
+  5. If the predictions do not match the data (points deviate from our line), that says something about our model.
+
+
 
 ---
 # Linear model
-+ What we will focus on for the majority of the course is how we move from the idea of an association, to estimating a model for the relationship.
-
-+ This model is the **linear model**
++ The linear model is the workhorse of statistics.
 
 + When using a linear model, we are typically trying to explain variation in an **outcome** (Y, dependent, response) variable, using one or more **predictor** (x, independent, explanatory) variable(s).
 
@@ -200,7 +364,7 @@ slope
 ---
 # How to find a line?
 + The line represents a model of our data.
-    + In our example, the model that best characterizes the relationship between hours of study and test score.
+  + In our example, the model that best characterizes the relationship between hours of study and test score.
 
 + In the scatterplot, the data is represented by points.
 
@@ -342,6 +506,8 @@ $$SS_{Residual} = \sum_{i=1}^{n} [y_i - (\hat \beta_0 + \hat \beta_1 x_{i})]^2 =
 
 + If we simply added them, they would cancel out.
 
+
+
 ---
 # Data, predicted values and residuals
 
@@ -360,6 +526,37 @@ $$SS_{Residual} = \sum_{i=1}^{n}(y_i - \hat{y}_i)^2$$
 ???
 + these are important distinctions for understanding linear models
 + return to them a lot.
+
+
+---
+# Data, predicted values and residuals
+
+.pull-left[
+
+$$SS_{Residual} = \sum_{i=1}^{n}(y_i - \hat{y}_i)^2$$
+
++ Squared distance of each point from the predicted value.
+]
+
+.pull-right[
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+ggplot(test, aes(x=hours, y=score)) +
+  geom_point(size = 2, col = c(rep("darkgrey", 5), "red", "blue", rep("darkgrey", 3)))+
+  stat_smooth(method="lm", se=FALSE, col = "black") +
+  geom_segment(aes(x = 3, y = 3.7, xend = 3, yend = 5.9),
+               col = "red", lty = 2, 
+               arrow=arrow(type = "closed", length = unit(0.25, "cm"))) +
+    geom_segment(aes(x = 3.5, y = 4, xend = 3.5, yend = 3.15),
+               col = "blue", lty = 2, 
+               arrow=arrow(type = "closed", length = unit(0.25, "cm"))) +
+  ylab("Test Score") +
+  xlab("Hours Studied")
+
+```
+
+]
 
 ---
 # Fitting the line
@@ -420,7 +617,7 @@ class: inverse, center, middle
 
 ---
 # `lm` in R
-+ We do not generally calculate by hand like this, so we also briefly introduced the `lm()` function.
++ In R we use the `lm()` function to run linear models
 
 ```{r, echo=FALSE}
 test <- tibble(
@@ -480,12 +677,12 @@ lm(score ~ hours, data = test)
 
 ---
 # Unstandardized vs standardized coefficients
-- So far we have calculated unstandardized $\hat \beta_1$.
+- In this example, we have unstandardized $\hat \beta_1$.
 
 + We interpreted the slope as the change in $y$ units for a unit change in $x$
   + Where the unit is determined by how we have measured our variables.
 
-+ In our running example:
++ So:
   + A unit of study time is 1 hour.
   + A unit of test score is 1 point.
   
@@ -509,9 +706,10 @@ lm(score ~ hours, data = test)
 
 
 ---
-# Standardizing the coefficients
-+ After calculating a $\hat \beta_1$, it can be standardized by:
+# Standardized results
++ We can either...
 
++ Standardized coefficients: 
 
 $$\hat{\beta_1^*} = \hat \beta_1 \frac{s_x}{s_y}$$
 
@@ -535,22 +733,10 @@ $$z_{x_i} = \frac{x_i - \bar{x}}{s_x}$$
 $$z_{y_i} = \frac{y_i - \bar{y}}{s_y}$$
 
 + That is, we divide the individual deviations from the mean by the standard deviation
-  
----
-# Two approaches in action
-
-
-```{r}
-res <- lm(score ~ hours, data = test)
-summary(res)$coefficients
-```
-
-```{r}
-1.055 * (sd(test$hours)/sd(test$score)) #<<
-```
 
 ---
-# Two approaches in action
+# `lm()` using z-scores
+
 
 ```{r}
 test <- test %>%
@@ -566,12 +752,8 @@ summary(res_z)$coefficients
 
 ---
 #  Interpreting standardized regression coefficients  
-+ $R^2$ , $F$ and $t$-test remain the same for the standardized coefficients as for unstandardised coefficients.
 
 + $b_0$ (intercept) = zero when all variables are standardized:
-$$
-\bar{y} - \hat \beta_1 \bar{x} = 0 - \hat \beta_1  0 = 0
-$$
 
 + The interpretation of the coefficients becomes the increase in $y$ in standard deviation units for every standard deviation increase in $x$
 
@@ -593,18 +775,6 @@ cor(test$hours, test$score)
 
 + $\hat \beta_1^*$ is a standardized measure of the linear slope.
 
----
-# Which should we use? 
-+ Unstandardized regression coefficients are often more useful when the variables are on  meaningful scales
-	+ E.g. X additional hours of exercise per week adds Y years of healthy life
-
-+ Sometimes it's useful to obtain standardized regression coefficients
-	+ When the scales of variables are arbitrary
-	+ When there is a desire to compare the effects of variables measured on different scales	
-
-+ Cautions
-	+ Just because you can put regression coefficients on a common metric doesn't mean they can be meaningfully compared.
-	+ The SD is a poor measure of spread for skewed distributions, therefore, be cautious of their use with skewed variables
 
 ---
 class: inverse, center, middle
@@ -615,7 +785,7 @@ class: inverse, center, middle
 <h2>Part 4: Single binary predictor = t-test</h2>
 
 ---
-# Recap: Binary variable
+# Binary variable
 + Binary variable is a categorical variable with two levels.
 
 + Traditionally coded with a 0 and 1
@@ -645,37 +815,19 @@ class: inverse, center, middle
 
 .pull-right[
 
-+ This data set is available on LEARN
-
-```{r, warning=FALSE, message=FALSE}
-df <- read_csv("./dapr2_lec07.csv") #<<
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+df <- read_csv("./dapr2_lec07.csv") 
 ```
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
-kable(df)%>%
-  kable_styling(., full_width = F) %>%
-  scroll_box(height = "300px")
+slice(df, 1:10)
 ```
 
 ]
 
 ---
 #  LM with binary predictors 
-+ In previous lectures we asked the question:
-
-  + **Do students who study more get higher scores on the test?**
-
-+ And we specified a linear model:
-
-$$y_i = \beta_0 + \beta_1 x_{i} + \epsilon_i$$
-
-+ Or
-
-$$score_i = \beta_0 + \beta_1 hours_{i} + \epsilon_i$$
-
---
-
-+ And nothing changes with our binary variable. We can ask the question:
++ Now we can ask the question:
 
   + **Do students who study with others score better than students who study alone?**
 
@@ -732,63 +884,23 @@ df %>%
   
 
 ---
-class: center, middle
-# Time for a break
-
-**Have a go at the binary variable quiz**
-
----
-class: center, middle
-# Welcome Back!
-
-**Where we left off... **
-
-Let's think about the interpretation by group a little more.
-
----
 #  Equations for each group 
-+ What would our linear model look like if we added the values for $x$.
-
-
-$$\widehat{score} = \hat \beta_0 + \hat \beta_1 study$$
-
-
 + For those who study alone ( $study = 0$ ):
 
 
-$$\widehat{score}_{alone} = \hat \beta_0 + \hat \beta_1 \times 0$$
+$$\widehat{score}_{alone} = \hat \beta_0 + \hat \beta_1 \times 0 = \hat \beta_0$$
 
 
-+ So;
-
-
-$$\widehat{score}_{alone} = \hat \beta_0$$
-
-
-
----
-#  Equations for each group 
 + For those who study with others ( $study = 1$ ):
 
 
-$$\widehat{score}_{others} = \hat \beta_0 + \hat \beta_1 \times 1$$
-
-
-+ So;
-
-
-$$\widehat{score}_{others} = \hat \beta_0 + \hat \beta_1$$
+$$\widehat{score}_{others} = \hat \beta_0 + \hat \beta_1 \times 1 = \hat \beta_0 + \hat \beta_1$$
 
 
 + And if we re-arrange;
 
 
-$$\hat \beta_1 = \widehat{score}_{others} - \hat \beta_0$$
-
-
-+ Remembering that $\widehat{score}_{alone} = \hat \beta_0$, we finally obtain:
-
-$$\hat \beta_1 = \widehat{score}_{others} - \widehat{score}_{alone}$$
+$$\hat \beta_1 = \widehat{score}_{others} - \hat \beta_0 = \widehat{score}_{others} - \widehat{score}_{alone}$$
 
 
 ---
@@ -836,7 +948,7 @@ bin +
 ---
 #  Visualize the model
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
 library(latex2exp)
 
 bin +
@@ -849,19 +961,6 @@ bin +
   geom_text(x=0.65, y = gpM[[1,2]] , label = TeX('$\\hat{\\beta}_0$'), size=5, col = "red")
 
 ```
-
-
----
-#  Evaluation of model and significance of $\beta_1$
-
-+ $R^2$ and $F$-ratio interpretation are identical to their interpretation in models with only continuous predictors.
-
-+ And we assess the significance of predictors in the same way
-
-+ We use the standard error of the coefficient to construct:
-  + We calculate the $\hat \beta_1$ = difference between groups
-	+ $t$-value and associated $p$-value for the coefficient
-	+ Or a confidence interval around the coefficient
 
 
 ---
@@ -1362,10 +1461,7 @@ $$R^2 = \frac{SS_{Model}}{SS_{Total}} = 1 - \frac{SS_{Residual}}{SS_{Total}}$$
   + More variance accounted for, the better.
   + Represents the extent to which the prediction of $y$ is improved when predictions are based on the linear relation between $x$ and $y$.
 
---
 
-+ Let's see how it works.
-  + To do so, we need to calculate the different sums of squares.
 
 
 ---
