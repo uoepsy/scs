@@ -1248,6 +1248,187 @@ summary(res_multi)
 ]
 
 ---
+# Categorical predictors with 2+ levels
+
+
+
++ When we have a categorical variable with 2+ levels, we will typically assign integers
+
++ For example: What city do you live in?
+  + 1 = Edinburgh; 2 = Glasgow, 3 = Birmingham etc.
+  + Note these numbers are not meaningful, they just denote groups
+
++ When analysing a categorical predictor with `\(k\)` levels, we need to take an additional step.
+
++ This step involves applying a coding scheme, where by each regressor = a difference in means between levels, or sets of levels.
+
++ There are lots of coding schemes.
+  + We will just look at dummy coding (R default)
+
+---
+#  Dummy coding 
++ Dummy coding uses 0's and 1's to represent group membership
+	+ One level is chosen as a baseline
+	+ All other levels are compared against that baseline
+	
++ Notice, this is identical to binary variables already discussed.
+
++ Dummy coding is simply the process of producing a set of binary coded variables
+
++ For any categorical variable, we will create `\(k\)`-1 dummy variables
+  + `\(k\)` = number of levels
+
+---
+#  Dummy coding 
++ Imagine 100 students took an exam and were each assigned to use one of three `study methods`
+	+ 1 = Notes re-reading 
+	+ 2 = Notes summarising
+	+ 3 = Self-testing ([see here](https://www.psychologicalscience.org/publications/journals/pspi/learning-techniques.html))
+
+---
+#  Dummy coding 
+
+.pull-left[
++ Our data:
+
+
+```
+## # A tibble: 10 x 3
+##    ID     exam method
+##    &lt;chr&gt; &lt;dbl&gt; &lt;fct&gt; 
+##  1 ID101    54 2     
+##  2 ID102    59 3     
+##  3 ID103    50 2     
+##  4 ID104    55 3     
+##  5 ID105    51 2     
+##  6 ID106    52 2     
+##  7 ID107    50 1     
+##  8 ID108    57 2     
+##  9 ID109    52 2     
+## 10 ID110    52 2
+```
+
+
+]
+
+
+.pull-right[
++ What it may look life *if* we actually created dummy variables:
+
+
+```
+## # A tibble: 10 x 5
+##    ID     exam method dummy1 dummy2
+##    &lt;chr&gt; &lt;dbl&gt; &lt;fct&gt;   &lt;dbl&gt;  &lt;dbl&gt;
+##  1 ID101    54 2           1      0
+##  2 ID102    59 3           0      1
+##  3 ID103    50 2           1      0
+##  4 ID104    55 3           0      1
+##  5 ID105    51 2           1      0
+##  6 ID106    52 2           1      0
+##  7 ID107    50 1           0      0
+##  8 ID108    57 2           1      0
+##  9 ID109    52 2           1      0
+## 10 ID110    52 2           1      0
+```
+
+]
+
+
+---
+#  Dummy coding with `lm` 
+
++ `lm` automatically applies dummy coding when you include a variable of class `factor` in a model.
+
++ It selects the first group as the baseline group
+
++ We write:
+
+
+```r
+dummy1 &lt;- lm(exam ~ method, data = dum_dat)
+```
+
+
++ And `lm` does all the dummy coding work for us
+
+---
+#  Dummy coding with `lm`
+
+.pull-left[
+
+
+```
+## # A tibble: 3 x 2
+##   method  Mean
+##   &lt;fct&gt;  &lt;dbl&gt;
+## 1 1       51.7
+## 2 2       53.6
+## 3 3       56.0
+```
+
+
++ The intercept is the mean of the baseline group (notes re-reading)
+
++ The coefficient for `method2` is the mean difference between the notes summarising group and the baseline group
+
++ The coefficient for `method3` is the mean difference between the self-test group and the baseline group
+
+]
+
+.pull-right[
+
+
+```r
+dummy1 &lt;- lm(exam ~ method, data = dum_dat)
+dummy1
+```
+
+```
+## 
+## Call:
+## lm(formula = exam ~ method, data = dum_dat)
+## 
+## Coefficients:
+## (Intercept)      method2      method3  
+##      51.696        1.878        4.348
+```
+
+]
+
+
+---
+#  Dummy coding with `lm` (full results)
+
+
+```r
+summary(dummy1)
+```
+
+```
+## 
+## Call:
+## lm(formula = exam ~ method, data = dum_dat)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.5741 -1.5741  0.3651  1.4259  5.3043 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  51.6957     0.4261 121.328  &lt; 2e-16 ***
+## method2       1.8784     0.5088   3.692 0.000368 ***
+## method3       4.3478     0.6026   7.215  1.2e-10 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 2.043 on 97 degrees of freedom
+## Multiple R-squared:  0.3515,	Adjusted R-squared:  0.3382 
+## F-statistic: 26.29 on 2 and 97 DF,  p-value: 7.529e-10
+```
+
+
+---
 class: inverse, center, middle
 
 &lt;h2 style="text-align: left;opacity:0.3;"&gt;Part 1: Adding more predictors &lt;/h2&gt;
@@ -1479,7 +1660,7 @@ summary(res_multi)
 # Visualize our result: service
 
 .pull-left[
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-33-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-40-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -1577,7 +1758,7 @@ class: inverse, center, middle
 
 .pull-right[
 
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-35-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-42-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -1597,7 +1778,7 @@ class: inverse, center, middle
 
 .pull-right[
 
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-36-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-43-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -1621,7 +1802,7 @@ class: inverse, center, middle
 
 .pull-right[
 
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-37-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-44-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -1895,6 +2076,26 @@ anova(m0, m1, m2)
 + This type of model is common in experimental designs
   + It is the type of model typically described in the literature as an ANOVA model (or analysed using ANOVA)
   + Note ANOVA = linear model
+  
+---
+# Categorical data and `anova()`
+
+
+```r
+anova(dummy1)
+```
+
+```
+## Analysis of Variance Table
+## 
+## Response: exam
+##           Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+## method     2 219.56 109.780  26.291 7.529e-10 ***
+## Residuals 97 405.03   4.176                      
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
 
 ---
 class: center, middle
@@ -1916,21 +2117,20 @@ class: inverse, center, middle
 ---
 #  Lecture notation 
 
-+ For the next two lectures, we will work with the following equation and notation:
++ For today, we will work with the following equation and notation:
 
 `$$y_i = \beta_0 + \beta_1 x_{i} + \beta_2 z_{i} + \beta_3 xz_{i} + \epsilon_i$$`
 
 + `\(y\)` is a continuous outcome
 
-+ `\(x\)` will always be the continuous predictor
++ `\(x\)` is our first predictor
 
-+ `\(z\)` will be either the continuous or binary predictor
-	+ Dependent on the type of interaction we are discussing.
++ `\(z\)` is our second predictor
 	
-+ `\(xz\)` is their product or interaction predictor
++ `\(xz\)` is their product or interaction predictors
 
 ---
-#  General definition 
+#  General definition of interaction
 
 + When the effects of one predictor on the outcome differ across levels of another predictor.
 
@@ -1958,6 +2158,15 @@ class: inverse, center, middle
 	+ There is a difference in the differences between groups across levels of a second factor.
 	+ We will discuss this in the context of linear models for experimental design
 
+---
+# Why are we interested in interactions?
++ Often we have theories or ideas which relate to an interaction.
+
++ For example: 
+  + different relationships of mood state to cognitive score dependent on disease status
+  + different rates of cognitive decline by disease status. 
+
++ Questions like these would be tested via inclusion of an interaction term in our model.
 
 ---
 class: inverse, center, middle
@@ -1985,12 +2194,172 @@ class: inverse, center, middle
   + `\(\beta_3\)` = Difference in slope across levels of `\(z\)`
 
 ---
-# Example LBC
+#  Example: Categorical*Continuous 
 
-- Calculate
-- Show plot by group
-- Show equation by group = simple slopes
+.pull-left[
++ Suppose I am conducting a study on how years of service within an organisation predicts salary in two different departments, accounts and store managers.
 
++ y = salary (unit = thousands of pounds)
+
++ x = years of service
+
++ z = Department (0=Store managers, 1=Accounts)
+]
+
+.pull-right[
+
+
+
+
+
+```r
+salary1 %&gt;%
+  slice(1:10)
+```
+
+```
+## # A tibble: 10 x 3
+##    service salary dept        
+##      &lt;dbl&gt;  &lt;dbl&gt; &lt;fct&gt;       
+##  1     6.2   60.5 Accounts    
+##  2     2.7   22.9 StoreManager
+##  3     4.6   48.9 Accounts    
+##  4     5.4   49.9 Accounts    
+##  5     3.5   28.2 StoreManager
+##  6     5.6   54.1 Accounts    
+##  7     5.7   37.8 StoreManager
+##  8     2.6   37.9 Accounts    
+##  9     5.9   36.5 StoreManager
+## 10     4.9   28.4 StoreManager
+```
+
+]
+
+---
+#  Visualize the data
+
+.pull-left[
+
+
+```r
+salary1 %&gt;%
+  ggplot(., aes(x = service, y = salary, 
+                colour = dept)) +
+  geom_point() +
+  xlim(0,8) +
+  labs(x = "Years of Service", 
+       y = "Salary (£1000)")
+```
+
+
+]
+
+.pull-right[
+
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-53-1.png)&lt;!-- --&gt;
+
+]
+
+
+
+
+
+---
+# Example: Full results
+
+
+```r
+int &lt;- lm(salary ~ service + dept + service*dept, data = salary1)
+*summary(int)
+```
+
+---
+# Example: Full results
+
+
+```
+## 
+## Call:
+## lm(formula = salary ~ service + dept + service * dept, data = salary1)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -10.196  -2.812  -0.316   2.927  10.052 
+## 
+## Coefficients:
+##                      Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)           16.8937     4.4638   3.785 0.000444 ***
+## service                2.7364     0.9166   2.986 0.004524 ** 
+## deptAccounts           4.4887     6.3111   0.711 0.480523    
+## service:deptAccounts   3.1174     1.2698   2.455 0.017928 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 4.61 on 46 degrees of freedom
+## Multiple R-squared:  0.867,	Adjusted R-squared:  0.8583 
+## F-statistic: 99.93 on 3 and 46 DF,  p-value: &lt; 2.2e-16
+```
+
+
+---
+#  Example: Categorical*Continuous 
+
+.pull-left[
++ **Intercept** ( `\(\beta_0\)` ): Predicted salary for a store manager (`dept`=0) with 0 years of service is £16,894.
+
++ **Service** ( `\(\beta_1\)` ): For each additional year of service for a store manager (`dept` = 0), salary increases by £2,736.
+
++ **Dept** ( `\(\beta_2\)` ): Difference in salary between store managers (`dept` = 0) and accounts (`dept` = 1) with 0 years of service is £4,489.
+	
++ **Service:dept** ( `\(\beta_3\)` ): The difference in slope. For each year of service, those in accounts (`dept` = 1) increase by an additional £3,117.
+
+]
+
+
+.pull-right[
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-56-1.png)&lt;!-- --&gt;
+]
+
+
+
+---
+#  Marginal effects 
+
++ Recall when we have a linear model with multiple predictors, we interpret the `\(\beta_j\)` as the effect "holding all other variables constant".
+
++ Also note, with interactions, the effect of `\(x\)` on `\(y\)` changes dependent on the value of `\(z\)`.
+  + More formally, it is the effect of `\(x\)` is conditional on `\(z\)` and vice versa.
+
++ What this means is that we can no longer talk about holding an effect constant.
+  + In the presence of an interaction, by definition, this effect changes.
+
++ So where as in a linear model without an interaction `\(\beta_j\)` = main effects, with an interaction we refer to **marginal** or **conditional** effects.
+
+
+---
+#  Centering predictors
+
+**Why centre?** 
++ Meaningful interpretation.
+
+  + Interpretation of models with interactions involves evaluation when other variables = 0.
+  
+  + This makes it quite important that 0 is meaningful in some way.
+  	+ Note this is simple with categorical variables.
+  	+ We code our reference group as 0 in all dummy variables.
+  
+  + For continuous variables, we need a meaningful 0 point.
+
+---
+#  Example of age 
++ Suppose I have age as a variable in my study with a range of 30 to 85.
+
++ Age = 0 is not that meaningful.
+	+ Essentially means all my parameters are evaluated at point of birth.
+
++ So what might be meaningful?
+	+ Average age? (mean centering)
+	+ A fixed point? (e.g. 66 if studying retirement)
 
 ---
 class: inverse, center, middle
@@ -2000,19 +2369,6 @@ class: inverse, center, middle
 &lt;h2&gt;Part 3: Continuous*Continuous interactions &lt;/h2&gt;
 &lt;h2 style="text-align: left;opacity:0.3;"&gt;Part 4: Categorical*categorical interactions &lt;/h2&gt;
 
----
-#  Lecture notation 
-
-`$$y_i = \beta_0 + \beta_1 x_{i} + \beta_2 z_{i} + \beta_3 xz_{i} + \epsilon_i$$`
-
-+ Lecture notation:
-  + `\(y\)` is a continuous outcome
-  
-  + `\(x\)` is a continuous predictor
-  
-  + `\(z\)` is a continuous predictor
-  
-  + `\(xz\)` is their product or interaction predictor
 
 ---
 #  Interpretation: Continuous*Continuous 
@@ -2030,25 +2386,196 @@ class: inverse, center, middle
   +  `\(\beta_3\)` = Change in slope of `\(x\)` on `\(y\)` across values of `\(z\)` (and vice versa).
 	    + Or how the effect of `\(x\)` depends on `\(z\)` (and vice versa)
 
+
 ---
-#  Interpretation: Continuous*Continuous 
+#  Example: Continuous*Continuous 
+
++ Conducting a study on how years of service and employee performance ratings predicts salary in a sample of managers.
 
 `$$y_i = \beta_0 + \beta_1 x_{i} + \beta_2 z_{i} + \beta_3 xz_{i} + \epsilon_i$$`
 
-+ Note, `\(\beta_1\)` and `\(\beta_2\)` and are referred to as conditional effects, **not as main effects** .
-	
-	+ They are the effects at the value 0 of the interacting variable.
-	
-	+ Main effects are typically assumed to be constant.
-	
-	+ For any `\(\beta\)` associated with a variable **not** included in the interaction, interpretation does not change.
++ `\(y\)` = Salary (unit = thousands of pounds ).
+
++ `\(x\)` = Years of service.
+
++ `\(z\)` = Average performance ratings.
+
 
 ---
-# Example LBC
+#  Example: Continuous*Continuous 
 
-- Show example with interpretation
-- Simple slopes (need to pick values)
 
+
+
+```
+## 
+## Call:
+## lm(formula = salary ~ serv * perf, data = salary2)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -43.008  -9.710  -1.068   8.674  48.494 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   87.920     16.376   5.369 5.51e-07 ***
+## serv         -10.944      4.538  -2.412  0.01779 *  
+## perf           3.154      4.311   0.732  0.46614    
+## serv:perf      3.255      1.193   2.728  0.00758 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 17.55 on 96 degrees of freedom
+## Multiple R-squared:  0.5404,	Adjusted R-squared:  0.5261 
+## F-statistic: 37.63 on 3 and 96 DF,  p-value: 3.631e-16
+```
+
+---
+#  Example: Continuous*Continuous 
+
+.pull-left[
+
++ **Intercept**: a manager with 0 years of service and 0 performance rating earns £87,920
+
++ **Service**: for a manager with 0 performance rating, for each year of service, salary decreases by £10,940
+  + slope when performance = 0
+  
++ **Performance**: for a manager with 0 years service, for each point of performance rating, salary increases by £3,150.
+  + slope when service = 0
+  
++ **Interaction**: for every year of service, the relationship between performance and salary increases by £3250.
+
+]
+
+
+.pull-right[
+
+```
+##             Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)    87.92      16.38    5.37     0.00
+## serv          -10.94       4.54   -2.41     0.02
+## perf            3.15       4.31    0.73     0.47
+## serv:perf       3.25       1.19    2.73     0.01
+```
+
+]
+
+???
++ What do you notice here?
++ 0 performance and 0 service are odd values
++ lets mean centre both, so 0 = average, and look at this again.
+
+
+---
+# Mean centering
+
+
+```r
+salary2 &lt;- salary2 %&gt;%
+  mutate(
+*   perfM = scale(perf, scale = F),
+*   servM = scale(serv, scale = F)
+  )
+
+int3 &lt;- lm(salary ~ servM*perfM, data = salary2)
+```
+
+
+---
+# Mean centering
+
+
+```
+## 
+## Call:
+## lm(formula = salary ~ servM * perfM, data = salary2)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -43.008  -9.710  -1.068   8.674  48.494 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  104.848      1.757  59.686  &lt; 2e-16 ***
+## servM          1.425      1.364   1.044  0.29890    
+## perfM         14.445      1.399  10.328  &lt; 2e-16 ***
+## servM:perfM    3.255      1.193   2.728  0.00758 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 17.55 on 96 degrees of freedom
+## Multiple R-squared:  0.5404,	Adjusted R-squared:  0.5261 
+## F-statistic: 37.63 on 3 and 96 DF,  p-value: 3.631e-16
+```
+
+---
+#  Example: Continuous*Continuous 
+
+.pull-left[
+
++ **Intercept**: a manager with average years of service and average performance rating earns £104,850
+
++ **Service**: a manager with average performance rating, for every year of service, salary increases by £1,420
+  + slope when performance = 0 (mean centered)
+  
++ **Performance**: a manager with average years service, for each point of performance rating, salary increases by £14,450.
+  + slope when service = 0 (mean centered)
+  
++ **Interaction**: for every year of service, the relationship between performance and salary increases by £3,250.
+
+]
+
+
+.pull-right[
+
+```
+##             Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)   104.85       1.76   59.69     0.00
+## servM           1.42       1.36    1.04     0.30
+## perfM          14.45       1.40   10.33     0.00
+## servM:perfM     3.25       1.19    2.73     0.01
+```
+
+]
+
+---
+#  Plotting interactions
+
++ In our last block we saw we could produce a line for each group of a binary (extends to categorical) variable.
+
++ These are called simple slopes:
+	+ **Regression of the outcome Y on a predictor X at specific values of an interacting variable Z.**
+
++ For a continuous variable, we could choose any values of Z. 
+  + Typically we plot at the mean and +/- 1SD
+
+
+---
+#  `interactions`: Simple Slopes 
+
+.pull-left[
+
+```r
+library(interactions)
+p_m2 &lt;- probe_interaction(int3, 
+                  pred = servM, 
+                  modx = perfM, 
+                  cond.int = T,
+                  interval = T, 
+                  jnplot = T)
+```
+
+
+```r
+p_m2$interactplot
+```
+
+]
+
+.pull-right[
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-65-1.png)&lt;!-- --&gt;
+
+]
 
 ---
 class: inverse, center, middle
@@ -2057,6 +2584,428 @@ class: inverse, center, middle
 &lt;h2 style="text-align: left;opacity:0.3;"&gt;Part 2: Continuous*binary interactions &lt;/h2&gt;
 &lt;h2 style="text-align: left;opacity:0.3;"&gt;Part 3: Continuous*Continuous interactions &lt;/h2&gt;
 &lt;h2&gt;Part 4: Categorical*categorical interactions &lt;/h2&gt;
+
+---
+#  General definition 
+
++ When the effects of one predictor on the outcome differ across levels of another predictor.
+
++ Categorical*categorical interaction:
+	+ There is a difference in the differences between groups across levels of a second factor.
+
++ This idea of a difference in differences can be quite tricky to think about.
+  + So we will start with some visualization, and then look at two examples.
+  
+---
+# Difference in differences (1)
+
+
+.pull-left[
+
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; London &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Birmingham &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 40 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
++ In each plot we look at, think about subtracting the average store managers salary (blue triangle) from the average accounts salary (red circle)
+
++ In both cases, it is £20,000.
+
++ Note, the lines are parallel
+  + Remember what we have said about parallel lines...no interaction
+
+]
+
+.pull-right[
+
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-68-1.png)&lt;!-- --&gt;
+
+]
+
+---
+# Difference in differences (2)
+
+
+.pull-left[
+
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; London &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Birmingham &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 40 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 40 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
++ This time we can see the difference differs.
+  + £20,000 in Birmingham
+  + £10,000 in London.
+  
++ Note the lines are no longer parallel.
+  + Suggests interaction.
+  + But not crossing (so ordinal interaction)
+
+]
+
+.pull-right[
+
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-71-1.png)&lt;!-- --&gt;
+
+]
+
+---
+# Difference in differences (3)
+
+.pull-left[
+
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; London &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Birmingham &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 40 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 40 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 60 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
++ This time we can see the difference differs.
+  + £20,000 in Birmingham
+  + -£20,000 in London
+  
++ Note the lines are no longer parallel.
+  + Suggests interaction.
+  + Now crossing (so disordinal interaction)
+
+]
+
+.pull-right[
+
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-74-1.png)&lt;!-- --&gt;
+
+]
+
+---
+#  Interpretation: Categorical*categorical interaction (dummy codes)
+
+`$$y_i = \beta_0 + \beta_1 x_{i} + \beta_2 z_{i} + \beta_3 xz_{i} + \epsilon_i$$`
+
++ `\(\beta_0\)` = Value of `\(y\)` when `\(x\)` and `\(z\)` are 0 
+  + Expected salary for Accounts in London.
+  
++ `\(\beta_1\)` = Difference between levels of `\(x\)` when `\(z\)` = 0 
+  + The difference in salary between Accounts in London and Birmingham
+
++ `\(\beta_2\)` = Difference between levels of `\(z\)` when `\(x\)` = 0.
+  + The difference in salary between Accounts and Store managers in London.
+
++  `\(\beta_3\)` = Difference between levels of `\(x\)` across levels of `\(z\)`
+  + The difference between salary in Accounts and Store managers between London and Birmingham
+
+
+---
+#  Example: Categorical*categorical
+
+```r
+int4 &lt;- lm(salary ~ location*department, salary3)
+```
+
+
+```
+## 
+## Call:
+## lm(formula = salary ~ location * department, data = salary3)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -10.660  -3.733   0.520   3.267  14.340 
+## 
+## Coefficients:
+##                                      Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                           50.6600     0.7155  70.804  &lt; 2e-16 ***
+## locationBirmingham                    -1.9267     1.4894  -1.294 0.198920    
+## departmentManager                     -3.3600     1.3386  -2.510 0.013741 *  
+## locationBirmingham:departmentManager  -8.6400     2.2814  -3.787 0.000266 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 5.059 on 96 degrees of freedom
+## Multiple R-squared:  0.4791,	Adjusted R-squared:  0.4629 
+## F-statistic: 29.44 on 3 and 96 DF,  p-value: 1.393e-13
+```
+
+---
+#  Example: Categorical*categorical
+
+.pull-left[
+
+```r
+cat_plot(int4,
+         pred = location,
+         modx = department)
+```
+]
+
+.pull-right[
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-78-1.png)&lt;!-- --&gt;
+
+]
+
+
+
+---
+#  Example: Categorical*categorical
+
+```
+##                                      Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)                             50.66       0.72   70.80     0.00
+## locationBirmingham                      -1.93       1.49   -1.29     0.20
+## departmentManager                       -3.36       1.34   -2.51     0.01
+## locationBirmingham:departmentManager    -8.64       2.28   -3.79     0.00
+```
+
+.pull-left[
++ `\(\beta_0\)` = Value of `\(y\)` when `\(x\)` and `\(z\)` are 0
+
++ Expected salary for Accounts in London is £50,670.
+]
+
+
+.pull-right[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; location &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; department &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Salary &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; London &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50.66000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; London &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 47.30000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Birmingham &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 48.73333 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Birmingham &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36.73333 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+---
+#  Example: Categorical*categorical
+
+```
+##                                      Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)                             50.66       0.72   70.80     0.00
+## locationBirmingham                      -1.93       1.49   -1.29     0.20
+## departmentManager                       -3.36       1.34   -2.51     0.01
+## locationBirmingham:departmentManager    -8.64       2.28   -3.79     0.00
+```
+
+.pull-left[
++ `\(\beta_1\)` = Difference between levels of `\(x\)` when `\(z\)` = 0
+
++ The difference in salary between Accounts in London and Birmingham is £1,980. The salary is lower in Birmingham. 
+
+]
+
+
+.pull-right[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; location &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; department &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Salary &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; London &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50.66000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; London &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 47.30000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Birmingham &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 48.73333 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Birmingham &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36.73333 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+
+---
+#  Example: Categorical*categorical
+
+```
+##                                      Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)                             50.66       0.72   70.80     0.00
+## locationBirmingham                      -1.93       1.49   -1.29     0.20
+## departmentManager                       -3.36       1.34   -2.51     0.01
+## locationBirmingham:departmentManager    -8.64       2.28   -3.79     0.00
+```
+
+.pull-left[
++ `\(\beta_2\)` = Difference between levels of `\(z\)` when `\(x\)` = 0.
+
++ The difference in salary between Accounts and Store managers in London is £3,460. The salary is lower for Store Managers. 
+]
+
+
+.pull-right[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; location &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; department &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Salary &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; London &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50.66000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; London &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 47.30000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Birmingham &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 48.73333 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Birmingham &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36.73333 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+---
+#  Example: Categorical*categorical
+
+```
+##                                      Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)                             50.66       0.72   70.80     0.00
+## locationBirmingham                      -1.93       1.49   -1.29     0.20
+## departmentManager                       -3.36       1.34   -2.51     0.01
+## locationBirmingham:departmentManager    -8.64       2.28   -3.79     0.00
+```
+
+.pull-left[
++  `\(\beta_3\)` = Difference between levels of `\(x\)` across levels of `\(z\)`
+
++ The difference between salary for Accounts and Store managers between London and Birmingham, differs by £8,420. The difference is greater in Birmingham than in London.
+]
+
+
+.pull-right[
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; location &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; department &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Salary &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; London &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50.66000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; London &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 47.30000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Birmingham &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 48.73333 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Birmingham &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36.73333 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
 
 
 ---
@@ -2106,24 +3055,6 @@ class: inverse, center, middle
 
 .pull-right[
 
-
-```
-## Rows: 100 Columns: 4
-```
-
-```
-## -- Column specification --------------------------------------------------------
-## Delimiter: ","
-## chr (1): id
-## dbl (3): salary, serv, perf
-```
-
-```
-## 
-## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
-```
-
 &lt;table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
  &lt;thead&gt;
   &lt;tr&gt;
@@ -2131,6 +3062,8 @@ class: inverse, center, middle
    &lt;th style="text-align:right;"&gt; salary &lt;/th&gt;
    &lt;th style="text-align:right;"&gt; serv &lt;/th&gt;
    &lt;th style="text-align:right;"&gt; perf &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; perfM &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; servM &lt;/th&gt;
   &lt;/tr&gt;
  &lt;/thead&gt;
 &lt;tbody&gt;
@@ -2139,60 +3072,80 @@ class: inverse, center, middle
    &lt;td style="text-align:right;"&gt; 80.18 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2.2 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.269 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ID102 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 123.98 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4.5 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.031 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ID103 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 80.55 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2.4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.069 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ID104 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 84.35 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4.6 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.131 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ID105 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 83.76 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4.8 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.331 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ID106 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 117.61 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4.4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.931 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ID107 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 96.38 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4.3 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.831 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ID108 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 96.49 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 5.0 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.531 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ID109 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 88.23 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 2.4 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.069 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; ID110 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 143.69 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 4.6 &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.131 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -2250,13 +3203,13 @@ m1 &lt;- lm(salary ~ perf + serv, data = salary2)
 
 .pull-left[
 
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-44-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-89-1.png)&lt;!-- --&gt;
 
 ]
 
 .pull-right[
 
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-45-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-90-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -2294,7 +3247,7 @@ lin_m1 &lt;- salary2 %&gt;%
 ]
 
 .pull-right[
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-47-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-92-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -2333,7 +3286,7 @@ crPlots(m1)
 
 ---
 #  `crPlots()`
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-49-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-94-1.png)&lt;!-- --&gt;
 
 
 ???
@@ -2378,14 +3331,14 @@ hist(m1$residuals)
 
 .pull-left[
 
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-52-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-97-1.png)&lt;!-- --&gt;
 
 ]
 
 
 .pull-right[
 
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-53-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-98-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -2422,12 +3375,12 @@ plot(m1, which = 1)
 #  Residual-vs-predicted values plot 
 
 .pull-left[
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-56-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-101-1.png)&lt;!-- --&gt;
 
 ]
 
 .pull-right[
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-57-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-102-1.png)&lt;!-- --&gt;
 ]
 
 
@@ -2437,10 +3390,8 @@ plot(m1, which = 1)
 + **Assumption**: The errors are not correlated with one another
 
 + Difficult to test unless we know the potential source of correlation between cases.
-  + We will see more of this in year 3.
 
-+ Essentially, for now, we will evaluate this based on study design.
-  + If a design is between person, we will assume the errors to be independent.
++ Essentially, if a design is between person, we will assume the errors to be independent.
 
 
 ---
@@ -2527,7 +3478,6 @@ class: inverse, center, middle
 
 + Multiple ways to consider influence.
   + Here we will discuss Cook's distance.
-  + In a few weeks we will consider some additional measures
   
 + Cook's Distance of a data point `\(i\)` (can be written many ways):
 
@@ -2561,19 +3511,98 @@ class: inverse, center, middle
 .pull-left[
 
 ```r
-#df %&gt;%
-#  mutate(
-*#    cook = cooks.distance(m1)
-#  ) %&gt;%
-*#  filter(., cook &gt; 4/(150-1-1)) %&gt;%
-#  kable(.)  %&gt;%
-#  kable_styling(., full_width = F)
+salary2 %&gt;%
+  mutate(
+*   cook = cooks.distance(m1)
+  ) %&gt;%
+* filter(., cook &gt; 4/(100-3-1)) %&gt;%
+  kable(.)  %&gt;%
+  kable_styling(., full_width = F)
 ```
+
+&lt;table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; id &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; salary &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; serv &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; perf &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; perfM &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; servM &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; cook &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ID114 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 132.12 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.631 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0833774 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ID133 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 41.60 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.331 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0704271 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ID134 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 125.90 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.469 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0545706 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ID159 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 129.42 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.469 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0867202 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ID161 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 148.05 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.131 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0591664 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ID173 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 17.86 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -2.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.431 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2042640 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ID180 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 111.36 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1.069 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0432211 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 
 ]
 
 .pull-right[
-![](DPUK_IntroLM_files/figure-html/unnamed-chunk-60-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_files/figure-html/unnamed-chunk-105-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -2615,17 +3644,21 @@ class: inverse, center, middle
 ---
 # In short, quite a lot!
 
-+ Categorical predictors with 2+ levels
 + Coding schemes for categorical data
 + Coding specific comparisons
 + Interactions with categorical variables and 2+ levels
++ Detailed probing of interactions
 + Statistical tests for assumptions
-+ Assumption violations and corrections
++ Assumption corrections for assumption violations
++ Bootstrapping
 + Extended model diagnostics
 + Non-continuous outcome variables
-+ Confidence intervals
-+ Bootstrapping
++ ....
 
+---
+# Material links
+
++ All our lecture materials can be found [here](https://uoepsy.github.io/)
 
 ---
 class: center, middle
