@@ -25,7 +25,8 @@ If you wish to install RStudio locally on your own laptop, you can find detailed
 # Day 2: Tuesday
 
 - Lecture
-    + Link 1
+    + [Day 2 Slides](DPUK_IntroLM_v2.html#1)
+    + [Exam Score Data](dapr2_lec07.csv)
 
 - Practical
     + [Introduction to R, RStudio, and linear models](day1_practical.R)
@@ -38,32 +39,44 @@ If you wish to install RStudio locally on your own laptop, you can find detailed
 # Day 3: Wednesday
 
 - Lecture
-    + Link 1
-    + Link 2
+    + [Day 3 Slides](DPUK_IntroLM_v2.html#61)
+    + [Salary 1](salary_lec.csv)
 
 - Practical
     + Link 1
     + Link 2
+    
+- Further reading from our courses at the University of Edinburgh:
+    + [Multiple linear regression](https://uoepsy.github.io/dapr2/labs/1_04_mlr.html)
 
 # Day 4: Thursday
 
 - Lecture
-    + Link 1
-    + Link 2
+    + [Day 4 Slides](DPUK_IntroLM_v2.html#124)
+    + [Salary 2](salary2.csv)
+    + Salary 3 data (on it's way)
 
 - Practical
     + Link 1
     + Link 2
+
+- Further reading from our courses at the University of Edinburgh:
+    + [Interactions 1: Categorical*Continuous](https://uoepsy.github.io/dapr2/labs/1_05_int_nc.html)
+    + [Interactions 2: Continuous*Continuous](https://uoepsy.github.io/dapr2/labs/1_05_int_nc.html)
+    + [Interactions 3: Categorical*Categorical](https://uoepsy.github.io/dapr2/labs/1_05_int_nc.html)
 
 # Day 5: Friday
 
 - Lecture
-    + Link 1
-    + Link 2
+    + [Day 5 Slides](DPUK_IntroLM_v2.html#165)
 
 - Practical
     + Link 1
     + Link 2
+
+- Further reading from our courses at the University of Edinburgh:
+    + [Assumptions & Diagnostics](https://uoepsy.github.io/dapr2/labs/1_09_assumptions.html)
+    + [Writing up](https://uoepsy.github.io/dapr2/labs/1_11_write_up.html)
 
 # Staff
 
