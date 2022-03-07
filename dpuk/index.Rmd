@@ -16,9 +16,11 @@ knitr::opts_chunk$set(cache = TRUE)
 
 This is a short course on linear models using the R programming language.
 
-Each day will comprise a 1 hour lecture in the morning, and a practical Practical in the afternoon.
+Each day will comprise a 1 hour lecture in the morning, and a practical in the afternoon.
 
-Before starting, please make sure you have a working installation of R and RStudio. You can find detailed instructions at [this link](https://uoepsy.github.io/scs/dpuk/install-update-r.html).
+Before starting, please make sure you are able to access RStudio on the DPUK Research platform. During the training event you will be primarily working on the research platform.
+
+If you wish to install RStudio locally on your own laptop, you can find detailed instructions at [this link](install-update-r.html). However, you won't have access to the DPUK data outside of the DPUK research platform.
 
 # Day 2: Tuesday
 
@@ -26,7 +28,8 @@ Before starting, please make sure you have a working installation of R and RStud
     + Link 1
 
 - Practical
-    + [Intro to R & lm](01_intro.R)
+    + [Introduction to R, RStudio, and linear models](day1_practical.R)
+    + [Riverview data](riverview.csv)
 
 # Day 3: Wednesday
 
