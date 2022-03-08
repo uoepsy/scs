@@ -165,13 +165,9 @@ deviance(mdl2)
 
 # 1. Mean-centre education for better interpretability.
 
-riverview <- riverview %>%
-    mutate(education_mc = education - mean(education))
 
 # 2. Fit a model that uses mean-centred education and party as predictors of income
 
-fit1 <- lm(income ~ education_mc + party, data = riverview)
-summary(fit1)
 
 # Consider the following output
 
