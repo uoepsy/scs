@@ -57,8 +57,8 @@ If you wish to install RStudio locally on your own laptop, you can find detailed
     + Salary 3 data (on it's way)
 
 - Practical
-    + Link 1
-    + Link 2
+    + [R script](day3_practical.R)
+    + [ACER data](acer.csv)
 
 - Further reading from our courses at the University of Edinburgh:
     + [Interactions 1: Categorical*Continuous](https://uoepsy.github.io/dapr2/labs/1_05_int_nc.html)
