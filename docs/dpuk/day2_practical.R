@@ -1,5 +1,6 @@
 # DPUK - Linear models training - Wednesday
-# Author: Umberto Noe, Tom Booth
+# Author: Umberto Noe, Josiah King, Tom Booth
+
 
 # Library imports
 # ===============
@@ -13,7 +14,6 @@ library(psych)
 
 riverview <- read_csv("riverview.csv")
 head(riverview)
-summary(riverview)
 
 riverview %>%
     select(party) %>%
@@ -54,11 +54,18 @@ riverview %>%
     select(education, income, seniority) %>%
     pairs.panels()
 
+# Remove clutter
+riverview %>%
+    select(education, income, seniority) %>%
+    pairs.panels(ellipses = FALSE, smooth = FALSE)
+
 # Correlations
 riverview %>%
     select(education, income, seniority) %>%
     cor()
 
+
+# *** Optional - extra material ***
 # Alternatively
 # =============
 
@@ -73,6 +80,7 @@ pairs.panels(riverview[, num])
 
 # Correlations
 cor(riverview[, num])
+# ***
 
 
 # Practice 1: DPUK data
@@ -80,11 +88,20 @@ cor(riverview[, num])
 
 # 1. Choose:
 #   (a) an outcome variable
-#   (b) one or two numeric explanatory variables
+#   (b) two numeric explanatory variables
 #   (c) one categorical variable
 
 # 2. Convert the categorical variable to a factor and tidy up the levels of the 
 # factor.
+
+# 3. Summarise the variables chosen in step (1) either visually or via descriptive 
+# statistics.
+
+
+# Discussion
+# ==========
+
+# During the practical
 
 
 # Riverview modelling
@@ -139,6 +156,7 @@ riverview
 anova(mdl0, mdl1, mdl2)
 
 
+# *** Optional - extra material ***
 # Residuals and residual sum of squares
 # =====================================
 
@@ -158,35 +176,51 @@ rss
 deviance(mdl0)
 deviance(mdl1)
 deviance(mdl2)
+# ***
 
 
-# Practice 2: Riverview with categorical predictor
-# ==============================================
+# Practice 2: Riverview with binary predictor
+# ===========================================
 
 # 1. Mean-centre education for better interpretability.
 
+# 2. Fit a model that uses mean-centred education and male as predictors of income.
 
-# 2. Fit a model that uses mean-centred education and party as predictors of income
+# 3. Is there a significant difference in pay between males and non-males after accounting for 
+# education?
+
+# 4. Is the difference still significant if you also control for years of seniority?
 
 
-# Consider the following output
+# Discussion
+# ==========
 
-predict(fit1, newdata = tibble(education_mc = 0, party = 'Independent'))
-predict(fit1, newdata = tibble(education_mc = 0, party = 'Republican'))
-predict(fit1, newdata = tibble(education_mc = 0, party = 'Democrat'))
-
-# 3. What do the estimated betas from (2) represent? 
+# During the practical
 
 
 # Practice 3: DPUK data
 # =====================
 
-# 1. Using the outcome variable and the predictors from Practice 1, fit a linear
-# model that predicts the outcome using those explanatory variables.
+# 1. Do any of the numeric predictors from Practice 1 need mean-centering to
+# help with interpretation?
 
-# 2. Interpret the model coefficients, t-statistic, and p-values.
+# 2. Fit a linear model that predicts your outcome variable using one of the numeric
+# predictors and the categorical one.
 
-# 3. How good is the model fit?
+#   + Interpret the model coefficients, t-statistic, and p-values.
 
-# 4. Drop one or two predictors from the model, and test whether the addition of 
-# those predictors leads to a significant reduction in residual sum of squares.
+#   + How good is the model fit?
+
+# 3. Is there a significant difference across the categories after accounting 
+# for the numerical predictor?
+
+# 4. Is the difference significant when also controlling for the other numeric predictor?
+
+# 5. Does the inclusion of both covariates lead to a significant reduction in 
+# residual sum of squares?
+
+
+# Discussion
+# ==========
+
+# During the practical
