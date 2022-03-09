@@ -24,15 +24,6 @@ riverview$party <-
            levels = c("Independent", "Republican", "Democrat"))
 
 riverview %>%
-    select(male) %>%
-    table()
-
-riverview$male <- 
-    factor(riverview$male, 
-           levels = c(0, 1),
-           labels = c("NotMale", "Male"))
-
-riverview %>%
     select(gender) %>%
     table()
 
@@ -40,10 +31,19 @@ riverview$gender <-
     factor(riverview$gender, 
            levels = c("female", "male"))
 
+riverview %>%
+    select(male) %>%
+    table()
+
 head(riverview)
 
 # Summary statistics, but omit factors
 describe(riverview, omit = TRUE)
+
+# Summary statistics, but omit factors
+riverview %>%
+    select(-male) %>%
+    describe(omit = TRUE)
 
 # Pairwise scatterplots
 riverview %>%
@@ -67,7 +67,7 @@ riverview %>%
 
 # *** Optional - extra material ***
 # Alternatively
-# =============
+# =================================
 
 # Find the numeric variables
 names(riverview)
@@ -179,14 +179,14 @@ deviance(mdl2)
 # ***
 
 
-# Practice 2: Riverview with binary predictor
-# ===========================================
+# Practice 2: Riverview with categorical predictor
+# ================================================
 
 # 1. Mean-centre education for better interpretability.
 
-# 2. Fit a model that uses mean-centred education and male as predictors of income.
+# 2. Fit a model that uses mean-centred education and gender as predictors of income.
 
-# 3. Is there a significant difference in pay between males and non-males after accounting for 
+# 3. Is there a significant difference in pay between males and females after accounting for 
 # education?
 
 # 4. Is the difference still significant if you also control for years of seniority?
@@ -201,8 +201,8 @@ deviance(mdl2)
 # Practice 3: DPUK data
 # =====================
 
-# 1. Do any of the numeric predictors from Practice 1 need mean-centering to
-# help with interpretation?
+# 1. Do any of the numeric predictors from Practice 1 need mean-centering or 
+# standardisation to help with interpretation?
 
 # 2. Fit a linear model that predicts your outcome variable using one of the numeric
 # predictors and the categorical one.
