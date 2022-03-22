@@ -1,0 +1,62 @@
+---
+title: "Test"
+bibliography: references.bib
+biblio-style: apalike
+link-citations: yes
+params: 
+    SHOW_SOLS: TRUE
+    TOGGLE: TRUE
+---
+
+```{r setup, include=FALSE}
+source('assets/setup.R')
+library(tidyverse)
+library(patchwork)
+```
+
+
+:::lo
+learning outcomes are here
+:::
+
+
+# Section 1
+
+`r qbegin()`
+Here is my question
+`r qend()`
+`r solbegin(show=params$SHOW_SOLS, toggle=params$TOGGLE)`
+Here is the solution
+`r solend()`
+
+:::frame
+this is in a box
+:::
+
+# some more section
+:::statbox
+
+:::
+
+:::sticky
+THIS IS SOMETHING TO REMEMBER! HELLO
+!!!
+hello
+:::
+
+`r optbegin("here is some extra info")`
+here it is!
+`r optend()`
+
+:::imp
+important thing
+:::
+
+:::rtip
+some R stuff!
+:::
+
+:::int
+why we do this
+:::
+
