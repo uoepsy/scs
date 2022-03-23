@@ -1,0 +1,45 @@
+---
+title: "Home"
+---
+
+
+### Plan
+
+A compact course to take you from zero to R-hero! The list of self-paced lessons is as follows, with a couple of checkpoints along the way. There is not a checkpoint for each lesson, so make sure to type along the code you see, do not simply read it and think "oh I understand it, hence I can surely do it without guidance."
+
+- [Lesson 0: Getting started](00-getting-started.html)
+- [Lesson 1: R basics](01-basics.html)
+- [Lesson 2: Working with data](02-data.html)  
+[Checkpoint](cpt-data.html)
+- [Lesson 3: Exploring data](03-exploring-data.html)
+- [Lesson 4: Insights from data](04-insights-from-data.html)
+- [Lesson 5: Making decisions](05-making-decisions.html)
+
+
+---
+
+
+### Next
+
+Now you have completed all lessons, well done! 
+
+However, it's not over. R is an evolving language, and new things added every day. Now it's on you to keep up to date.
+A good way to keep up to date is to regularly check the following websites:
+
+- [R Views blog](https://rviews.rstudio.com/) 
+- [R Bloggers webpage](https://www.r-bloggers.com/)
+- [R posts you might have missed!](https://twitter.com/icymi_r)
+
+Also remember to update R from time to time, and also to check for RStudio updates.
+
+Good luck and best wishes in your career!
+
+---
+
+### Authors
+
+Dr Umberto Noe\
+Dr Josiah King
+
+Department of Psychology\
+The University of Edinburgh

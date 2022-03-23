@@ -1,0 +1,382 @@
+---
+title: "Hiding Code, Hiding Output"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.align = 'center')
+```
+
+```{r panelset, echo=FALSE}
+xaringanExtra::use_panelset()
+```
+
+
+```{css echo=FALSE}
+.spc1{
+  background-color: #eaeaea;
+}
+.spc1 code{
+  font-size: .8em !important;
+}
+.frame {
+    border: 1px solid #333333 !important; 
+    border-radius: 5px; 
+    padding: 20px 20px 10px 20px; 
+    margin-top: 20px; 
+    margin-bottom: 20px; 
+}
+.imp{
+  border-left: 5px solid #FF3131;
+  padding: 20px 20px 10px 20px; 
+  margin-top: 20px; 
+  margin-bottom: 20px; 
+}
+```
+
+# Prelude
+
+Remember in the [lesson on compiling](02-compiling.html), we saw that it is typical to have a "setup" code-chunk at the start of your document, in which you load all the packages you need, and read in the data etc. 
+
+A normal code-chunk looks like:  
+
+<div class="spc1"><code>
+&grave;&grave;&grave;{r}<br>
+<br>
+&grave;&grave;&grave;
+</code></div><br>
+
+And we had a special chunk which looked like:  
+
+<div class="spc1"><code>
+&grave;&grave;&grave;{r setup, include = FALSE}<br>
+<br>
+&grave;&grave;&grave;
+</code></div><br>
+
+# Chunk name
+
+The first thing to note is that we can give our code-chunks a name.  
+This is usually the first thing inside the \{\} after the letter "r":  
+
+<div class="spc1"><code>
+&grave;&grave;&grave;{r mychunkname}<br>
+<br>
+&grave;&grave;&grave;
+</code></div>
+
+This will come in handy later on when we want to reference the output from certain code-chunks. One immediate benefit is that you can easily navigate through your document to get to the code-chunk you want, by using the menu in the bottom-left of the editor in RStudio: 
+
+[insert video of chunk scrolling]
+
+# Chunk options
+
+Along with providing a name for each code-chunk, we can specify how we want it to compile in our finished document. For instance, do we want the code to be shown in the document? Do we want the output to be shown? Do we even want the code to be evaluated, or do we want R to skip over it? These things are all controlled via "chunk options". 
+
+### Setting code chunk options inside \{\}
+
+The most straightforward way to set the options for a given code-chunk is to include it inside the \{\} bits of the code-chunk.  
+In the code-chunk below (named "mychunkname"), we have set `include = FALSE` inside the squiggly-brackets \{\}. This means that for this code-chunk, the `include` option will be set as `FALSE` (we'll learn what that actually __does__ in just a minute!).
+
+<div class="spc1"><code>
+&grave;&grave;&grave;{r mychunkname, include = FALSE}<br>
+plot(mtcars)<br>
+&grave;&grave;&grave;
+</code></div>
+
+# echo = ?
+
+the "echo" option sets whether or not the code is printed to the compiled document. It doesn't change whether the code gets evaluated, and it doesn't change whether the output (e.g. plots, tables, printed objects) get shown, it just hides/shows the code from the finished document. You can see an example below.
+
+
+::: {.panelset}
+
+::: {.panel}
+#### echo = TRUE
+
+Writing this:  
+
+<div class="spc1"><code>
+&grave;&grave;&grave;{r mychunkname, echo = TRUE}<br>
+pass_scores <- read.csv("https://edin.ac/2wJgYwL")<br>
+barplot(table(pass_scores$school))<br>
+&grave;&grave;&grave;
+</code></div><br>
+
+Will compile to this:  
+
+```{r echo=TRUE}
+pass_scores <- read.csv("https://edin.ac/2wJgYwL")
+barplot(table(pass_scores$school))
+```
+
+:::
+
+::: {.panel}
+#### echo = FALSE 
+
+Writing this:  
+
+<div class="spc1"><code>
+&grave;&grave;&grave;{r mychunkname, echo = FALSE}<br>
+pass_scores <- read.csv("https://edin.ac/2wJgYwL")<br>
+barplot(table(pass_scores$school))<br>
+&grave;&grave;&grave;
+</code></div><br>
+
+Will compile to this:  
+
+```{r echo=FALSE}
+pass_scores <- read.csv("https://edin.ac/2wJgYwL")
+barplot(table(pass_scores$school))
+```
+
+:::
+
+:::
+
+
+
+
+
+# eval = ?
+
+The "eval" option sets whether or not a code-chunk will be evaluated. For instance, if you set one chunk to not be evaluated, then the resulting computations inside that code-chunk will not happen, and when compiling the document, subsequent chunks which depend on that chunk will be altered. You can see an example of this below. 
+
+
+::: {.panelset}
+
+::: {.panel}
+#### eval = TRUE
+
+Writing this:  
+
+<div class="spc1"><code>
+&grave;&grave;&grave;{r mychunkname, eval = TRUE}<br>
+pass_scores <- read.csv("https://edin.ac/2wJgYwL")<br>
+&grave;&grave;&grave;
+</code></div><br>
+<div class="spc1"><code>
+&grave;&grave;&grave;{r mychunk2}<br>
+barplot(table(pass_scores$school))<br>
+&grave;&grave;&grave;
+</code></div><br>
+
+Will compile to this:  
+
+```{r eval = TRUE}
+pass_scores <- read.csv("https://edin.ac/2wJgYwL")
+```
+
+```{r}
+barplot(table(pass_scores$school))
+```
+
+:::
+
+::: {.panel}
+#### eval = FALSE 
+```{r include=F}
+rm(pass_scores)
+```
+
+Writing this:
+
+<div class="spc1"><code>
+&grave;&grave;&grave;{r mychunkname, eval = FALSE}<br>
+pass_scores <- read.csv("https://edin.ac/2wJgYwL")<br>
+&grave;&grave;&grave;
+</code></div><br>
+<div class="spc1"><code>
+&grave;&grave;&grave;{r mychunk2}<br>
+barplot(table(pass_scores$school))<br>
+&grave;&grave;&grave;
+</code></div><br>
+
+Will compile to this:  
+
+```{r eval = FALSE}
+pass_scores <- read.csv("https://edin.ac/2wJgYwL")
+```
+
+```{r error=TRUE}
+barplot(table(pass_scores$school))
+```
+:::
+
+:::
+
+
+# include = ?
+
+The `include` option is a bit of a funny one. It will not change whether the code gets evaluated, but it will mean all the output (and the code) will be hidden from the compiled document. This is a useful way of making sure that some necessary code _does_ get run when compiling the document, but everything (code + output) gets hidden. 
+
+
+::: {.panelset}
+
+::: {.panel}
+#### include = TRUE
+
+Writing this:  
+
+<div class="spc1"><code>
+&grave;&grave;&grave;{r mychunkname, include = TRUE}<br>
+pass_scores <- read.csv("https://edin.ac/2wJgYwL")<br>
+mytable <- table(pass_scores$school)<br>
+mytable<br>
+&grave;&grave;&grave;
+</code></div><br>
+<div class="spc1"><code>
+&grave;&grave;&grave;{r mychunk2}<br>
+barplot(mytable)<br>
+&grave;&grave;&grave;
+</code></div><br>
+
+Will compile to this:  
+
+```{r include=TRUE}
+pass_scores <- read.csv("https://edin.ac/2wJgYwL")
+mytable <- table(pass_scores$school)
+mytable
+```
+
+```{r error=TRUE}
+barplot(mytable)
+```
+
+:::
+
+::: {.panel}
+#### include = FALSE 
+
+Writing this:
+
+<div class="spc1"><code>
+&grave;&grave;&grave;{r mychunkname, include = FALSE}<br>
+pass_scores <- read.csv("https://edin.ac/2wJgYwL")<br>
+mytable <- table(pass_scores$school)<br>
+mytable<br>
+&grave;&grave;&grave;
+</code></div><br>
+<div class="spc1"><code>
+&grave;&grave;&grave;{r mychunk2}<br>
+barplot(mytable)<br>
+&grave;&grave;&grave;
+</code></div><br>
+
+Will compile to this:  
+
+```{r include=FALSE}
+pass_scores <- read.csv("https://edin.ac/2wJgYwL")
+mytable <- table(pass_scores$school)
+mytable
+```
+
+```{r error=TRUE}
+barplot(mytable)
+```
+:::
+
+:::
+
+# warning = ? and message = ?
+
+These are perhaps the most intuitive of the chunk options to remember. Some lines of code will return a message, some will return a warning. These chunk options simply control whether or not they get shown in the final compiled document. 
+
+
+
+::: {.panelset}
+
+::: {.panel}
+#### message = TRUE
+
+Writing this:  
+
+<div class="spc1"><code>
+&grave;&grave;&grave;{r mychunkname, message = TRUE}<br>
+library(tidyverse)<br>
+&grave;&grave;&grave;
+</code></div><br>
+Will compile to this:  
+
+```{r message=TRUE}
+library(tidyverse)
+```
+
+:::
+
+::: {.panel}
+#### message = FALSE
+
+Writing this:  
+
+<div class="spc1"><code>
+&grave;&grave;&grave;{r mychunkname, message = FALSE}<br>
+library(tidyverse)<br>
+&grave;&grave;&grave;
+</code></div><br>
+Will compile to this:  
+
+```{r message=FALSE}
+library(tidyverse)
+```
+
+:::
+
+::: {.panel}
+#### warning = TRUE
+
+Writing this:  
+
+<div class="spc1"><code>
+&grave;&grave;&grave;{r mychunkname, warning = TRUE}<br>
+x <- c("2", -3, "end", 0, 4, 0.2)<br>
+as.numeric(x)<br>
+&grave;&grave;&grave;
+</code></div><br>
+Will compile to this:  
+
+```{r warning = TRUE}
+x <- c("2", -3, "end", 0, 4, 0.2)
+as.numeric(x)
+```
+
+:::
+
+::: {.panel}
+#### warning = FALSE
+
+Writing this:  
+
+<div class="spc1"><code>
+&grave;&grave;&grave;{r mychunkname, warning = FALSE}<br>
+x <- c("2", -3, "end", 0, 4, 0.2)<br>
+as.numeric(x)<br>
+&grave;&grave;&grave;
+</code></div><br>
+
+Will compile to this:  
+
+```{r warning = FALSE}
+x <- c("2", -3, "end", 0, 4, 0.2)
+as.numeric(x)
+```
+
+:::
+
+:::
+
+# Global options
+
+As well as being able to set the options for specific code-chunks, we can set them globally for all the code-chunks in our document.  
+
+We can do this inside a code-chunk (seems weird, I know!), code like this in our first chunk (the "setup" chunk):
+
+<div class="spc1"><code>
+&grave;&grave;&grave;{r setup, include = FALSE}<br>
+library(knitr)
+opts_chunk$set(echo = FALSE, message = FALSE)<br>
+&grave;&grave;&grave;
+</code></div><br>
+
+This will mean that for all subsequent code-chunks, the code will not get printed in the final document, and no messages will get printed either (this is unless we specifically set `echo = TRUE` for a code-chunk later on, which will override the global option).  
+

@@ -1,0 +1,136 @@
+---
+title: "Making Pretty Tables in RMarkdown"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.align = 'left')
+```
+
+```{r panelset, echo=FALSE}
+xaringanExtra::use_panelset()
+```
+
+
+# Why?  
+
+Default tables are not that pretty when compiled: 
+
+```{r}
+tipjoke <- read.csv('https://uoepsy.github.io/data/TipJoke.csv')
+tiptable <- table(tipjoke$Card, tipjoke$Tip)
+tiptable
+```
+
+The output of `table()` (above) can sometimes look neat enough, but data in other formats is hard to make look nice (it will just get printed as the object it is, e.g. a `tibble` below)  
+
+```{r}
+library(tidyverse)
+pass_scores <- read.csv("https://edin.ac/2wJgYwL") 
+pass_scores %>% group_by(school) %>%
+  summarise(
+    meanPASS = mean(PASS),
+    sdPASS = sd(PASS)
+  )
+```
+
+# Functions for pretty tables
+
+::: {.panelset}
+
+::: {.panel}
+#### kable()
+
+__knitr__'s `kable()` is a fairly simple way to make tables and data look a little nicer. Simply pass something to `kable()` and will usually spit out something nicer. You can find a guide here: https://bookdown.org/yihui/rmarkdown-cookbook/kable.html  
+We can also add captions to our table!  
+
+
+```{r}
+library(knitr)
+kable(tiptable, caption = "Oh what a lovely table")
+```
+  
+The `kable()` function also has various useful bits of functionality such as rounding all numeric values to the same number of digits, or setting a value for which all NAs will be displayed.  
+
+```{r}
+options(knitr.kable.NA = "")
+
+pass_scores %>% group_by(school) %>%
+  summarise(
+    meanPASS = mean(PASS),
+    sdPASS = sd(PASS)
+  ) %>% kable(., digits = 1)
+```
+
+:::
+
+
+
+
+
+::: {.panel}
+#### gt()
+
+The __gt__ package has a lot of useful functionality, and works well with grouped data. The best resource for this is at https://gt.rstudio.com. `gt()` also allows us to specify captions. 
+
+```{r}
+library(tidyverse)
+library(gt)
+tipjoke %>% 
+  count(Card, Tip) %>%
+  gt(caption = "Another lovely table!")
+```
+  
+You can shape your data in different ways before passing it to `gt()`.  
+ 
+```{r}
+tipjoke %>% 
+  group_by(Card) %>%
+  summarise(
+    TipYes = sum(Tip==1),
+    TipNo = sum(Tip==0)
+  ) %>%
+  gt()
+```
+
+```{r}
+pass_scores %>% group_by(school) %>%
+  summarise(
+    meanPASS = mean(PASS),
+    sdPASS = sd(PASS)
+  ) %>% gt()
+```
+
+
+:::
+
+::: {.panel}
+#### pander()
+
+Pander is nice and simple, and works on the idea of converting R output into neat markdown syntax, which then get compiled into nice looking tables.  
+You can read up on some of the functionality here: https://cran.r-project.org/web/packages/pander/vignettes/pander.html 
+
+```{r}
+library(pander)
+pander(tiptable)
+```
+
+```{r}
+pass_scores %>% group_by(school) %>%
+  summarise(
+    meanPASS = mean(PASS),
+    sdPASS = sd(PASS)
+  ) %>% pander()
+```
+
+
+:::
+
+
+
+:::
+
+
+
+
+
+
