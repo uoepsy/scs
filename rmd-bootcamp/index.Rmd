@@ -1,0 +1,39 @@
+---
+title: "Home"
+---
+
+
+### Plan
+
+A compact course to take you from zero to RMarkdown-hero!  
+The list of self-paced lessons is as follows. Make sure to try things out for yourself, do not simply read it and think "oh I understand it, hence I can surely do it without guidance.".  
+Learn through trial and error!  
+
+
+
+**Year 1**
+
+- [Lesson 0: Getting Started](00-getting-started.html)  
+- [Lesson 1: The basics of RMarkdown](01-basics.html)
+- [Lesson 2: Compiling Documents](02-compiling.html)
+- [Lesson 3: Inline R Code](03-inline.html)
+- [Lesson 4: Making Pretty Tables](04-prettytab.html)
+
+**Year 2**  
+
+- [Lesson 5: Hiding Code, Hiding Output](05-echoeval.html)
+- [Lesson 6: Plots & Figures](06-figs.html)
+- [Lesson 7: Referencing](07-refs.html)
+- [Lesson 8: Reproducibility](08-reproducibility.html)
+- [Some Useful Packages](zz-packs.html)
+
+
+---
+
+### Authors
+
+Dr Umberto Noè\
+Dr Josiah King
+
+Department of Psychology\
+The University of Edinburgh

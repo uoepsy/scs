@@ -1,0 +1,105 @@
+---
+title: "Inline R Code in RMarkdown"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.align = 'center')
+```
+
+```{r panelset, echo=FALSE}
+xaringanExtra::use_panelset()
+```
+
+```{css echo=FALSE}
+.spc code{
+  font-size: .8em !important;
+  background-color: #eaeaea;
+}
+.spc{
+  font-size: .9em !important;
+}
+.spc1{
+  background-color: #eaeaea;
+}
+.frame {
+    border: 1px solid #333333 !important; 
+    border-radius: 5px; 
+    padding: 20px 20px 10px 20px; 
+    margin-top: 20px; 
+    margin-bottom: 20px; 
+}
+.imp{
+  border-left: 5px solid #FF3131;
+  padding: 20px 20px 10px 20px; 
+  margin-top: 20px; 
+  margin-bottom: 20px; 
+}
+```
+
+## What is inline R code and why should we use it?
+
+Inline R code is just another way of including R code in an RMarkdown document, such that it gets evaluated when it gets compiled (or "knitted"). As well as including R code in a code-chunk:
+
+<div class="spc1"><code>
+&grave;&grave;&grave;{r setup, include = FALSE}<br>
+mean(mydata$outcome_variable)<br>
+&grave;&grave;&grave;
+</code></div>
+
+We can include little bits of R code in our text, to integrate it full with our written report:
+  
+The mean of my outcome variable was <code>&grave;r mean(mydata\$outcome_variable)&grave;</code>, with a standard deviation of <code>&grave;r sd(mydata\$outcome_variable)&grave;</code>. 
+
+This is really useful, because it means that if you update your analysis (for instance you discover you have to exclude a number of participants) then you don't have to edit your paragraphs - they will update automatically!  
+
+
+## Example
+
+::: {.panelset}
+
+::: {.panel}
+#### Writing like this 
+
+```{r}
+library(tidyverse)
+pass_scores <- read.csv("https://edin.ac/2wJgYwL") 
+res2 <- t.test(pass_scores$PASS, mu = 33, alternative = "less")
+```
+
+<div class="spc">
+A one-sided one-sample t-test was conducted in order to determine if the average score on the Procrastination Assessment Scale for Students (PASS) for a sample of <code>&grave;r nrow(pass_scores)&grave;</code> students at Edinburgh University was significantly lower (\$\\alpha = .05\$) than the average score obtained during development of the PASS. 
+
+Edinburgh University students scored lower (Mean = <code>&grave;r mean(pass_scores\$PASS) %>% round(2)&grave;</code>, SD = <code>&grave;r sd(pass_scores\$PASS) %>% round(2)&grave;</code>) than the score reported by the authors of the PASS (Mean = 33). This difference was statistically significant (t(<code>&grave;r nrow(pass_scores)-1&grave;</code>) = <code>&grave;r res2$statistic %>% round(2)&grave;</code>, p < .05, one-tailed).  
+</div>
+
+:::
+
+::: {.panel}
+#### Compiles to look like this!  
+
+A one-sided one-sample t-test was conducted in order to determine if the average score on the Procrastination Assessment Scale for Students (PASS) for a sample of `r nrow(pass_scores)` students at Edinburgh University was significantly lower ($\alpha = .05$) than the average score obtained during development of the PASS. 
+
+Edinburgh University students scored lower (Mean = `r mean(pass_scores$PASS) %>% round(2)`, SD = `r sd(pass_scores$PASS) %>% round(2)`) than the score reported by the authors of the PASS (Mean = 33). This difference was statistically significant (t(`r nrow(pass_scores)-1`)=`r res2$statistic %>% round(2)`, p < .05, one-tailed).  
+
+:::
+
+:::
+
+In the example above:
+
+- the code-chunk saves the results of the `t.test()` function as a named object `res2`.
+- in text, the backticks <code>&grave;r ... ... ... &grave;</code> are used to execute small bits of R code, and include the output within the text. For instance, the line <code>&grave;r res2\$statistic %>% round(2)&grave;</code> gets the t-statistic from the results, and rounds it to 2 decimal places, which gets printed out as `r res2[["statistic"]] %>% round(2)`. 
+- the bits between the dollar signs, e.g. \$\\alpha\$ get printed as mathematical symbols like $\alpha$. 
+- if our data changes, or even the test we perform changes slightly (e.g. testing against `mu = 30`), then our text will update automatically when we compile it again.
+
+
+
+## Tips for writing inline code
+
+To make it easier when writing, it helps to try and keep inline R code a succinct as possible. It is therefore useful to use a code-chunk to store your results in a named object, and then refer to that object in the inline R code. 
+Something which was not done in the above example, would be to round the numbers to the relevant decimal places in the object, rather than in the inline R code. 
+
+
+
+
+

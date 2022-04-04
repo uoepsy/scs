@@ -1,0 +1,29 @@
+name: "UOEPSY PhD Training Docs"
+output_dir: "../docs/labs"
+navbar:
+  title: "<strong>PhD Training Docs</strong>"
+  type: default
+  left:
+    - icon: "fa-home"
+      href: index.html
+    - text: "Workshop"
+      menu:
+      - text: "test"
+        href: 01_test.html
+  right:
+    - text: "Resources"
+      menu: 
+        - text: "Useful Resources"
+          href: "../resources.html"
+output: 
+  bookdown::html_document2:
+    mathjax: default
+    toc: true
+    toc_float: true
+    theme: united
+    highlight: tango
+    number_sections: false
+    include:
+      in_header: assets/toggling.html
+      #after_body: https://uoepsy.github.io/assets/ccfooter.html
+    css: assets/style-labs.css

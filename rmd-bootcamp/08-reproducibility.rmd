@@ -1,0 +1,88 @@
+---
+title: "Reproducibility"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.align = 'center')
+```
+
+```{r panelset, echo=FALSE}
+xaringanExtra::use_panelset()
+```
+
+
+```{css echo=FALSE}
+.spc1{
+  background-color: #eaeaea;
+}
+.spc1 code{
+  font-size: .8em !important;
+}
+.frame {
+    border: 1px solid #333333 !important; 
+    border-radius: 5px; 
+    padding: 20px 20px 10px 20px; 
+    margin-top: 20px; 
+    margin-bottom: 20px; 
+}
+.imp{
+  border-left: 5px solid #FF3131;
+  padding: 20px 20px 10px 20px; 
+  margin-top: 20px; 
+  margin-bottom: 20px; 
+}
+```
+
+# Random seeds
+
+To enable others to __fully__ reproduce your results, you may need to provide a random seed. The random seed is something computers use to generate random numbers. They start from a starting seed, set with     `set.seed()`, and every time they generate a random number they increase the seed by 1.
+
+```{r}
+rnorm(5)
+rnorm(5)
+```
+
+```{r}
+set.seed(44)
+rnorm(5)
+set.seed(44)
+rnorm(5)
+```
+
+Many analytical methods (e.g. bootstrapping) will require random sampling. If you specify the random seed at the beginning of your document, then each time you compile it, it will produce the same results. Furthermore, if you send the RMarkdown file to someone else, they will be able to get the exact same results too! 
+
+
+:::frame
+
+```{}
+---
+title: "this is my title"
+author: "I am the author"
+date: "13/08/2021"
+output: html_document
+---
+```
+<div class="spc1"><code>
+&grave;&grave;&grave;{r setup, include = FALSE}<br>
+library(tidyverse)<br>
+library(palmerpenguins)<br>
+somedata <- read_csv("https://edin.ac/2wJgYwL")<br> 
+set.seed(942) #set random seed<br>
+&grave;&grave;&grave;
+</code></div>
+
+:::
+
+# Making data and .rmd available on OSF
+
+You may want to make your data and your RMarkdown document available on the Open Science Framework (OSF). We will not go into the details of this here, but we strongly encourage you to be transparent and provide reproducible documents where possible in your work, and OSF is a good way to do this. 
+
+You can find some FAQs about the Open Science Framework here: https://help.osf.io/hc/en-us/articles/360019737894-FAQs
+
+
+
+
+
+
+
+

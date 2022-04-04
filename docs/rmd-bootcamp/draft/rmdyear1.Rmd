@@ -1,0 +1,114 @@
+---
+title: "RMD: Year 1"
+subtitle: "The basics"
+author: "uoepsy.github.io"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::downcute:
+    code_folding: show
+    self_contained: true
+    thumbnails: false
+    lightbox: true
+pkgdown:
+  as_is: true
+---
+
+# Intro 
+
+Often we begin our adventure in R by typing in the console (this bottom left window of Rstudio) and using R as a calculator. 
+
+Very soon we discover that this is problematic if we want to easily do anything like start over, share the code we use, edit a small part of our code etc. 
+This leads us to quickly progress to working in a script editor. 
+
+A script editor is a way of writing code in a file which we can edit, save, share etc. 
+The code we write in our editor is not immediately evaluated by R, it is nothing more than writing a text file. 
+
+It gets evaluated only when we send it to the console. 
+
+This way of working comes with benefits. 
+- lets say we make a typo and the code does something we don't want it to. We can easily clear our environment (this little broomstick), 
+edit our line of code, and start over. 
+- we can higlight whole sections and run them sequentially
+- we can add comments 
+- we can save the file, and send it to someone
+
+This is great, but when it comes to writing up a paper, we're endlessly switching between Rstudio and our word processor.
+We need to get plots and tables and numbers from R out and then into Word. 
+
+Oh no, i made a mistake in my analysis. 
+I'll edit the code. 
+but now all my plots and tables and numbers are different. 
+
+pffff
+
+This is where RMarkdown comes in. 
+
+# text and code-chunks
+
+RMarkdown is a format in which we can write both code *and* text. 
+It is like combining our word processor with our analysis code, all in one document. 
+It has lots of useful advantages - you can write in such a way that if your data or analysis changes, then your results, plots and tables will automatically update to reflect these changes. 
+
+We include code-chunks by using three backticks, followed by squiggly brackets with "r" in them (to tell them it is R code - because we can actually write other programming languages!). We then end the code chunk with three backticks. 
+
+Everything between these backticks will get evaluated as a chunk of R code. 
+Everything outside these chunks will be considered text. 
+
+Consider the data created by the code below:
+```{r}
+mydata <- data.frame(
+  x = 1:10,
+  y = (1:10)^3
+)
+```
+
+By including this code, I produce a plot. 
+If I were using a normal R script, I would need to save this image, then import it into my word document. 
+With RMarkdown, it's right here! and it shows up just beneath the code
+
+```{r}
+plot(mydata$x, mydata$y)
+```
+
+I can also perform calculations and make statements like:  
+the mean of my y variable is 
+```{r}
+mean(mydata$y)
+```
+
+But let's suppose my data changed. It should actually be:
+```{r}
+mydata <- data.frame(
+  x = 1:10,
+  y = (1:10)^3+4
+)
+```
+Well i can simply edit that line above, and then run those chunks to produce my new plot and calculate the new mean of y
+
+# Running all chunks above
+
+Note that to the right of the code chunks are a few buttons
+[insert image]
+the arrow pointing to the right is "run this code chunk". 
+the arrow pointing downwards to a green line is "run all the code-chunks above this one". 
+
+The latter is very useful because it means you can ensure that your code is sequentially making sense (i.e. any edits you make to code chunks higher up in the document will have been evaluated so that the code chunk you are working on is up to date)
+
+this leads to a very important feature of RMarkdown documents, which comes when we "compile" (or "knit") them into a nice readable format
+
+# Compiling a document
+environments
+
+
+
+
+
+# Inline R code
+
+
+
+# Section headings
+
+# Making pretty tables
+
+

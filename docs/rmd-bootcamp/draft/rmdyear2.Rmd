@@ -1,0 +1,25 @@
+---
+title: "RMD: Year 2"
+subtitle: "Tidying up your document"
+author: "uoepsy.github.io"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::downcute:
+    code_folding: show
+    self_contained: true
+    thumbnails: false
+    lightbox: true
+pkgdown:
+  as_is: true
+---
+
+# intro
+
+# hiding code & output
+
+# making pretty regression outputs
+
+# figure and table captions
+
+# cross-referencing figures
+

@@ -1,0 +1,107 @@
+:::lo
+__Data collection__ (September/October Workshop)  
+
+- data collection
+- study design (sampling, counterbalancing)
+- pilot data
+
+:::
+  
+  :::lo
+__Intro & Data Wrangling__ (October/November Workshop)  
+
++ intro 
+- intro to R/Rstudio  
+- console, environment, editor, etc  
+- scripts & rmd 
++ basics 
+- reading in data. 
+- [], $
+  - data types
+- base R & tidyverse
+- pipes %>% 
+  - select, filter, mutate (& transmute), group_by, summarise
+- arrange (& desc), count, sample_n/frac, slice, distinct
+- bind_rows, bind_cols
++ advanced tidyverse stuff
+- pivot_longer/wider
+- joins
+- _at/if/all and across()
+- fill
+- mapping, nesting, reducing
++ working with strings
+- grepl, gsub, paste, substr, nchar, glue, stringr, etc. 
++ working with dates
+
++ reading different data formats
+
++ writing functions
+- basics
+- tidyeval? (probably not)
+- source()
+- Resources: packages (see hilary parker's page)
+
++ tips and tricks
+    - clear env on setup
+    - %>% print
+    - ggplot + NULL
+    - library(conflicted)
+    - right assignment, and extra pipes %<>%
+
+
+
+
+
+
+:::
+
+:::lo
+__Everything Linear Models__ (January/February Workshop)  
+
+
+- Simple, Binary pred
+- Multiple, Categorical pred 
+- Interactions
+- Matrices?   
+- Inference  
+  - foundations
+  - in regression
+
+
+:::
+
+
+:::statbox
+__GLM & GLMM__  
+
+
+Other packages, w examples: Glmmtmb, nlme, brms & rstanarm, lmm, lcmm, mcmcglmm, mgcv, gamm4, glmm, https://rpubs.com/kaz_yos/glmm1
+
+
+:::
+
+:::statbox
+__flexible regression__  
+
+_flexibility in the mean_   
+Piecewise linear, polynomials, piecewise poly, splines, gams.  
+_flexibility in response quantile_  
+Quantile regression
+
+:::
+
+
+:::statbox
+__factor analysis & SEM__  
+
+:::
+
+:::statbox
+__causality__  
+
+:::
+
+:::statbox
+__simulating data__
+
+:::

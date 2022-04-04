@@ -1,0 +1,38 @@
+name: "rmd-help"
+title: "RMarkdown"
+theme: theme.css
+output_dir: "docs"
+navbar:
+  type: default
+  left:
+    - icon: "fa-home"
+      href: index.html
+  right:
+    - text: "Lessons"
+      menu:
+      - text: "L0: Getting Started"
+        href: 00-getting-started.html
+      - text: "L1: The basics of RMarkdown"
+        href: 01-basics.html
+      - text: "L2: Compiling Documents"
+        href: 02-compiling.html
+      - text: "L3: Inline R Code"
+        href: 03-inline.html
+      - text: "L4: Making Pretty Tables"
+        href: 04-prettytab.html
+      - text: '---'
+      - text: "L5: Hiding Code, Hiding Output"
+        href: 05-echoeval.html
+      - text: "L6: Plots & Figures"
+        href: 06-figs.html
+      - text: "L7: Referencing"
+        href: 07-refs.html
+      - text: "L8: Reproducibility"
+        href: 08-reproducibility.html
+      - text: "Useful Packages"
+        href: zz-packs.html
+output: 
+  distill::distill_article:
+    toc: true
+    toc_depth: 2
+    toc_float: true

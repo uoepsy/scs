@@ -1,0 +1,28 @@
+---
+title: "RMD: Year 3"
+subtitle: "Writing your paper *before* you have your data"
+author: "uoepsy.github.io"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::downcute:
+    code_folding: show
+    self_contained: true
+    thumbnails: false
+    lightbox: true
+pkgdown:
+  as_is: true
+---
+
+# Registered Reports
+
+# Simulating Data
+
+pilot data might be useful
+
+
+# Hosting and pre-registering
+OSF 
+
+
+
+

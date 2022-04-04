@@ -1,0 +1,71 @@
+---
+title: "Useful Packages for RMarkdown"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.align = 'center')
+```
+
+```{r panelset, echo=FALSE}
+xaringanExtra::use_panelset()
+```
+
+
+```{css echo=FALSE}
+.spc1{
+  background-color: #eaeaea;
+}
+.spc1 code{
+  font-size: .8em !important;
+}
+.frame {
+    border: 1px solid #333333 !important; 
+    border-radius: 5px; 
+    padding: 20px 20px 10px 20px; 
+    margin-top: 20px; 
+    margin-bottom: 20px; 
+}
+.imp{
+  border-left: 5px solid #FF3131;
+  padding: 20px 20px 10px 20px; 
+  margin-top: 20px; 
+  margin-bottom: 20px; 
+}
+```
+
+# Pretty regression tables 
+
+::: {.panelset}
+::: {.panel}
+#### Write this: 
+
+My regression results are in Table \\\@ref(tab:modtab). 
+
+<div class="spc1"><code>
+&grave;&grave;&grave;{r resultschunk}<br>
+library(sjPlot)<br>
+df <- read.csv('https://uoepsy.github.io/data/cognitive_experiment.csv')<br>
+mymodel <- lm(Score ~ 1 + Diagnosis * Task, data = df)<br>
+tab_model(mymodel, title="(\\#tab:modtab) THIS IS MY MODEL. NOT YOURS! GET YOUR OWN MODEL")<br>
+&grave;&grave;&grave;
+</code></div><br>
+
+:::
+
+::: {.panel}
+#### Compile to this:
+
+My regression results are in Table \@ref(tab:modtab). 
+
+```{r resultschunk}
+library(sjPlot)
+df <- read.csv('https://uoepsy.github.io/data/cognitive_experiment.csv')
+mymodel <- lm(Y ~ 1 + Diagnosis * Task, data = df)
+tab_model(mymodel, title="(\\#tab:modtab) THIS IS MY MODEL. NOT YOURS! GET YOUR OWN MODEL")
+```
+
+:::
+
+:::
+
