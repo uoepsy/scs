@@ -2543,8 +2543,7 @@ Install the bookdown package and then change your output type to either
 various referencing of Figures and Tables detailed below. (Please note,
 for referencing to work appropriately when knitting to pdf, it is
 <strong>crucial</strong> that you have tinytex installed (see <a
-href="01-basics.html#Pre-requisite_packages" target="_blank">Lesson
-1</a>))</p>
+href="01-basics.html#prerequisite-packages">Lesson 1</a>)).</p>
 <pre><code>---
 title: &quot;this is my title&quot;
 author: &quot;I am the author&quot;
@@ -2558,9 +2557,9 @@ produced. For example, once we provide a name for the code-chunk below
 produced by that chunk, and the numbering will be automatically sorted
 for us!</p>
 <div class="spc1">
-<code> ```{r penguinplot, fig.cap=“Counts of penguins of different
-species”}<br> library(palmerpenguins)<br>
-barplot(table(penguins$species))<br> ``` </code>
+<code> ```{r penguinplot, fig.cap=“Counts of penguin species”}
+library(palmerpenguins)<br> barplot(table(penguins$species))<br> ```
+</code>
 </div>
 <p><br></p>
 <h1 id="referencing-a-figure">Referencing a figure</h1>
@@ -2569,20 +2568,21 @@ barplot(table(penguins$species))<br> ``` </code>
 is the name of the code-chunk that outputs our figure. You can find an
 example below.</p>
 <div class="panelset">
-<section id="write-this" class="panel">
-<h4>Write this:</h4>
-<pre><code>As you can see in Figure \@ref(fig:penguinplot), there are various penguins of different species</code></pre>
+<section id="writing-this" class="panel">
+<h4>Writing this:</h4>
+<pre><code>As you can see in Figure \@ref(fig:penguinplot), 
+there are various penguin species</code></pre>
 <div class="spc1">
-<code> ```{r penguinplot, fig.cap=“Counts of penguins of different
-species”}<br> library(palmerpenguins)<br>
-barplot(table(penguins$species))<br> ``` </code>
+<code> ```{r penguinplot, fig.cap=“Counts of penguin species”}
+library(palmerpenguins)<br> barplot(table(penguins$species))<br> ```
+</code>
 </div>
 <p><br></p>
 </section>
 <section id="compiles-to-this" class="panel">
 <h4>Compiles to this:</h4>
 <p>As you can see in Figure <a href="#fig:penguinplot">2</a>, there are various
-penguins of different species</p>
+penguin species</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://allisonhorst.github.io/palmerpenguins/'>palmerpenguins</a></span><span class='op'>)</span>
@@ -2590,9 +2590,9 @@ penguins of different species</p>
 </code></pre>
 </div>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:penguinplot"></span>
-<img src="07-refs_files/figure-html5/penguinplot-1.png" alt="Counts of penguins of different species" width="624" />
+<img src="07-refs_files/figure-html5/penguinplot-1.png" alt="Counts of penguin species" width="624" />
 <p class="caption">
-Figure 2: Counts of penguins of different species
+Figure 2: Counts of penguin species
 </p>
 </div>
 </div>
@@ -2604,29 +2604,29 @@ Figure 2: Counts of penguins of different species
 is the name of the code-chunk that outputs our table. You can find an
 example below.</p>
 <div class="panelset">
-<section id="write-this-1" class="panel">
+<section id="write-this" class="panel">
 <h4>Write this:</h4>
-<pre><code>As you can see in Table \@ref(tab:penguinplot), there are various penguins of different species</code></pre>
+<pre><code>As you can see in Table \@ref(tab:penguinplot), 
+there are various penguin species</code></pre>
 <div class="spc1">
-<code> ```{r penguintable}<br> library(palmerpenguins)<br>
-knitr::kable(table(penguins$species), caption = “counts of penguins of
-different species”)<br> ``` </code>
+<code> ```{r penguintable}<br> library(palmerpenguins)
+knitr::kable(table(penguins$species), caption = “counts of penguin
+species”)<br> ``` </code>
 </div>
 <p><br></p>
 </section>
 <section id="compiles-to-this-1" class="panel">
 <h4>Compiles to this:</h4>
 <p>As you can see in Table <a href="#tab:penguintable">1</a>, there are various
-penguins of different species</p>
+penguin species</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://allisonhorst.github.io/palmerpenguins/'>palmerpenguins</a></span><span class='op'>)</span>
-<span class='fu'>knitr</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/knitr/man/kable.html'>kable</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='va'>penguins</span><span class='op'>$</span><span class='va'>species</span><span class='op'>)</span>, caption <span class='op'>=</span> <span class='st'>"counts of penguins of different species"</span><span class='op'>)</span>
+<span class='fu'>knitr</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/knitr/man/kable.html'>kable</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='va'>penguins</span><span class='op'>$</span><span class='va'>species</span><span class='op'>)</span>, caption <span class='op'>=</span> <span class='st'>"counts of penguin species"</span><span class='op'>)</span>
 </code></pre>
 </div>
 <table>
-<caption><span id="tab:penguintable">Table 1: </span>counts of penguins of different
-species</caption>
+<caption><span id="tab:penguintable">Table 1: </span>counts of penguin species</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Var1</th>
@@ -2656,18 +2656,17 @@ Side</h1>
 <p>This also works when arranging figures and tables side-by-side. For
 instance:</p>
 <div class="panelset">
-<section id="writing-this" class="panel">
+<section id="writing-this-1" class="panel">
 <h4>Writing this:</h4>
-<p>Oh look! A lovely plot can be found in figure \<span class="citation"
-data-cites="ref">@ref</span>(fig:thisismyplot). And a lovely table in
-Table \<span class="citation"
-data-cites="ref">@ref</span>(tab:thisismytable).</p>
+<p>Oh look! A lovely plot can be found in figure
+\@ref(fig:thisismyplot). And a lovely table in Table
+\@ref(tab:thisismytable).</p>
 <p>&lt;div style=“display: inline-block; max-width: 45%; vertical-align:
 top;”&gt;</p>
 <div class="spc1">
-<p><code> ```{r thisismytable, echo = FALSE}<br> library(knitr)<br>
+<p><code> ```{r thisismytable, echo = FALSE}<br> library(knitr)
 pass_scores &lt;- read.csv(“<a href="https://edin.ac/2wJgYwL"
-class="uri">https://edin.ac/2wJgYwL</a>”)<br>
+class="uri">https://edin.ac/2wJgYwL</a>”)
 kable(table(pass_scores$school), caption=“Oh Look! A table!”)<br> ```
 </code><br></p>
 </div>
@@ -2675,7 +2674,7 @@ kable(table(pass_scores$school), caption=“Oh Look! A table!”)<br> ```
 <p>&lt;div style=“display: inline-block; max-width: 45%; vertical-align:
 top;”&gt;</p>
 <div class="spc1">
-<p><code> ```{r thisismyplot, echo = FALSE, fig.cap=“It’s a plot!”}<br>
+<p><code> ```{r thisismyplot, echo = FALSE, fig.cap=“It’s a plot!”}
 barplot(table(pass_scores$school))<br> ``` </code><br></p>
 </div>
 <p>&lt;/div&gt;</p>

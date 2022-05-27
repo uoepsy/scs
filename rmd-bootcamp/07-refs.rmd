@@ -46,7 +46,7 @@ knitr::include_graphics("images/yaml.png")
 
 Rather than using `output: html_document` or `output: pdf_document`, we are going to need to use some specific classes of output. The easy ones to start with are in the __bookdown__ package.  
 Install the bookdown package and then change your output type to either `bookdown::html_document2` or `bookdown::pdf_document2`. This will allow us to do the various referencing of Figures and Tables detailed below. 
-(Please note, for referencing to work appropriately when knitting to pdf, it is __crucial__ that you have tinytex installed (see [Lesson 1](01-basics.html#Pre-requisite_packages){target="_blank"}))
+(Please note, for referencing to work appropriately when knitting to pdf, it is __crucial__ that you have tinytex installed (see [Lesson 1](01-basics.html#prerequisite-packages))).  
 
 ```{}
 ---
@@ -62,7 +62,7 @@ output: bookdown::html_document2
 We reference a figure or table based on the code-chunk in which it is produced. For example, once we provide a name for the code-chunk below ("penguinplot") we can then reference in text the Figure which has been produced by that chunk, and the numbering will be automatically sorted for us! 
 
 <div class="spc1"><code>
-&grave;&grave;&grave;{r penguinplot, fig.cap="Counts of penguins of different species"}<br>
+&grave;&grave;&grave;{r penguinplot, fig.cap="Counts of penguin species"}
 library(palmerpenguins)<br>
 barplot(table(penguins$species))<br>
 &grave;&grave;&grave;
@@ -75,14 +75,15 @@ To reference a figure, we use the format \\\@ref(fig:**chunkname**), where **chu
 ::: {.panelset}
 
 ::: {.panel}
-#### Write this: 
+#### Writing this: 
 
 ```
-As you can see in Figure \@ref(fig:penguinplot), there are various penguins of different species
+As you can see in Figure \@ref(fig:penguinplot), 
+there are various penguin species
 ```
 
 <div class="spc1"><code>
-&grave;&grave;&grave;{r penguinplot, fig.cap="Counts of penguins of different species"}<br>
+&grave;&grave;&grave;{r penguinplot, fig.cap="Counts of penguin species"}
 library(palmerpenguins)<br>
 barplot(table(penguins$species))<br>
 &grave;&grave;&grave;
@@ -93,9 +94,9 @@ barplot(table(penguins$species))<br>
 ::: {.panel}
 #### Compiles to this:
 
-As you can see in Figure \@ref(fig:penguinplot), there are various penguins of different species
+As you can see in Figure \@ref(fig:penguinplot), there are various penguin species
 
-```{r penguinplot, fig.cap="Counts of penguins of different species"}
+```{r penguinplot, fig.cap="Counts of penguin species"}
 library(palmerpenguins)
 barplot(table(penguins$species))
 ```
@@ -115,13 +116,14 @@ To reference a table, we use the format \\\@ref(tab:**chunkname**), where **chun
 #### Write this: 
 
 ```
-As you can see in Table \@ref(tab:penguinplot), there are various penguins of different species
+As you can see in Table \@ref(tab:penguinplot), 
+there are various penguin species
 ```
 
 <div class="spc1"><code>
 &grave;&grave;&grave;{r penguintable}<br>
-library(palmerpenguins)<br>
-knitr::kable(table(penguins$species), caption = "counts of penguins of different species")<br>
+library(palmerpenguins)
+knitr::kable(table(penguins$species), caption = "counts of penguin species")<br>
 &grave;&grave;&grave;
 </code></div><br>
 
@@ -130,11 +132,11 @@ knitr::kable(table(penguins$species), caption = "counts of penguins of different
 ::: {.panel}
 #### Compiles to this:
 
-As you can see in Table \@ref(tab:penguintable), there are various penguins of different species
+As you can see in Table \@ref(tab:penguintable), there are various penguin species
 
 ```{r penguintable}
 library(palmerpenguins)
-knitr::kable(table(penguins$species), caption = "counts of penguins of different species")
+knitr::kable(table(penguins$species), caption = "counts of penguin species")
 ```
 
 :::
@@ -153,14 +155,14 @@ This also works when arranging figures and tables side-by-side. For instance:
 ::: {.panel}
 #### Writing this:  
 
-Oh look! A lovely plot can be found in figure \\@ref(fig:thisismyplot). And a lovely table in Table \\@ref(tab:thisismytable).  
+Oh look! A lovely plot can be found in figure \\\@ref(fig:thisismyplot). And a lovely table in Table \\\@ref(tab:thisismytable).  
 
 \<div style="display: inline-block; max-width: 45%; vertical-align: top;"\>
 
 <div class="spc1"><code>
 &grave;&grave;&grave;{r thisismytable, echo = FALSE}<br>
-library(knitr)<br>
-pass_scores <- read.csv("https://edin.ac/2wJgYwL")<br>
+library(knitr)
+pass_scores <- read.csv("https://edin.ac/2wJgYwL")
 kable(table(pass_scores$school), caption="Oh Look! A table!")<br>
 &grave;&grave;&grave;
 </code><br>
@@ -172,7 +174,7 @@ kable(table(pass_scores$school), caption="Oh Look! A table!")<br>
 
 <div class="spc1">
 <code>
-&grave;&grave;&grave;{r thisismyplot, echo = FALSE, fig.cap="It's a plot!"}<br>
+&grave;&grave;&grave;{r thisismyplot, echo = FALSE, fig.cap="It's a plot!"}
 barplot(table(pass_scores$school))<br>
 &grave;&grave;&grave;
 </code><br>
