@@ -46,6 +46,7 @@ knitr::include_graphics("images/yaml.png")
 
 Rather than using `output: html_document` or `output: pdf_document`, we are going to need to use some specific classes of output. The easy ones to start with are in the __bookdown__ package.  
 Install the bookdown package and then change your output type to either `bookdown::html_document2` or `bookdown::pdf_document2`. This will allow us to do the various referencing of Figures and Tables detailed below. 
+(Please note, for referencing to work appropriately when knitting to pdf, it is __crucial__ that you have tinytex installed (see [Lesson 1](01-basics.html#Pre-requisite_packages){target="_blank"}))
 
 ```{}
 ---

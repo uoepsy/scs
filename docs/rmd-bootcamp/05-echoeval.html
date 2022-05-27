@@ -50,16 +50,17 @@ pre.numberSource code > span > a:first-child::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {   }
+  { color: #00769e; background-color: #f1f3f5; }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
+code span { color: #00769e; } /* Normal */
 code span.al { color: #ad0000; } /* Alert */
 code span.an { color: #5e5e5e; } /* Annotation */
-code span.at { color: #20794d; } /* Attribute */
+code span.at { color: #657422; } /* Attribute */
 code span.bn { color: #ad0000; } /* BaseN */
 code span.bu { } /* BuiltIn */
-code span.cf { color: #007ba5; } /* ControlFlow */
+code span.cf { color: #00769e; } /* ControlFlow */
 code span.ch { color: #20794d; } /* Char */
 code span.cn { color: #8f5902; } /* Constant */
 code span.co { color: #5e5e5e; } /* Comment */
@@ -73,17 +74,18 @@ code span.fl { color: #ad0000; } /* Float */
 code span.fu { color: #4758ab; } /* Function */
 code span.im { } /* Import */
 code span.in { color: #5e5e5e; } /* Information */
-code span.kw { color: #007ba5; } /* Keyword */
+code span.kw { color: #00769e; } /* Keyword */
 code span.op { color: #5e5e5e; } /* Operator */
-code span.ot { color: #007ba5; } /* Other */
+code span.ot { color: #00769e; } /* Other */
 code span.pp { color: #ad0000; } /* Preprocessor */
-code span.sc { color: #20794d; } /* SpecialChar */
+code span.sc { color: #5e5e5e; } /* SpecialChar */
 code span.ss { color: #20794d; } /* SpecialString */
 code span.st { color: #20794d; } /* String */
 code span.va { color: #111111; } /* Variable */
 code span.vs { color: #20794d; } /* VerbatimString */
 code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
+
 
   <!--radix_placeholder_meta_tags-->
   <title>RMarkdown: Hiding Code, Hiding Output</title>
@@ -452,7 +454,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   </style>
 
-  <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+  <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
   <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
   <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
   <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
@@ -1024,10 +1026,6 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     position: relative;
     margin-bottom: 2.5em;
     margin-top: 1.5em;
-  }
-
-  .figure img {
-    width: 100%;
   }
 
   .figure .caption {
@@ -1859,7 +1857,16 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
       // hoverable references
       $('span.citation[data-cites]').each(function() {
-        var refHtml = $('#ref-' + $(this).attr('data-cites')).html();
+        if ($(this).children()[0].nodeName == "D-FOOTNOTE") {
+          var fn = $(this).children()[0]
+          $(this).html(fn.shadowRoot.querySelector("sup"))
+          $(this).id = fn.id
+          fn.remove()
+        }
+        var refs = $(this).attr('data-cites').split(" ");
+        var refHtml = refs.map(function(ref) {
+          return "<p>" + $('#ref-' + ref).html() + "</p>";
+        }).join("\n");
         window.tippy(this, {
           allowHTML: true,
           content: refHtml,
@@ -1870,6 +1877,31 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
           placement: 'bottom-start'
         });
       });
+
+      // fix footnotes in tables (#411)
+      // replacing broken distill.pub feature
+      $('table d-footnote').each(function() {
+        // we replace internal showAtNode methode which is triggered when hovering a footnote
+        this.hoverBox.showAtNode = function(node) {
+          // ported from https://github.com/distillpub/template/pull/105/files
+          calcOffset = function(elem) {
+              let x = elem.offsetLeft;
+              let y = elem.offsetTop;
+              // Traverse upwards until an `absolute` element is found or `elem`
+              // becomes null.
+              while (elem = elem.offsetParent && elem.style.position != 'absolute') {
+                  x += elem.offsetLeft;
+                  y += elem.offsetTop;
+              }
+
+              return { left: x, top: y };
+          }
+          // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+          const bbox = node.getBoundingClientRect();
+          const offset = calcOffset(node);
+          this.show([offset.left + bbox.width, offset.top + bbox.height]);
+        }
+      })
 
       // clear polling timer
       clearInterval(tid);
@@ -1969,6 +2001,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // mark non-body figures created by knitr chunks as 100% width
     $('.layout-chunk').each(function(i, val) {
       var figures = $(this).find('img, .html-widget');
+      // ignore leaflet img layers (#106)
+      figures = figures.filter(':not(img[class*="leaflet"])')
       if ($(this).attr('data-layout') !== "l-body") {
         figures.css('width', '100%');
       } else {
@@ -1991,7 +2025,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // get rid of index.html references in header
     if (window.location.protocol !== "file:") {
       $('.distill-site-header a[href]').each(function(i,val) {
-        $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+        $(this).attr('href', $(this).attr('href').replace(/^index[.]html/, "./"));
       });
     }
 
@@ -2372,7 +2406,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     color: var(--hover-color, white);
   }</style>
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.8/header-attrs.js"></script>
+  <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
   <link href="site_libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
   <script src="site_libs/panelset-0.2.6/panelset.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
@@ -2487,7 +2521,10 @@ Lessons
 </style>
 </div>
 <h1 id="prelude">Prelude</h1>
-<p>Remember in the <a href="02-compiling.html">lesson on compiling</a>, we saw that it is typical to have a “setup” code-chunk at the start of your document, in which you load all the packages you need, and read in the data etc.</p>
+<p>Remember in the <a href="02-compiling.html">lesson on compiling</a>,
+we saw that it is typical to have a “setup” code-chunk at the start of
+your document, in which you load all the packages you need, and read in
+the data etc.</p>
 <p>A normal code-chunk looks like:</p>
 <div class="spc1">
 <code> ```{r}<br> <br> ``` </code>
@@ -2499,29 +2536,51 @@ Lessons
 </div>
 <p><br></p>
 <h1 id="chunk-name">Chunk name</h1>
-<p>The first thing to note is that we can give our code-chunks a name.<br />
+<p>The first thing to note is that we can give our code-chunks a
+name.<br />
 This is usually the first thing inside the {} after the letter “r”:</p>
 <div class="spc1">
 <code> ```{r mychunkname}<br> <br> ``` </code>
 </div>
-<p>This will come in handy later on when we want to reference the output from certain code-chunks. One immediate benefit is that you can easily navigate through your document to get to the code-chunk you want, by using the menu in the bottom-left of the editor in RStudio:</p>
+<p>This will come in handy later on when we want to reference the output
+from certain code-chunks. One immediate benefit is that you can easily
+navigate through your document to get to the code-chunk you want, by
+using the menu in the bottom-left of the editor in RStudio:</p>
 <p>[insert video of chunk scrolling]</p>
 <h1 id="chunk-options">Chunk options</h1>
-<p>Along with providing a name for each code-chunk, we can specify how we want it to compile in our finished document. For instance, do we want the code to be shown in the document? Do we want the output to be shown? Do we even want the code to be evaluated, or do we want R to skip over it? These things are all controlled via “chunk options”.</p>
-<h3 id="setting-code-chunk-options-inside">Setting code chunk options inside {}</h3>
-<p>The most straightforward way to set the options for a given code-chunk is to include it inside the {} bits of the code-chunk.<br />
-In the code-chunk below (named “mychunkname”), we have set <code>include = FALSE</code> inside the squiggly-brackets {}. This means that for this code-chunk, the <code>include</code> option will be set as <code>FALSE</code> (we’ll learn what that actually <strong>does</strong> in just a minute!).</p>
+<p>Along with providing a name for each code-chunk, we can specify how
+we want it to compile in our finished document. For instance, do we want
+the code to be shown in the document? Do we want the output to be shown?
+Do we even want the code to be evaluated, or do we want R to skip over
+it? These things are all controlled via “chunk options”.</p>
+<h3 id="setting-code-chunk-options-inside">Setting code chunk options
+inside {}</h3>
+<p>The most straightforward way to set the options for a given
+code-chunk is to include it inside the {} bits of the code-chunk.<br />
+In the code-chunk below (named “mychunkname”), we have set
+<code>include = FALSE</code> inside the squiggly-brackets {}. This means
+that for this code-chunk, the <code>include</code> option will be set as
+<code>FALSE</code> (we’ll learn what that actually <strong>does</strong>
+in just a minute!).</p>
 <div class="spc1">
-<code> ```{r mychunkname, include = FALSE}<br> plot(mtcars)<br> ``` </code>
+<code> ```{r mychunkname, include = FALSE}<br> plot(mtcars)<br> ```
+</code>
 </div>
 <h1 id="echo">echo = ?</h1>
-<p>the “echo” option sets whether or not the code is printed to the compiled document. It doesn’t change whether the code gets evaluated, and it doesn’t change whether the output (e.g. plots, tables, printed objects) get shown, it just hides/shows the code from the finished document. You can see an example below.</p>
+<p>the “echo” option sets whether or not the code is printed to the
+compiled document. It doesn’t change whether the code gets evaluated,
+and it doesn’t change whether the output (e.g. plots, tables, printed
+objects) get shown, it just hides/shows the code from the finished
+document. You can see an example below.</p>
 <div class="panelset">
 <section id="echo-true" class="panel">
 <h4>echo = TRUE</h4>
 <p>Writing this:</p>
 <div class="spc1">
-<code> ```{r mychunkname, echo = TRUE}<br> pass_scores &lt;- read.csv(“<a href="https://edin.ac/2wJgYwL" class="uri">https://edin.ac/2wJgYwL</a>”)<br> barplot(table(pass_scores$school))<br> ``` </code>
+<code> ```{r mychunkname, echo = TRUE}<br> pass_scores &lt;-
+read.csv(“<a href="https://edin.ac/2wJgYwL"
+class="uri">https://edin.ac/2wJgYwL</a>”)<br>
+barplot(table(pass_scores$school))<br> ``` </code>
 </div>
 <p><br></p>
 <p>Will compile to this:</p>
@@ -2538,7 +2597,10 @@ In the code-chunk below (named “mychunkname”), we have set <code>include = F
 <h4>echo = FALSE</h4>
 <p>Writing this:</p>
 <div class="spc1">
-<code> ```{r mychunkname, echo = FALSE}<br> pass_scores &lt;- read.csv(“<a href="https://edin.ac/2wJgYwL" class="uri">https://edin.ac/2wJgYwL</a>”)<br> barplot(table(pass_scores$school))<br> ``` </code>
+<code> ```{r mychunkname, echo = FALSE}<br> pass_scores &lt;-
+read.csv(“<a href="https://edin.ac/2wJgYwL"
+class="uri">https://edin.ac/2wJgYwL</a>”)<br>
+barplot(table(pass_scores$school))<br> ``` </code>
 </div>
 <p><br></p>
 <p>Will compile to this:</p>
@@ -2548,17 +2610,24 @@ In the code-chunk below (named “mychunkname”), we have set <code>include = F
 </section>
 </div>
 <h1 id="eval">eval = ?</h1>
-<p>The “eval” option sets whether or not a code-chunk will be evaluated. For instance, if you set one chunk to not be evaluated, then the resulting computations inside that code-chunk will not happen, and when compiling the document, subsequent chunks which depend on that chunk will be altered. You can see an example of this below.</p>
+<p>The “eval” option sets whether or not a code-chunk will be evaluated.
+For instance, if you set one chunk to not be evaluated, then the
+resulting computations inside that code-chunk will not happen, and when
+compiling the document, subsequent chunks which depend on that chunk
+will be altered. You can see an example of this below.</p>
 <div class="panelset">
 <section id="eval-true" class="panel">
 <h4>eval = TRUE</h4>
 <p>Writing this:</p>
 <div class="spc1">
-<code> ```{r mychunkname, eval = TRUE}<br> pass_scores &lt;- read.csv(“<a href="https://edin.ac/2wJgYwL" class="uri">https://edin.ac/2wJgYwL</a>”)<br> ``` </code>
+<code> ```{r mychunkname, eval = TRUE}<br> pass_scores &lt;-
+read.csv(“<a href="https://edin.ac/2wJgYwL"
+class="uri">https://edin.ac/2wJgYwL</a>”)<br> ``` </code>
 </div>
 <br>
 <div class="spc1">
-<code> ```{r mychunk2}<br> barplot(table(pass_scores$school))<br> ``` </code>
+<code> ```{r mychunk2}<br> barplot(table(pass_scores$school))<br> ```
+</code>
 </div>
 <p><br></p>
 <p>Will compile to this:</p>
@@ -2580,11 +2649,14 @@ In the code-chunk below (named “mychunkname”), we have set <code>include = F
 <h4>eval = FALSE</h4>
 <p>Writing this:</p>
 <div class="spc1">
-<code> ```{r mychunkname, eval = FALSE}<br> pass_scores &lt;- read.csv(“<a href="https://edin.ac/2wJgYwL" class="uri">https://edin.ac/2wJgYwL</a>”)<br> ``` </code>
+<code> ```{r mychunkname, eval = FALSE}<br> pass_scores &lt;-
+read.csv(“<a href="https://edin.ac/2wJgYwL"
+class="uri">https://edin.ac/2wJgYwL</a>”)<br> ``` </code>
 </div>
 <br>
 <div class="spc1">
-<code> ```{r mychunk2}<br> barplot(table(pass_scores$school))<br> ``` </code>
+<code> ```{r mychunk2}<br> barplot(table(pass_scores$school))<br> ```
+</code>
 </div>
 <p><br></p>
 <p>Will compile to this:</p>
@@ -2604,13 +2676,21 @@ In the code-chunk below (named “mychunkname”), we have set <code>include = F
 </section>
 </div>
 <h1 id="include">include = ?</h1>
-<p>The <code>include</code> option is a bit of a funny one. It will not change whether the code gets evaluated, but it will mean all the output (and the code) will be hidden from the compiled document. This is a useful way of making sure that some necessary code <em>does</em> get run when compiling the document, but everything (code + output) gets hidden.</p>
+<p>The <code>include</code> option is a bit of a funny one. It will not
+change whether the code gets evaluated, but it will mean all the output
+(and the code) will be hidden from the compiled document. This is a
+useful way of making sure that some necessary code <em>does</em> get run
+when compiling the document, but everything (code + output) gets
+hidden.</p>
 <div class="panelset">
 <section id="include-true" class="panel">
 <h4>include = TRUE</h4>
 <p>Writing this:</p>
 <div class="spc1">
-<code> ```{r mychunkname, include = TRUE}<br> pass_scores &lt;- read.csv(“<a href="https://edin.ac/2wJgYwL" class="uri">https://edin.ac/2wJgYwL</a>”)<br> mytable &lt;- table(pass_scores$school)<br> mytable<br> ``` </code>
+<code> ```{r mychunkname, include = TRUE}<br> pass_scores &lt;-
+read.csv(“<a href="https://edin.ac/2wJgYwL"
+class="uri">https://edin.ac/2wJgYwL</a>”)<br> mytable &lt;-
+table(pass_scores$school)<br> mytable<br> ``` </code>
 </div>
 <br>
 <div class="spc1">
@@ -2643,7 +2723,10 @@ In the code-chunk below (named “mychunkname”), we have set <code>include = F
 <h4>include = FALSE</h4>
 <p>Writing this:</p>
 <div class="spc1">
-<code> ```{r mychunkname, include = FALSE}<br> pass_scores &lt;- read.csv(“<a href="https://edin.ac/2wJgYwL" class="uri">https://edin.ac/2wJgYwL</a>”)<br> mytable &lt;- table(pass_scores$school)<br> mytable<br> ``` </code>
+<code> ```{r mychunkname, include = FALSE}<br> pass_scores &lt;-
+read.csv(“<a href="https://edin.ac/2wJgYwL"
+class="uri">https://edin.ac/2wJgYwL</a>”)<br> mytable &lt;-
+table(pass_scores$school)<br> mytable<br> ``` </code>
 </div>
 <br>
 <div class="spc1">
@@ -2661,13 +2744,17 @@ In the code-chunk below (named “mychunkname”), we have set <code>include = F
 </section>
 </div>
 <h1 id="warning-and-message">warning = ? and message = ?</h1>
-<p>These are perhaps the most intuitive of the chunk options to remember. Some lines of code will return a message, some will return a warning. These chunk options simply control whether or not they get shown in the final compiled document.</p>
+<p>These are perhaps the most intuitive of the chunk options to
+remember. Some lines of code will return a message, some will return a
+warning. These chunk options simply control whether or not they get
+shown in the final compiled document.</p>
 <div class="panelset">
 <section id="message-true" class="panel">
 <h4>message = TRUE</h4>
 <p>Writing this:</p>
 <div class="spc1">
-<code> ```{r mychunkname, message = TRUE}<br> library(tidyverse)<br> ``` </code>
+<code> ```{r mychunkname, message = TRUE}<br> library(tidyverse)<br> ```
+</code>
 </div>
 <p><br> Will compile to this:</p>
 <div class="layout-chunk" data-layout="l-body">
@@ -2681,7 +2768,8 @@ In the code-chunk below (named “mychunkname”), we have set <code>include = F
 <h4>message = FALSE</h4>
 <p>Writing this:</p>
 <div class="spc1">
-<code> ```{r mychunkname, message = FALSE}<br> library(tidyverse)<br> ``` </code>
+<code> ```{r mychunkname, message = FALSE}<br> library(tidyverse)<br>
+``` </code>
 </div>
 <p><br> Will compile to this:</p>
 <div class="layout-chunk" data-layout="l-body">
@@ -2695,7 +2783,8 @@ In the code-chunk below (named “mychunkname”), we have set <code>include = F
 <h4>warning = TRUE</h4>
 <p>Writing this:</p>
 <div class="spc1">
-<code> ```{r mychunkname, warning = TRUE}<br> x &lt;- c(“2”, -3, “end”, 0, 4, 0.2)<br> as.numeric(x)<br> ``` </code>
+<code> ```{r mychunkname, warning = TRUE}<br> x &lt;- c(“2”, -3, “end”,
+0, 4, 0.2)<br> as.numeric(x)<br> ``` </code>
 </div>
 <p><br> Will compile to this:</p>
 <div class="layout-chunk" data-layout="l-body">
@@ -2712,7 +2801,8 @@ In the code-chunk below (named “mychunkname”), we have set <code>include = F
 <h4>warning = FALSE</h4>
 <p>Writing this:</p>
 <div class="spc1">
-<code> ```{r mychunkname, warning = FALSE}<br> x &lt;- c(“2”, -3, “end”, 0, 4, 0.2)<br> as.numeric(x)<br> ``` </code>
+<code> ```{r mychunkname, warning = FALSE}<br> x &lt;- c(“2”, -3, “end”,
+0, 4, 0.2)<br> as.numeric(x)<br> ``` </code>
 </div>
 <p><br></p>
 <p>Will compile to this:</p>
@@ -2727,14 +2817,21 @@ In the code-chunk below (named “mychunkname”), we have set <code>include = F
 </section>
 </div>
 <h1 id="global-options">Global options</h1>
-<p>As well as being able to set the options for specific code-chunks, we can set them globally for all the code-chunks in our document.</p>
-<p>We can do this inside a code-chunk (seems weird, I know!), code like this in our first chunk (the “setup” chunk):</p>
+<p>As well as being able to set the options for specific code-chunks, we
+can set them globally for all the code-chunks in our document.</p>
+<p>We can do this inside a code-chunk (seems weird, I know!), code like
+this in our first chunk (the “setup” chunk):</p>
 <div class="spc1">
-<code> ```{r setup, include = FALSE}<br> library(knitr) opts_chunk$set(echo = FALSE, message = FALSE)<br> ``` </code>
+<code> ```{r setup, include = FALSE}<br> library(knitr)
+opts_chunk$set(echo = FALSE, message = FALSE)<br> ``` </code>
 </div>
 <p><br></p>
-<p>This will mean that for all subsequent code-chunks, the code will not get printed in the final document, and no messages will get printed either (this is unless we specifically set <code>echo = TRUE</code> for a code-chunk later on, which will override the global option).</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<p>This will mean that for all subsequent code-chunks, the code will not
+get printed in the final document, and no messages will get printed
+either (this is unless we specifically set <code>echo = TRUE</code> for
+a code-chunk later on, which will override the global option).</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

@@ -50,16 +50,17 @@ pre.numberSource code > span > a:first-child::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {   }
+  { color: #00769e; background-color: #f1f3f5; }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
+code span { color: #00769e; } /* Normal */
 code span.al { color: #ad0000; } /* Alert */
 code span.an { color: #5e5e5e; } /* Annotation */
-code span.at { color: #20794d; } /* Attribute */
+code span.at { color: #657422; } /* Attribute */
 code span.bn { color: #ad0000; } /* BaseN */
 code span.bu { } /* BuiltIn */
-code span.cf { color: #007ba5; } /* ControlFlow */
+code span.cf { color: #00769e; } /* ControlFlow */
 code span.ch { color: #20794d; } /* Char */
 code span.cn { color: #8f5902; } /* Constant */
 code span.co { color: #5e5e5e; } /* Comment */
@@ -73,17 +74,18 @@ code span.fl { color: #ad0000; } /* Float */
 code span.fu { color: #4758ab; } /* Function */
 code span.im { } /* Import */
 code span.in { color: #5e5e5e; } /* Information */
-code span.kw { color: #007ba5; } /* Keyword */
+code span.kw { color: #00769e; } /* Keyword */
 code span.op { color: #5e5e5e; } /* Operator */
-code span.ot { color: #007ba5; } /* Other */
+code span.ot { color: #00769e; } /* Other */
 code span.pp { color: #ad0000; } /* Preprocessor */
-code span.sc { color: #20794d; } /* SpecialChar */
+code span.sc { color: #5e5e5e; } /* SpecialChar */
 code span.ss { color: #20794d; } /* SpecialString */
 code span.st { color: #20794d; } /* String */
 code span.va { color: #111111; } /* Variable */
 code span.vs { color: #20794d; } /* VerbatimString */
 code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
+
 
   <!--radix_placeholder_meta_tags-->
   <title>RMarkdown: Making Pretty Tables in RMarkdown</title>
@@ -452,7 +454,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   </style>
 
-  <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+  <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
   <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
   <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
   <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
@@ -1024,10 +1026,6 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     position: relative;
     margin-bottom: 2.5em;
     margin-top: 1.5em;
-  }
-
-  .figure img {
-    width: 100%;
   }
 
   .figure .caption {
@@ -1859,7 +1857,16 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
       // hoverable references
       $('span.citation[data-cites]').each(function() {
-        var refHtml = $('#ref-' + $(this).attr('data-cites')).html();
+        if ($(this).children()[0].nodeName == "D-FOOTNOTE") {
+          var fn = $(this).children()[0]
+          $(this).html(fn.shadowRoot.querySelector("sup"))
+          $(this).id = fn.id
+          fn.remove()
+        }
+        var refs = $(this).attr('data-cites').split(" ");
+        var refHtml = refs.map(function(ref) {
+          return "<p>" + $('#ref-' + ref).html() + "</p>";
+        }).join("\n");
         window.tippy(this, {
           allowHTML: true,
           content: refHtml,
@@ -1870,6 +1877,31 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
           placement: 'bottom-start'
         });
       });
+
+      // fix footnotes in tables (#411)
+      // replacing broken distill.pub feature
+      $('table d-footnote').each(function() {
+        // we replace internal showAtNode methode which is triggered when hovering a footnote
+        this.hoverBox.showAtNode = function(node) {
+          // ported from https://github.com/distillpub/template/pull/105/files
+          calcOffset = function(elem) {
+              let x = elem.offsetLeft;
+              let y = elem.offsetTop;
+              // Traverse upwards until an `absolute` element is found or `elem`
+              // becomes null.
+              while (elem = elem.offsetParent && elem.style.position != 'absolute') {
+                  x += elem.offsetLeft;
+                  y += elem.offsetTop;
+              }
+
+              return { left: x, top: y };
+          }
+          // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+          const bbox = node.getBoundingClientRect();
+          const offset = calcOffset(node);
+          this.show([offset.left + bbox.width, offset.top + bbox.height]);
+        }
+      })
 
       // clear polling timer
       clearInterval(tid);
@@ -1969,6 +2001,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // mark non-body figures created by knitr chunks as 100% width
     $('.layout-chunk').each(function(i, val) {
       var figures = $(this).find('img, .html-widget');
+      // ignore leaflet img layers (#106)
+      figures = figures.filter(':not(img[class*="leaflet"])')
       if ($(this).attr('data-layout') !== "l-body") {
         figures.css('width', '100%');
       } else {
@@ -1991,7 +2025,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // get rid of index.html references in header
     if (window.location.protocol !== "file:") {
       $('.distill-site-header a[href]').each(function(i,val) {
-        $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+        $(this).attr('href', $(this).attr('href').replace(/^index[.]html/, "./"));
       });
     }
 
@@ -2372,7 +2406,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     color: var(--hover-color, white);
   }</style>
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.8/header-attrs.js"></script>
+  <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
   <link href="site_libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
   <script src="site_libs/panelset-0.2.6/panelset.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
@@ -2450,7 +2484,8 @@ Lessons
 <h3>Contents</h3>
 <ul>
 <li><a href="#why">Why?</a></li>
-<li><a href="#functions-for-pretty-tables">Functions for pretty tables</a></li>
+<li><a href="#functions-for-pretty-tables">Functions for pretty
+tables</a></li>
 </ul>
 </nav>
 </div>
@@ -2472,13 +2507,16 @@ Lessons
   Joke 42 30
   None 49 16</code></pre>
 </div>
-<p>The output of <code>table()</code> (above) can sometimes look neat enough, but data in other formats is hard to make look nice (it will just get printed as the object it is, e.g. a <code>tibble</code> below)</p>
+<p>The output of <code>table()</code> (above) can sometimes look neat
+enough, but data in other formats is hard to make look nice (it will
+just get printed as the object it is, e.g. a <code>tibble</code>
+below)</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span>
 <span class='va'>pass_scores</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.csv</a></span><span class='op'>(</span><span class='st'>"https://edin.ac/2wJgYwL"</span><span class='op'>)</span> 
-<span class='va'>pass_scores</span> <span class='op'>%&gt;%</span> <span class='fu'>group_by</span><span class='op'>(</span><span class='va'>school</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>summarise</span><span class='op'>(</span>
+<span class='va'>pass_scores</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>school</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></span><span class='op'>(</span>
     meanPASS <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>PASS</span><span class='op'>)</span>,
     sdPASS <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/sd.html'>sd</a></span><span class='op'>(</span><span class='va'>PASS</span><span class='op'>)</span>
   <span class='op'>)</span>
@@ -2499,7 +2537,12 @@ Lessons
 <div class="panelset">
 <section id="kable" class="panel">
 <h4>kable()</h4>
-<p><strong>knitr</strong>’s <code>kable()</code> is a fairly simple way to make tables and data look a little nicer. Simply pass something to <code>kable()</code> and will usually spit out something nicer. You can find a guide here: <a href="https://bookdown.org/yihui/rmarkdown-cookbook/kable.html" class="uri">https://bookdown.org/yihui/rmarkdown-cookbook/kable.html</a><br />
+<p><strong>knitr</strong>’s <code>kable()</code> is a fairly simple way
+to make tables and data look a little nicer. Simply pass something to
+<code>kable()</code> and will usually spit out something nicer. You can
+find a guide here: <a
+href="https://bookdown.org/yihui/rmarkdown-cookbook/kable.html"
+class="uri">https://bookdown.org/yihui/rmarkdown-cookbook/kable.html</a><br />
 We can also add captions to our table!</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
@@ -2535,16 +2578,18 @@ We can also add captions to our table!</p>
 </tbody>
 </table>
 </div>
-<p>The <code>kable()</code> function also has various useful bits of functionality such as rounding all numeric values to the same number of digits, or setting a value for which all NAs will be displayed.</p>
+<p>The <code>kable()</code> function also has various useful bits of
+functionality such as rounding all numeric values to the same number of
+digits, or setting a value for which all NAs will be displayed.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/options.html'>options</a></span><span class='op'>(</span>knitr.kable.NA <span class='op'>=</span> <span class='st'>""</span><span class='op'>)</span>
 
-<span class='va'>pass_scores</span> <span class='op'>%&gt;%</span> <span class='fu'>group_by</span><span class='op'>(</span><span class='va'>school</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>summarise</span><span class='op'>(</span>
+<span class='va'>pass_scores</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>school</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></span><span class='op'>(</span>
     meanPASS <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>PASS</span><span class='op'>)</span>,
     sdPASS <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/sd.html'>sd</a></span><span class='op'>(</span><span class='va'>PASS</span><span class='op'>)</span>
-  <span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/knitr/man/kable.html'>kable</a></span><span class='op'>(</span><span class='va'>.</span>, digits <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+  <span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://rdrr.io/pkg/knitr/man/kable.html'>kable</a></span><span class='op'>(</span><span class='va'>.</span>, digits <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
 </code></pre>
 </div>
 <table>
@@ -2597,22 +2642,25 @@ We can also add captions to our table!</p>
 </section>
 <section id="gt" class="panel">
 <h4>gt()</h4>
-<p>The <strong>gt</strong> package has a lot of useful functionality, and works well with grouped data. The best resource for this is at <a href="https://gt.rstudio.com" class="uri">https://gt.rstudio.com</a>. <code>gt()</code> also allows us to specify captions.</p>
+<p>The <strong>gt</strong> package has a lot of useful functionality,
+and works well with grouped data. The best resource for this is at <a
+href="https://gt.rstudio.com" class="uri">https://gt.rstudio.com</a>.
+<code>gt()</code> also allows us to specify captions.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://gt.rstudio.com/'>gt</a></span><span class='op'>)</span>
-<span class='va'>tipjoke</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'>count</span><span class='op'>(</span><span class='va'>Card</span>, <span class='va'>Tip</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+<span class='va'>tipjoke</span> <span class='op'><a href='https://gt.rstudio.com/reference/pipe.html'>%&gt;%</a></span> 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/count.html'>count</a></span><span class='op'>(</span><span class='va'>Card</span>, <span class='va'>Tip</span><span class='op'>)</span> <span class='op'><a href='https://gt.rstudio.com/reference/pipe.html'>%&gt;%</a></span>
   <span class='fu'><a href='https://gt.rstudio.com/reference/gt.html'>gt</a></span><span class='op'>(</span>caption <span class='op'>=</span> <span class='st'>"Another lovely table!"</span><span class='op'>)</span>
 </code></pre>
 </div>
-<div id="dfobwidwqn" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="ynowjtbtku" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#dfobwidwqn .gt_table {
+#ynowjtbtku .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -2637,7 +2685,7 @@ We can also add captions to our table!</p>
   border-left-color: #D3D3D3;
 }
 
-#dfobwidwqn .gt_heading {
+#ynowjtbtku .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2649,33 +2697,37 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#dfobwidwqn .gt_title {
+#ynowjtbtku .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
   padding-top: 4px;
   padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
   border-bottom-color: #FFFFFF;
   border-bottom-width: 0;
 }
 
-#dfobwidwqn .gt_subtitle {
+#ynowjtbtku .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
   padding-top: 0;
-  padding-bottom: 4px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
   border-top-color: #FFFFFF;
   border-top-width: 0;
 }
 
-#dfobwidwqn .gt_bottom_border {
+#ynowjtbtku .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#dfobwidwqn .gt_col_headings {
+#ynowjtbtku .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2690,7 +2742,7 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#dfobwidwqn .gt_col_heading {
+#ynowjtbtku .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2710,7 +2762,7 @@ We can also add captions to our table!</p>
   overflow-x: hidden;
 }
 
-#dfobwidwqn .gt_column_spanner_outer {
+#ynowjtbtku .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2722,28 +2774,31 @@ We can also add captions to our table!</p>
   padding-right: 4px;
 }
 
-#dfobwidwqn .gt_column_spanner_outer:first-child {
+#ynowjtbtku .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#dfobwidwqn .gt_column_spanner_outer:last-child {
+#ynowjtbtku .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#dfobwidwqn .gt_column_spanner {
+#ynowjtbtku .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
   vertical-align: bottom;
   padding-top: 5px;
-  padding-bottom: 6px;
+  padding-bottom: 5px;
   overflow-x: hidden;
   display: inline-block;
   width: 100%;
 }
 
-#dfobwidwqn .gt_group_heading {
-  padding: 8px;
+#ynowjtbtku .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2764,7 +2819,7 @@ We can also add captions to our table!</p>
   vertical-align: middle;
 }
 
-#dfobwidwqn .gt_empty_group_heading {
+#ynowjtbtku .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2779,15 +2834,15 @@ We can also add captions to our table!</p>
   vertical-align: middle;
 }
 
-#dfobwidwqn .gt_from_md > :first-child {
+#ynowjtbtku .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#dfobwidwqn .gt_from_md > :last-child {
+#ynowjtbtku .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#dfobwidwqn .gt_row {
+#ynowjtbtku .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2806,7 +2861,7 @@ We can also add captions to our table!</p>
   overflow-x: hidden;
 }
 
-#dfobwidwqn .gt_stub {
+#ynowjtbtku .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2815,10 +2870,29 @@ We can also add captions to our table!</p>
   border-right-style: solid;
   border-right-width: 2px;
   border-right-color: #D3D3D3;
-  padding-left: 12px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
-#dfobwidwqn .gt_summary_row {
+#ynowjtbtku .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#ynowjtbtku .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#ynowjtbtku .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2828,17 +2902,26 @@ We can also add captions to our table!</p>
   padding-right: 5px;
 }
 
-#dfobwidwqn .gt_first_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
+#ynowjtbtku .gt_first_summary_row {
   border-top-style: solid;
-  border-top-width: 2px;
   border-top-color: #D3D3D3;
 }
 
-#dfobwidwqn .gt_grand_summary_row {
+#ynowjtbtku .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#ynowjtbtku .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ynowjtbtku .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2848,7 +2931,7 @@ We can also add captions to our table!</p>
   padding-right: 5px;
 }
 
-#dfobwidwqn .gt_first_grand_summary_row {
+#ynowjtbtku .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2858,11 +2941,11 @@ We can also add captions to our table!</p>
   border-top-color: #D3D3D3;
 }
 
-#dfobwidwqn .gt_striped {
+#ynowjtbtku .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#dfobwidwqn .gt_table_body {
+#ynowjtbtku .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2871,7 +2954,7 @@ We can also add captions to our table!</p>
   border-bottom-color: #D3D3D3;
 }
 
-#dfobwidwqn .gt_footnotes {
+#ynowjtbtku .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2885,13 +2968,16 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#dfobwidwqn .gt_footnote {
+#ynowjtbtku .gt_footnote {
   margin: 0px;
   font-size: 90%;
-  padding: 4px;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
-#dfobwidwqn .gt_sourcenotes {
+#ynowjtbtku .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2905,44 +2991,80 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#dfobwidwqn .gt_sourcenote {
+#ynowjtbtku .gt_sourcenote {
   font-size: 90%;
-  padding: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
-#dfobwidwqn .gt_left {
+#ynowjtbtku .gt_left {
   text-align: left;
 }
 
-#dfobwidwqn .gt_center {
+#ynowjtbtku .gt_center {
   text-align: center;
 }
 
-#dfobwidwqn .gt_right {
+#ynowjtbtku .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#dfobwidwqn .gt_font_normal {
+#ynowjtbtku .gt_font_normal {
   font-weight: normal;
 }
 
-#dfobwidwqn .gt_font_bold {
+#ynowjtbtku .gt_font_bold {
   font-weight: bold;
 }
 
-#dfobwidwqn .gt_font_italic {
+#ynowjtbtku .gt_font_italic {
   font-style: italic;
 }
 
-#dfobwidwqn .gt_super {
+#ynowjtbtku .gt_super {
   font-size: 65%;
 }
 
-#dfobwidwqn .gt_footnote_marks {
+#ynowjtbtku .gt_two_val_uncert {
+  display: inline-block;
+  line-height: 1em;
+  text-align: right;
+  font-size: 60%;
+  vertical-align: -0.25em;
+  margin-left: 0.1em;
+}
+
+#ynowjtbtku .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
-  font-size: 65%;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+#ynowjtbtku .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#ynowjtbtku .gt_slash_mark {
+  font-size: 0.7em;
+  line-height: 0.7em;
+  vertical-align: 0.15em;
+}
+
+#ynowjtbtku .gt_fraction_numerator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: 0.45em;
+}
+
+#ynowjtbtku .gt_fraction_denominator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: -0.05em;
 }
 </style>
 <table class="gt_table">
@@ -2980,24 +3102,25 @@ We can also add captions to our table!</p>
 </table>
 </div>
 </div>
-<p>You can shape your data in different ways before passing it to <code>gt()</code>.</p>
+<p>You can shape your data in different ways before passing it to
+<code>gt()</code>.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>tipjoke</span> <span class='op'>%&gt;%</span> 
-  <span class='fu'>group_by</span><span class='op'>(</span><span class='va'>Card</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>summarise</span><span class='op'>(</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>tipjoke</span> <span class='op'><a href='https://gt.rstudio.com/reference/pipe.html'>%&gt;%</a></span> 
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>Card</span><span class='op'>)</span> <span class='op'><a href='https://gt.rstudio.com/reference/pipe.html'>%&gt;%</a></span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></span><span class='op'>(</span>
     TipYes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>Tip</span><span class='op'>==</span><span class='fl'>1</span><span class='op'>)</span>,
     TipNo <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>Tip</span><span class='op'>==</span><span class='fl'>0</span><span class='op'>)</span>
-  <span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='op'>)</span> <span class='op'><a href='https://gt.rstudio.com/reference/pipe.html'>%&gt;%</a></span>
   <span class='fu'><a href='https://gt.rstudio.com/reference/gt.html'>gt</a></span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
-<div id="vpjrguqhds" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="wpjtbkkyil" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#vpjrguqhds .gt_table {
+#wpjtbkkyil .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -3022,7 +3145,7 @@ We can also add captions to our table!</p>
   border-left-color: #D3D3D3;
 }
 
-#vpjrguqhds .gt_heading {
+#wpjtbkkyil .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3034,33 +3157,37 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#vpjrguqhds .gt_title {
+#wpjtbkkyil .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
   padding-top: 4px;
   padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
   border-bottom-color: #FFFFFF;
   border-bottom-width: 0;
 }
 
-#vpjrguqhds .gt_subtitle {
+#wpjtbkkyil .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
   padding-top: 0;
-  padding-bottom: 4px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
   border-top-color: #FFFFFF;
   border-top-width: 0;
 }
 
-#vpjrguqhds .gt_bottom_border {
+#wpjtbkkyil .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#vpjrguqhds .gt_col_headings {
+#wpjtbkkyil .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3075,7 +3202,7 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#vpjrguqhds .gt_col_heading {
+#wpjtbkkyil .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3095,7 +3222,7 @@ We can also add captions to our table!</p>
   overflow-x: hidden;
 }
 
-#vpjrguqhds .gt_column_spanner_outer {
+#wpjtbkkyil .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3107,28 +3234,31 @@ We can also add captions to our table!</p>
   padding-right: 4px;
 }
 
-#vpjrguqhds .gt_column_spanner_outer:first-child {
+#wpjtbkkyil .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#vpjrguqhds .gt_column_spanner_outer:last-child {
+#wpjtbkkyil .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#vpjrguqhds .gt_column_spanner {
+#wpjtbkkyil .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
   vertical-align: bottom;
   padding-top: 5px;
-  padding-bottom: 6px;
+  padding-bottom: 5px;
   overflow-x: hidden;
   display: inline-block;
   width: 100%;
 }
 
-#vpjrguqhds .gt_group_heading {
-  padding: 8px;
+#wpjtbkkyil .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3149,7 +3279,7 @@ We can also add captions to our table!</p>
   vertical-align: middle;
 }
 
-#vpjrguqhds .gt_empty_group_heading {
+#wpjtbkkyil .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3164,15 +3294,15 @@ We can also add captions to our table!</p>
   vertical-align: middle;
 }
 
-#vpjrguqhds .gt_from_md > :first-child {
+#wpjtbkkyil .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#vpjrguqhds .gt_from_md > :last-child {
+#wpjtbkkyil .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#vpjrguqhds .gt_row {
+#wpjtbkkyil .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3191,7 +3321,7 @@ We can also add captions to our table!</p>
   overflow-x: hidden;
 }
 
-#vpjrguqhds .gt_stub {
+#wpjtbkkyil .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3200,10 +3330,29 @@ We can also add captions to our table!</p>
   border-right-style: solid;
   border-right-width: 2px;
   border-right-color: #D3D3D3;
-  padding-left: 12px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
-#vpjrguqhds .gt_summary_row {
+#wpjtbkkyil .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#wpjtbkkyil .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#wpjtbkkyil .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3213,17 +3362,26 @@ We can also add captions to our table!</p>
   padding-right: 5px;
 }
 
-#vpjrguqhds .gt_first_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
+#wpjtbkkyil .gt_first_summary_row {
   border-top-style: solid;
-  border-top-width: 2px;
   border-top-color: #D3D3D3;
 }
 
-#vpjrguqhds .gt_grand_summary_row {
+#wpjtbkkyil .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#wpjtbkkyil .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#wpjtbkkyil .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3233,7 +3391,7 @@ We can also add captions to our table!</p>
   padding-right: 5px;
 }
 
-#vpjrguqhds .gt_first_grand_summary_row {
+#wpjtbkkyil .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3243,11 +3401,11 @@ We can also add captions to our table!</p>
   border-top-color: #D3D3D3;
 }
 
-#vpjrguqhds .gt_striped {
+#wpjtbkkyil .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#vpjrguqhds .gt_table_body {
+#wpjtbkkyil .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3256,7 +3414,7 @@ We can also add captions to our table!</p>
   border-bottom-color: #D3D3D3;
 }
 
-#vpjrguqhds .gt_footnotes {
+#wpjtbkkyil .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3270,13 +3428,16 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#vpjrguqhds .gt_footnote {
+#wpjtbkkyil .gt_footnote {
   margin: 0px;
   font-size: 90%;
-  padding: 4px;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
-#vpjrguqhds .gt_sourcenotes {
+#wpjtbkkyil .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3290,44 +3451,80 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#vpjrguqhds .gt_sourcenote {
+#wpjtbkkyil .gt_sourcenote {
   font-size: 90%;
-  padding: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
-#vpjrguqhds .gt_left {
+#wpjtbkkyil .gt_left {
   text-align: left;
 }
 
-#vpjrguqhds .gt_center {
+#wpjtbkkyil .gt_center {
   text-align: center;
 }
 
-#vpjrguqhds .gt_right {
+#wpjtbkkyil .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#vpjrguqhds .gt_font_normal {
+#wpjtbkkyil .gt_font_normal {
   font-weight: normal;
 }
 
-#vpjrguqhds .gt_font_bold {
+#wpjtbkkyil .gt_font_bold {
   font-weight: bold;
 }
 
-#vpjrguqhds .gt_font_italic {
+#wpjtbkkyil .gt_font_italic {
   font-style: italic;
 }
 
-#vpjrguqhds .gt_super {
+#wpjtbkkyil .gt_super {
   font-size: 65%;
 }
 
-#vpjrguqhds .gt_footnote_marks {
+#wpjtbkkyil .gt_two_val_uncert {
+  display: inline-block;
+  line-height: 1em;
+  text-align: right;
+  font-size: 60%;
+  vertical-align: -0.25em;
+  margin-left: 0.1em;
+}
+
+#wpjtbkkyil .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
-  font-size: 65%;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+#wpjtbkkyil .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#wpjtbkkyil .gt_slash_mark {
+  font-size: 0.7em;
+  line-height: 0.7em;
+  vertical-align: 0.15em;
+}
+
+#wpjtbkkyil .gt_fraction_numerator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: 0.45em;
+}
+
+#wpjtbkkyil .gt_fraction_denominator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: -0.05em;
 }
 </style>
 <table class="gt_table">
@@ -3357,19 +3554,19 @@ We can also add captions to our table!</p>
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>pass_scores</span> <span class='op'>%&gt;%</span> <span class='fu'>group_by</span><span class='op'>(</span><span class='va'>school</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>summarise</span><span class='op'>(</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>pass_scores</span> <span class='op'><a href='https://gt.rstudio.com/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>school</span><span class='op'>)</span> <span class='op'><a href='https://gt.rstudio.com/reference/pipe.html'>%&gt;%</a></span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></span><span class='op'>(</span>
     meanPASS <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>PASS</span><span class='op'>)</span>,
     sdPASS <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/sd.html'>sd</a></span><span class='op'>(</span><span class='va'>PASS</span><span class='op'>)</span>
-  <span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://gt.rstudio.com/reference/gt.html'>gt</a></span><span class='op'>(</span><span class='op'>)</span>
+  <span class='op'>)</span> <span class='op'><a href='https://gt.rstudio.com/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://gt.rstudio.com/reference/gt.html'>gt</a></span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
-<div id="chikonhdov" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="hyionoslqf" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#chikonhdov .gt_table {
+#hyionoslqf .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -3394,7 +3591,7 @@ We can also add captions to our table!</p>
   border-left-color: #D3D3D3;
 }
 
-#chikonhdov .gt_heading {
+#hyionoslqf .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3406,33 +3603,37 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#chikonhdov .gt_title {
+#hyionoslqf .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
   padding-top: 4px;
   padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
   border-bottom-color: #FFFFFF;
   border-bottom-width: 0;
 }
 
-#chikonhdov .gt_subtitle {
+#hyionoslqf .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
   padding-top: 0;
-  padding-bottom: 4px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
   border-top-color: #FFFFFF;
   border-top-width: 0;
 }
 
-#chikonhdov .gt_bottom_border {
+#hyionoslqf .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#chikonhdov .gt_col_headings {
+#hyionoslqf .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3447,7 +3648,7 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#chikonhdov .gt_col_heading {
+#hyionoslqf .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3467,7 +3668,7 @@ We can also add captions to our table!</p>
   overflow-x: hidden;
 }
 
-#chikonhdov .gt_column_spanner_outer {
+#hyionoslqf .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3479,28 +3680,31 @@ We can also add captions to our table!</p>
   padding-right: 4px;
 }
 
-#chikonhdov .gt_column_spanner_outer:first-child {
+#hyionoslqf .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#chikonhdov .gt_column_spanner_outer:last-child {
+#hyionoslqf .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#chikonhdov .gt_column_spanner {
+#hyionoslqf .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
   vertical-align: bottom;
   padding-top: 5px;
-  padding-bottom: 6px;
+  padding-bottom: 5px;
   overflow-x: hidden;
   display: inline-block;
   width: 100%;
 }
 
-#chikonhdov .gt_group_heading {
-  padding: 8px;
+#hyionoslqf .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3521,7 +3725,7 @@ We can also add captions to our table!</p>
   vertical-align: middle;
 }
 
-#chikonhdov .gt_empty_group_heading {
+#hyionoslqf .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3536,15 +3740,15 @@ We can also add captions to our table!</p>
   vertical-align: middle;
 }
 
-#chikonhdov .gt_from_md > :first-child {
+#hyionoslqf .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#chikonhdov .gt_from_md > :last-child {
+#hyionoslqf .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#chikonhdov .gt_row {
+#hyionoslqf .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3563,7 +3767,7 @@ We can also add captions to our table!</p>
   overflow-x: hidden;
 }
 
-#chikonhdov .gt_stub {
+#hyionoslqf .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3572,10 +3776,29 @@ We can also add captions to our table!</p>
   border-right-style: solid;
   border-right-width: 2px;
   border-right-color: #D3D3D3;
-  padding-left: 12px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
-#chikonhdov .gt_summary_row {
+#hyionoslqf .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#hyionoslqf .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#hyionoslqf .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3585,17 +3808,26 @@ We can also add captions to our table!</p>
   padding-right: 5px;
 }
 
-#chikonhdov .gt_first_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
+#hyionoslqf .gt_first_summary_row {
   border-top-style: solid;
-  border-top-width: 2px;
   border-top-color: #D3D3D3;
 }
 
-#chikonhdov .gt_grand_summary_row {
+#hyionoslqf .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#hyionoslqf .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#hyionoslqf .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3605,7 +3837,7 @@ We can also add captions to our table!</p>
   padding-right: 5px;
 }
 
-#chikonhdov .gt_first_grand_summary_row {
+#hyionoslqf .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3615,11 +3847,11 @@ We can also add captions to our table!</p>
   border-top-color: #D3D3D3;
 }
 
-#chikonhdov .gt_striped {
+#hyionoslqf .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#chikonhdov .gt_table_body {
+#hyionoslqf .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3628,7 +3860,7 @@ We can also add captions to our table!</p>
   border-bottom-color: #D3D3D3;
 }
 
-#chikonhdov .gt_footnotes {
+#hyionoslqf .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3642,13 +3874,16 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#chikonhdov .gt_footnote {
+#hyionoslqf .gt_footnote {
   margin: 0px;
   font-size: 90%;
-  padding: 4px;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
-#chikonhdov .gt_sourcenotes {
+#hyionoslqf .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3662,44 +3897,80 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#chikonhdov .gt_sourcenote {
+#hyionoslqf .gt_sourcenote {
   font-size: 90%;
-  padding: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
-#chikonhdov .gt_left {
+#hyionoslqf .gt_left {
   text-align: left;
 }
 
-#chikonhdov .gt_center {
+#hyionoslqf .gt_center {
   text-align: center;
 }
 
-#chikonhdov .gt_right {
+#hyionoslqf .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#chikonhdov .gt_font_normal {
+#hyionoslqf .gt_font_normal {
   font-weight: normal;
 }
 
-#chikonhdov .gt_font_bold {
+#hyionoslqf .gt_font_bold {
   font-weight: bold;
 }
 
-#chikonhdov .gt_font_italic {
+#hyionoslqf .gt_font_italic {
   font-style: italic;
 }
 
-#chikonhdov .gt_super {
+#hyionoslqf .gt_super {
   font-size: 65%;
 }
 
-#chikonhdov .gt_footnote_marks {
+#hyionoslqf .gt_two_val_uncert {
+  display: inline-block;
+  line-height: 1em;
+  text-align: right;
+  font-size: 60%;
+  vertical-align: -0.25em;
+  margin-left: 0.1em;
+}
+
+#hyionoslqf .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
-  font-size: 65%;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+#hyionoslqf .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#hyionoslqf .gt_slash_mark {
+  font-size: 0.7em;
+  line-height: 0.7em;
+  vertical-align: 0.15em;
+}
+
+#hyionoslqf .gt_fraction_numerator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: 0.45em;
+}
+
+#hyionoslqf .gt_fraction_denominator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: -0.05em;
 }
 </style>
 <table class="gt_table">
@@ -3742,11 +4013,15 @@ We can also add captions to our table!</p>
 </section>
 <section id="pander" class="panel">
 <h4>pander()</h4>
-<p>Pander is nice and simple, and works on the idea of converting R output into neat markdown syntax, which then get compiled into nice looking tables.<br />
-You can read up on some of the functionality here: <a href="https://cran.r-project.org/web/packages/pander/vignettes/pander.html" class="uri">https://cran.r-project.org/web/packages/pander/vignettes/pander.html</a></p>
+<p>Pander is nice and simple, and works on the idea of converting R
+output into neat markdown syntax, which then get compiled into nice
+looking tables.<br />
+You can read up on some of the functionality here: <a
+href="https://cran.r-project.org/web/packages/pander/vignettes/pander.html"
+class="uri">https://cran.r-project.org/web/packages/pander/vignettes/pander.html</a></p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://rapporter.github.io/pander'>pander</a></span><span class='op'>)</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://rapporter.github.io/pander/'>pander</a></span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/pkg/pander/man/pander.html'>pander</a></span><span class='op'>(</span><span class='va'>tiptable</span><span class='op'>)</span>
 </code></pre>
 </div>
@@ -3784,11 +4059,11 @@ You can read up on some of the functionality here: <a href="https://cran.r-proje
 </div>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>pass_scores</span> <span class='op'>%&gt;%</span> <span class='fu'>group_by</span><span class='op'>(</span><span class='va'>school</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>summarise</span><span class='op'>(</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>pass_scores</span> <span class='op'><a href='https://gt.rstudio.com/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>school</span><span class='op'>)</span> <span class='op'><a href='https://gt.rstudio.com/reference/pipe.html'>%&gt;%</a></span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></span><span class='op'>(</span>
     meanPASS <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>PASS</span><span class='op'>)</span>,
     sdPASS <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/sd.html'>sd</a></span><span class='op'>(</span><span class='va'>PASS</span><span class='op'>)</span>
-  <span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/pander/man/pander.html'>pander</a></span><span class='op'>(</span><span class='op'>)</span>
+  <span class='op'>)</span> <span class='op'><a href='https://gt.rstudio.com/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://rdrr.io/pkg/pander/man/pander.html'>pander</a></span><span class='op'>(</span><span class='op'>)</span>
 </code></pre>
 </div>
 <table style="width:50%;">
@@ -3845,7 +4120,8 @@ You can read up on some of the functionality here: <a href="https://cran.r-proje
 </div>
 </section>
 </div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

@@ -50,16 +50,17 @@ pre.numberSource code > span > a:first-child::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {   }
+  { color: #00769e; background-color: #f1f3f5; }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
+code span { color: #00769e; } /* Normal */
 code span.al { color: #ad0000; } /* Alert */
 code span.an { color: #5e5e5e; } /* Annotation */
-code span.at { color: #20794d; } /* Attribute */
+code span.at { color: #657422; } /* Attribute */
 code span.bn { color: #ad0000; } /* BaseN */
 code span.bu { } /* BuiltIn */
-code span.cf { color: #007ba5; } /* ControlFlow */
+code span.cf { color: #00769e; } /* ControlFlow */
 code span.ch { color: #20794d; } /* Char */
 code span.cn { color: #8f5902; } /* Constant */
 code span.co { color: #5e5e5e; } /* Comment */
@@ -73,17 +74,18 @@ code span.fl { color: #ad0000; } /* Float */
 code span.fu { color: #4758ab; } /* Function */
 code span.im { } /* Import */
 code span.in { color: #5e5e5e; } /* Information */
-code span.kw { color: #007ba5; } /* Keyword */
+code span.kw { color: #00769e; } /* Keyword */
 code span.op { color: #5e5e5e; } /* Operator */
-code span.ot { color: #007ba5; } /* Other */
+code span.ot { color: #00769e; } /* Other */
 code span.pp { color: #ad0000; } /* Preprocessor */
-code span.sc { color: #20794d; } /* SpecialChar */
+code span.sc { color: #5e5e5e; } /* SpecialChar */
 code span.ss { color: #20794d; } /* SpecialString */
 code span.st { color: #20794d; } /* String */
 code span.va { color: #111111; } /* Variable */
 code span.vs { color: #20794d; } /* VerbatimString */
 code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
+
 
   <!--radix_placeholder_meta_tags-->
   <title>RMarkdown: Plots &amp; Figures in RMarkdown</title>
@@ -452,7 +454,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   </style>
 
-  <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+  <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
   <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
   <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
   <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
@@ -1024,10 +1026,6 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     position: relative;
     margin-bottom: 2.5em;
     margin-top: 1.5em;
-  }
-
-  .figure img {
-    width: 100%;
   }
 
   .figure .caption {
@@ -1859,7 +1857,16 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
       // hoverable references
       $('span.citation[data-cites]').each(function() {
-        var refHtml = $('#ref-' + $(this).attr('data-cites')).html();
+        if ($(this).children()[0].nodeName == "D-FOOTNOTE") {
+          var fn = $(this).children()[0]
+          $(this).html(fn.shadowRoot.querySelector("sup"))
+          $(this).id = fn.id
+          fn.remove()
+        }
+        var refs = $(this).attr('data-cites').split(" ");
+        var refHtml = refs.map(function(ref) {
+          return "<p>" + $('#ref-' + ref).html() + "</p>";
+        }).join("\n");
         window.tippy(this, {
           allowHTML: true,
           content: refHtml,
@@ -1870,6 +1877,31 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
           placement: 'bottom-start'
         });
       });
+
+      // fix footnotes in tables (#411)
+      // replacing broken distill.pub feature
+      $('table d-footnote').each(function() {
+        // we replace internal showAtNode methode which is triggered when hovering a footnote
+        this.hoverBox.showAtNode = function(node) {
+          // ported from https://github.com/distillpub/template/pull/105/files
+          calcOffset = function(elem) {
+              let x = elem.offsetLeft;
+              let y = elem.offsetTop;
+              // Traverse upwards until an `absolute` element is found or `elem`
+              // becomes null.
+              while (elem = elem.offsetParent && elem.style.position != 'absolute') {
+                  x += elem.offsetLeft;
+                  y += elem.offsetTop;
+              }
+
+              return { left: x, top: y };
+          }
+          // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+          const bbox = node.getBoundingClientRect();
+          const offset = calcOffset(node);
+          this.show([offset.left + bbox.width, offset.top + bbox.height]);
+        }
+      })
 
       // clear polling timer
       clearInterval(tid);
@@ -1969,6 +2001,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // mark non-body figures created by knitr chunks as 100% width
     $('.layout-chunk').each(function(i, val) {
       var figures = $(this).find('img, .html-widget');
+      // ignore leaflet img layers (#106)
+      figures = figures.filter(':not(img[class*="leaflet"])')
       if ($(this).attr('data-layout') !== "l-body") {
         figures.css('width', '100%');
       } else {
@@ -1991,7 +2025,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // get rid of index.html references in header
     if (window.location.protocol !== "file:") {
       $('.distill-site-header a[href]').each(function(i,val) {
-        $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+        $(this).attr('href', $(this).attr('href').replace(/^index[.]html/, "./"));
       });
     }
 
@@ -2372,7 +2406,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     color: var(--hover-color, white);
   }</style>
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.8/header-attrs.js"></script>
+  <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
   <link href="site_libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
   <script src="site_libs/panelset-0.2.6/panelset.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
@@ -2449,7 +2483,8 @@ Lessons
 <nav class="l-text toc figcaption" id="TOC">
 <h3>Contents</h3>
 <ul>
-<li><a href="#plots-vs-external-image-files">Plots vs External image files</a></li>
+<li><a href="#plots-vs-external-image-files">Plots vs External image
+files</a></li>
 <li><a href="#figure-options">Figure options</a>
 <ul>
 <li><a href="#width-and-height">width and height</a></li>
@@ -2487,8 +2522,10 @@ Lessons
 }
 </style>
 </div>
-<h1 id="plots-vs-external-image-files">Plots vs External image files</h1>
-<p>We have already seen how we can include a plot in a document, by creating the plot in a code-chunk:</p>
+<h1 id="plots-vs-external-image-files">Plots vs External image
+files</h1>
+<p>We have already seen how we can include a plot in a document, by
+creating the plot in a code-chunk:</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='va'>pass_scores</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.csv</a></span><span class='op'>(</span><span class='st'>"https://edin.ac/2wJgYwL"</span><span class='op'>)</span>
@@ -2497,9 +2534,15 @@ Lessons
 </div>
 <p><img src="06-figs_files/figure-html5/unnamed-chunk-2-1.png" width="624" style="display: block; margin: auto;" /></p>
 </div>
-<p>However, we can also include images from files stored locally on our computer, or stored on the internet. We can do so using the <code>include_graphics()</code> function from the <strong>knitr</strong> package:</p>
+<p>However, we can also include images from files stored locally on our
+computer, or stored on the internet. We can do so using the
+<code>include_graphics()</code> function from the <strong>knitr</strong>
+package:</p>
 <div class="spc1">
-<code> ```{r}<br> library(knitr)<br> include_graphics(“<a href="https://edin.ac/37Ml3Q2" class="uri">https://edin.ac/37Ml3Q2</a>”)<br> include_graphics(“images/dougal.jpeg”)<br> ``` </code>
+<code> ```{r}<br> library(knitr)<br> include_graphics(“<a
+href="https://edin.ac/37Ml3Q2"
+class="uri">https://edin.ac/37Ml3Q2</a>”)<br>
+include_graphics(“images/dougal.jpeg”)<br> ``` </code>
 </div>
 <p><br></p>
 <div class="layout-chunk" data-layout="l-body">
@@ -2518,15 +2561,24 @@ Lessons
 <p><img src="images/dougal.jpeg" width="200px" style="display: block; margin: auto;" /></p>
 </div>
 <h1 id="figure-options">Figure options</h1>
-<p>We can use a lot of extra options to control the output of plots and figures. These are set as code-chunk options (see the <a href="05-echoeval.html">Lesson on hiding code and output</a>). A couple of the main ones are detailed below</p>
+<p>We can use a lot of extra options to control the output of plots and
+figures. These are set as code-chunk options (see the <a
+href="05-echoeval.html">Lesson on hiding code and output</a>). A couple
+of the main ones are detailed below</p>
 <h2 id="width-and-height">width and height</h2>
 <div class="panelset">
 <section id="resize-any-image" class="panel">
 <h4>Resize Any Image</h4>
-<p>To simply scale up/down any image at all, we can use the <code>out.width</code> and <code>out.height</code> options to set the height and width. Personally, I find it easiest to use these with pixels as the units:</p>
+<p>To simply scale up/down any image at all, we can use the
+<code>out.width</code> and <code>out.height</code> options to set the
+height and width. Personally, I find it easiest to use these with pixels
+as the units:</p>
 <p>Writing this:</p>
 <div class="spc1">
-<code> ```{r out.width=“150px”}<br> include_graphics(“<a href="https://edin.ac/37Ml3Q2" class="uri">https://edin.ac/37Ml3Q2</a>”)<br> barplot(table(pass_scores$school))<br> ``` </code>
+<code> ```{r out.width=“150px”}<br> include_graphics(“<a
+href="https://edin.ac/37Ml3Q2"
+class="uri">https://edin.ac/37Ml3Q2</a>”)<br>
+barplot(table(pass_scores$school))<br> ``` </code>
 </div>
 <p><br></p>
 <p>Compiles to this:</p>
@@ -2544,7 +2596,10 @@ Lessons
 </div>
 <p>Writing this:</p>
 <div class="spc1">
-<code> ```{r out.width=“300px”, out.height = “50px”}<br> include_graphics(“<a href="https://edin.ac/37Ml3Q2" class="uri">https://edin.ac/37Ml3Q2</a>”)<br> barplot(table(pass_scores$school))<br> ``` </code>
+<code> ```{r out.width=“300px”, out.height = “50px”}<br>
+include_graphics(“<a href="https://edin.ac/37Ml3Q2"
+class="uri">https://edin.ac/37Ml3Q2</a>”)<br>
+barplot(table(pass_scores$school))<br> ``` </code>
 </div>
 <p><br></p>
 <p>Compiles to this:</p>
@@ -2563,7 +2618,10 @@ Lessons
 </section>
 <section id="resizing-r-generated-images-only" class="panel">
 <h4>Resizing R-Generated Images Only</h4>
-<p>R-generated plots can also be resized using <code>fig.width</code> and <code>fig.height</code>. The defaults are 7x5. Note that this method of resizing adjusts the plotting area but preserves things such as font sizes, rather than simply resizing everything and losing resolution.</p>
+<p>R-generated plots can also be resized using <code>fig.width</code>
+and <code>fig.height</code>. The defaults are 7x5. Note that this method
+of resizing adjusts the plotting area but preserves things such as font
+sizes, rather than simply resizing everything and losing resolution.</p>
 <p>Writing this:</p>
 <div class="spc1">
 <code> ```{r}<br> barplot(table(pass_scores$school))<br> ``` </code>
@@ -2579,7 +2637,8 @@ Lessons
 </div>
 <p>Writing this:</p>
 <div class="spc1">
-<code> ```{r fig.width=3, fig.height=6}<br> barplot(table(pass_scores$school))<br> ``` </code>
+<code> ```{r fig.width=3, fig.height=6}<br>
+barplot(table(pass_scores$school))<br> ``` </code>
 </div>
 <p><br></p>
 <p>Compiles to this:</p>
@@ -2593,9 +2652,12 @@ Lessons
 </section>
 </div>
 <h2 id="fig.align">fig.align</h2>
-<p>This one should be fairly intuitive: do you want your image on the left, middle or right?</p>
+<p>This one should be fairly intuitive: do you want your image on the
+left, middle or right?</p>
 <div class="spc1">
-<code> ```{r fig.align=“left”}<br> include_graphics(“<a href="https://edin.ac/37Ml3Q2" class="uri">https://edin.ac/37Ml3Q2</a>”)<br> ``` </code>
+<code> ```{r fig.align=“left”}<br> include_graphics(“<a
+href="https://edin.ac/37Ml3Q2"
+class="uri">https://edin.ac/37Ml3Q2</a>”)<br> ``` </code>
 </div>
 <p><br></p>
 <div class="layout-chunk" data-layout="l-body">
@@ -2607,7 +2669,9 @@ Lessons
 <p><img src="https://edin.ac/37Ml3Q2" width="150px" style="display: block; margin: auto auto auto 0;" /></p>
 </div>
 <div class="spc1">
-<code> ```{r fig.align=“center”}<br> include_graphics(“<a href="https://edin.ac/37Ml3Q2" class="uri">https://edin.ac/37Ml3Q2</a>”)<br> ``` </code>
+<code> ```{r fig.align=“center”}<br> include_graphics(“<a
+href="https://edin.ac/37Ml3Q2"
+class="uri">https://edin.ac/37Ml3Q2</a>”)<br> ``` </code>
 </div>
 <p><br></p>
 <div class="layout-chunk" data-layout="l-body">
@@ -2619,7 +2683,9 @@ Lessons
 <p><img src="https://edin.ac/37Ml3Q2" width="150px" style="display: block; margin: auto;" /></p>
 </div>
 <div class="spc1">
-<code> ```{r fig.align=“right”}<br> include_graphics(“<a href="https://edin.ac/37Ml3Q2" class="uri">https://edin.ac/37Ml3Q2</a>”)<br> ``` </code>
+<code> ```{r fig.align=“right”}<br> include_graphics(“<a
+href="https://edin.ac/37Ml3Q2"
+class="uri">https://edin.ac/37Ml3Q2</a>”)<br> ``` </code>
 </div>
 <p><br></p>
 <div class="layout-chunk" data-layout="l-body">
@@ -2631,15 +2697,21 @@ Lessons
 <p><img src="https://edin.ac/37Ml3Q2" width="150px" style="display: block; margin: auto 0 auto auto;" /></p>
 </div>
 <h2 id="captions">Captions</h2>
-<p>We can include captions for an image or a plot by using the <code>fig.cap</code> option. Note that this needs a separate code-chunk if you want different captions for each image.</p>
+<p>We can include captions for an image or a plot by using the
+<code>fig.cap</code> option. Note that this needs a separate code-chunk
+if you want different captions for each image.</p>
 <p>Writing this:</p>
 <div class="spc1">
-<code> ```{r fig.cap=“Counts of penguins of different species”}<br> library(palmerpenguins)<br> barplot(table(penguins$species))<br> ``` </code>
+<code> ```{r fig.cap=“Counts of penguins of different species”}<br>
+library(palmerpenguins)<br> barplot(table(penguins$species))<br> ```
+</code>
 </div>
 <p><br></p>
 <br>
 <div class="spc1">
-<code> ```{r fig.cap=“a picture of a brain…”}<br> include_graphics(“<a href="https://edin.ac/37Ml3Q2" class="uri">https://edin.ac/37Ml3Q2</a>”)<br> ``` </code>
+<code> ```{r fig.cap=“a picture of a brain…”}<br> include_graphics(“<a
+href="https://edin.ac/37Ml3Q2"
+class="uri">https://edin.ac/37Ml3Q2</a>”)<br> ``` </code>
 </div>
 <p><br></p>
 <p>Compiles to this:</p>
@@ -2649,7 +2721,7 @@ Lessons
 <span class='fu'><a href='https://rdrr.io/r/graphics/barplot.html'>barplot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='va'>penguins</span><span class='op'>$</span><span class='va'>species</span><span class='op'>)</span><span class='op'>)</span>
 </code></pre>
 </div>
-<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-12"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-12"></span>
 <img src="06-figs_files/figure-html5/unnamed-chunk-12-1.png" alt="Counts of penguins of different species" width="624" />
 <p class="caption">
 Figure 1: Counts of penguins of different species
@@ -2661,7 +2733,7 @@ Figure 1: Counts of penguins of different species
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/pkg/knitr/man/include_graphics.html'>include_graphics</a></span><span class='op'>(</span><span class='st'>"https://edin.ac/37Ml3Q2"</span><span class='op'>)</span>
 </code></pre>
 </div>
-<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-13"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-13"></span>
 <img src="https://edin.ac/37Ml3Q2" alt="a picture of a brain..."  />
 <p class="caption">
 Figure 2: a picture of a brain…
@@ -2669,27 +2741,38 @@ Figure 2: a picture of a brain…
 </div>
 </div>
 <h1 id="multiple-figures">Multiple Figures</h1>
-<p>For arranging multiple plots created in GGplot, please see the <a href="https://patchwork.data-imaginist.com/">patchwork package</a>. It allows you to combine plots in various different ways.</p>
+<p>For arranging multiple plots created in GGplot, please see the <a
+href="https://patchwork.data-imaginist.com/">patchwork package</a>. It
+allows you to combine plots in various different ways.</p>
 <h1 id="figures-tables">Figures &amp; Tables</h1>
-<p>Arranging figures and tables side-by-side in RMarkdown can be a bit of a pain. The easiest way (only when compiling to .html) is to include write some quick html code.</p>
+<p>Arranging figures and tables side-by-side in RMarkdown can be a bit
+of a pain. The easiest way (only when compiling to .html) is to include
+write some quick html code.</p>
 <div class="panelset">
 <section id="writing-this" class="panel">
 <h4>Writing this:</h4>
-<p>&lt;div style=“display: inline-block; max-width: 45%; vertical-align: top;”&gt;</p>
+<p>&lt;div style=“display: inline-block; max-width: 45%; vertical-align:
+top;”&gt;</p>
 <div class="spc1">
-<p><code> ```{r mychunkname, echo = FALSE}<br> library(knitr)<br> pass_scores &lt;- read.csv(“<a href="https://edin.ac/2wJgYwL" class="uri">https://edin.ac/2wJgYwL</a>”)<br> kable(table(pass_scores$school))<br> ``` </code><br></p>
+<p><code> ```{r mychunkname, echo = FALSE}<br> library(knitr)<br>
+pass_scores &lt;- read.csv(“<a href="https://edin.ac/2wJgYwL"
+class="uri">https://edin.ac/2wJgYwL</a>”)<br>
+kable(table(pass_scores$school))<br> ``` </code><br></p>
 </div>
 <p>&lt;/div&gt;</p>
-<p>&lt;div style=“display: inline-block; max-width: 45%; vertical-align: top;”&gt;</p>
+<p>&lt;div style=“display: inline-block; max-width: 45%; vertical-align:
+top;”&gt;</p>
 <div class="spc1">
-<p><code> ```{r mychunkname2, echo = FALSE}<br> barplot(table(pass_scores$school))<br> ``` </code><br></p>
+<p><code> ```{r mychunkname2, echo = FALSE}<br>
+barplot(table(pass_scores$school))<br> ``` </code><br></p>
 </div>
 <p>&lt;/div&gt;</p>
 </section>
 <section id="will-compile-to-this" class="panel">
 <h4>Will compile to this:</h4>
 <div>
-<div style="display: inline-block; max-width: 45%; vertical-align: top; margin: 10px">
+<div
+style="display: inline-block; max-width: 45%; vertical-align: top; margin: 10px">
 <div class="layout-chunk" data-layout="l-body">
 <table>
 <thead>
@@ -2731,7 +2814,8 @@ Figure 2: a picture of a brain…
 </table>
 </div>
 </div>
-<div style="display: inline-block; max-width: 45%; vertical-align: top; margin: 10px">
+<div
+style="display: inline-block; max-width: 45%; vertical-align: top; margin: 10px">
 <div class="layout-chunk" data-layout="l-body">
 <p><img src="06-figs_files/figure-html5/unnamed-chunk-15-1.png" width="624" style="display: block; margin: auto;" /></p>
 </div>
@@ -2739,7 +2823,8 @@ Figure 2: a picture of a brain…
 </div>
 </section>
 </div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

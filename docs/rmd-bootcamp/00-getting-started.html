@@ -50,16 +50,17 @@ pre.numberSource code > span > a:first-child::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {   }
+  { color: #00769e; background-color: #f1f3f5; }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
+code span { color: #00769e; } /* Normal */
 code span.al { color: #ad0000; } /* Alert */
 code span.an { color: #5e5e5e; } /* Annotation */
-code span.at { color: #20794d; } /* Attribute */
+code span.at { color: #657422; } /* Attribute */
 code span.bn { color: #ad0000; } /* BaseN */
 code span.bu { } /* BuiltIn */
-code span.cf { color: #007ba5; } /* ControlFlow */
+code span.cf { color: #00769e; } /* ControlFlow */
 code span.ch { color: #20794d; } /* Char */
 code span.cn { color: #8f5902; } /* Constant */
 code span.co { color: #5e5e5e; } /* Comment */
@@ -73,17 +74,18 @@ code span.fl { color: #ad0000; } /* Float */
 code span.fu { color: #4758ab; } /* Function */
 code span.im { } /* Import */
 code span.in { color: #5e5e5e; } /* Information */
-code span.kw { color: #007ba5; } /* Keyword */
+code span.kw { color: #00769e; } /* Keyword */
 code span.op { color: #5e5e5e; } /* Operator */
-code span.ot { color: #007ba5; } /* Other */
+code span.ot { color: #00769e; } /* Other */
 code span.pp { color: #ad0000; } /* Preprocessor */
-code span.sc { color: #20794d; } /* SpecialChar */
+code span.sc { color: #5e5e5e; } /* SpecialChar */
 code span.ss { color: #20794d; } /* SpecialString */
 code span.st { color: #20794d; } /* String */
 code span.va { color: #111111; } /* Variable */
 code span.vs { color: #20794d; } /* VerbatimString */
 code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
+
 
   <!--radix_placeholder_meta_tags-->
   <title>RMarkdown: Getting started</title>
@@ -452,7 +454,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   </style>
 
-  <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+  <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
   <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
   <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
   <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
@@ -1024,10 +1026,6 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     position: relative;
     margin-bottom: 2.5em;
     margin-top: 1.5em;
-  }
-
-  .figure img {
-    width: 100%;
   }
 
   .figure .caption {
@@ -1859,7 +1857,16 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
       // hoverable references
       $('span.citation[data-cites]').each(function() {
-        var refHtml = $('#ref-' + $(this).attr('data-cites')).html();
+        if ($(this).children()[0].nodeName == "D-FOOTNOTE") {
+          var fn = $(this).children()[0]
+          $(this).html(fn.shadowRoot.querySelector("sup"))
+          $(this).id = fn.id
+          fn.remove()
+        }
+        var refs = $(this).attr('data-cites').split(" ");
+        var refHtml = refs.map(function(ref) {
+          return "<p>" + $('#ref-' + ref).html() + "</p>";
+        }).join("\n");
         window.tippy(this, {
           allowHTML: true,
           content: refHtml,
@@ -1870,6 +1877,31 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
           placement: 'bottom-start'
         });
       });
+
+      // fix footnotes in tables (#411)
+      // replacing broken distill.pub feature
+      $('table d-footnote').each(function() {
+        // we replace internal showAtNode methode which is triggered when hovering a footnote
+        this.hoverBox.showAtNode = function(node) {
+          // ported from https://github.com/distillpub/template/pull/105/files
+          calcOffset = function(elem) {
+              let x = elem.offsetLeft;
+              let y = elem.offsetTop;
+              // Traverse upwards until an `absolute` element is found or `elem`
+              // becomes null.
+              while (elem = elem.offsetParent && elem.style.position != 'absolute') {
+                  x += elem.offsetLeft;
+                  y += elem.offsetTop;
+              }
+
+              return { left: x, top: y };
+          }
+          // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+          const bbox = node.getBoundingClientRect();
+          const offset = calcOffset(node);
+          this.show([offset.left + bbox.width, offset.top + bbox.height]);
+        }
+      })
 
       // clear polling timer
       clearInterval(tid);
@@ -1969,6 +2001,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // mark non-body figures created by knitr chunks as 100% width
     $('.layout-chunk').each(function(i, val) {
       var figures = $(this).find('img, .html-widget');
+      // ignore leaflet img layers (#106)
+      figures = figures.filter(':not(img[class*="leaflet"])')
       if ($(this).attr('data-layout') !== "l-body") {
         figures.css('width', '100%');
       } else {
@@ -1991,7 +2025,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // get rid of index.html references in header
     if (window.location.protocol !== "file:") {
       $('.distill-site-header a[href]').each(function(i,val) {
-        $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+        $(this).attr('href', $(this).attr('href').replace(/^index[.]html/, "./"));
       });
     }
 
@@ -2372,7 +2406,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     color: var(--hover-color, white);
   }</style>
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.8/header-attrs.js"></script>
+  <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
   <link href="site_libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
   <script src="site_libs/panelset-0.2.6/panelset.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
@@ -2451,7 +2485,8 @@ Lessons
 <ul>
 <li><a href="#prelude">Prelude</a></li>
 <li><a href="#what-you-need">What you need</a></li>
-<li><a href="#experience-with-rrstudio">Experience with R/Rstudio</a></li>
+<li><a href="#experience-with-rrstudio">Experience with
+R/Rstudio</a></li>
 </ul>
 </nav>
 </div>
@@ -2459,49 +2494,71 @@ Lessons
 
 </div>
 <h2 id="prelude">Prelude</h2>
-<p>Writing scientific and statistical reports can be a laborious process. Typically, data analysis has been conducted using one piece of statistical analysis software, and the writing process takes place in another (e.g. Microsoft Word). This means the author needs to get the information from the analysis software into the word processing software. This introduces a lot of room for error (e.g. you write the wrong numbers in your paper), and even more room for frustration (your analysis changes slightly and all your numbers change, meaning you have to re-copy everything across). RMarkdown aims to solve this, by allowing you to combine your analysis and write-up in one, fully reproducible document.</p>
+<p>Writing scientific and statistical reports can be a laborious
+process. Typically, data analysis has been conducted using one piece of
+statistical analysis software, and the writing process takes place in
+another (e.g. Microsoft Word). This means the author needs to get the
+information from the analysis software into the word processing
+software. This introduces a lot of room for error (e.g. you write the
+wrong numbers in your paper), and even more room for frustration (your
+analysis changes slightly and all your numbers change, meaning you have
+to re-copy everything across). RMarkdown aims to solve this, by allowing
+you to combine your analysis and write-up in one, fully reproducible
+document.</p>
 <h2 id="what-you-need">What you need</h2>
 <ol type="1">
 <li><strong>A laptop</strong></li>
 <li><strong>R and Rstudio</strong><br />
-Either a locally installed version of R and RStudio on your laptop, or access to RStudio on a server.</li>
-<li>Very basic knowledge of programming in R <strong>(see below).</strong></li>
+Either a locally installed version of R and RStudio on your laptop, or
+access to RStudio on a server.</li>
+<li>Very basic knowledge of programming in R <strong>(see
+below).</strong></li>
 <li><strong>Active learning</strong><br />
-Just reading the material won’t be enough, you need to type along the code and get familiar with errors.</li>
+Just reading the material won’t be enough, you need to type along the
+code and get familiar with errors.</li>
 <li><strong>Willingness to learn</strong><br />
-If you approach the material with an inquisitive attitude, it will be easier to learn.</li>
+If you approach the material with an inquisitive attitude, it will be
+easier to learn.</li>
 </ol>
 <h2 id="experience-with-rrstudio">Experience with R/Rstudio</h2>
-<p>This course assumes that the reader has had some experience of using RStudio and programming in R. For an indicator, we will assume that the reader is familiar with the code below and understands what each line will do.</p>
+<p>This course assumes that the reader has had some experience of using
+RStudio and programming in R. For an indicator, we will assume that the
+reader is familiar with the code below and understands what each line
+will do.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span>
-<span class='va'>tipjoke</span> <span class='op'>&lt;-</span> <span class='fu'>read_csv</span><span class='op'>(</span><span class='st'>'https://uoepsy.github.io/data/TipJoke.csv'</span><span class='op'>)</span>
+<span class='va'>tipjoke</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span><span class='st'>'https://uoepsy.github.io/data/TipJoke.csv'</span><span class='op'>)</span>
 <span class='va'>tiptable</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='va'>tipjoke</span><span class='op'>$</span><span class='va'>Card</span>, <span class='va'>tipjoke</span><span class='op'>$</span><span class='va'>Tip</span><span class='op'>)</span>
 <span class='va'>tiptable</span>
 
-<span class='va'>pass_scores</span> <span class='op'>&lt;-</span> <span class='fu'>read_csv</span><span class='op'>(</span><span class='st'>"https://edin.ac/2wJgYwL"</span><span class='op'>)</span> 
+<span class='va'>pass_scores</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span><span class='st'>"https://edin.ac/2wJgYwL"</span><span class='op'>)</span> 
 <span class='fu'><a href='https://rdrr.io/r/graphics/barplot.html'>barplot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='va'>pass_scores</span><span class='op'>$</span><span class='va'>school</span><span class='op'>)</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/stats/t.test.html'>t.test</a></span><span class='op'>(</span><span class='va'>pass_scores</span><span class='op'>$</span><span class='va'>PASS</span>, mu <span class='op'>=</span> <span class='fl'>33</span>, alternative <span class='op'>=</span> <span class='st'>"less"</span><span class='op'>)</span>
-<span class='va'>pass_scores</span> <span class='op'>%&gt;%</span> <span class='fu'>group_by</span><span class='op'>(</span><span class='va'>school</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>summarise</span><span class='op'>(</span>
+<span class='va'>pass_scores</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span><span class='op'>(</span><span class='va'>school</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span>
+  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></span><span class='op'>(</span>
     meanPASS <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>PASS</span><span class='op'>)</span>,
     sdPASS <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/sd.html'>sd</a></span><span class='op'>(</span><span class='va'>PASS</span><span class='op'>)</span>
   <span class='op'>)</span>
 </code></pre>
 </div>
 </div>
-<p>We also assume that the reader is familiar with the general setup of the RStudio IDE (Figure <a href="#fig:ide">1</a>).<br />
-Writing in RMarkdown is similar to writing in an R Script - it involves writing code in the Editor pane, which can then be sent to the Console to be evaluated. The only difference is the addition of the written text component in the file we have open in the Editor.</p>
+<p>We also assume that the reader is familiar with the general setup of
+the RStudio IDE (Figure <a href="#fig:ide">1</a>).<br />
+Writing in RMarkdown is similar to writing in an R Script - it involves
+writing code in the Editor pane, which can then be sent to the Console
+to be evaluated. The only difference is the addition of the written text
+component in the file we have open in the Editor.</p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="figure" style="text-align: center"><span id="fig:ide"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:ide"></span>
 <img src="images/rstudio-panes.png" alt="RStudio Interface" width="804" />
 <p class="caption">
 Figure 1: RStudio Interface
 </p>
 </div>
 </div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
