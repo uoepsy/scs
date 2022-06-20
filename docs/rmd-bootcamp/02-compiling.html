@@ -50,16 +50,17 @@ pre.numberSource code > span > a:first-child::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {   }
+  { color: #00769e; background-color: #f1f3f5; }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
+code span { color: #00769e; } /* Normal */
 code span.al { color: #ad0000; } /* Alert */
 code span.an { color: #5e5e5e; } /* Annotation */
-code span.at { color: #20794d; } /* Attribute */
+code span.at { color: #657422; } /* Attribute */
 code span.bn { color: #ad0000; } /* BaseN */
 code span.bu { } /* BuiltIn */
-code span.cf { color: #007ba5; } /* ControlFlow */
+code span.cf { color: #00769e; } /* ControlFlow */
 code span.ch { color: #20794d; } /* Char */
 code span.cn { color: #8f5902; } /* Constant */
 code span.co { color: #5e5e5e; } /* Comment */
@@ -73,17 +74,18 @@ code span.fl { color: #ad0000; } /* Float */
 code span.fu { color: #4758ab; } /* Function */
 code span.im { } /* Import */
 code span.in { color: #5e5e5e; } /* Information */
-code span.kw { color: #007ba5; } /* Keyword */
+code span.kw { color: #00769e; } /* Keyword */
 code span.op { color: #5e5e5e; } /* Operator */
-code span.ot { color: #007ba5; } /* Other */
+code span.ot { color: #00769e; } /* Other */
 code span.pp { color: #ad0000; } /* Preprocessor */
-code span.sc { color: #20794d; } /* SpecialChar */
+code span.sc { color: #5e5e5e; } /* SpecialChar */
 code span.ss { color: #20794d; } /* SpecialString */
 code span.st { color: #20794d; } /* String */
 code span.va { color: #111111; } /* Variable */
 code span.vs { color: #20794d; } /* VerbatimString */
 code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
+
 
   <!--radix_placeholder_meta_tags-->
   <title>RMarkdown: Compiling RMarkdown Documents</title>
@@ -452,7 +454,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   </style>
 
-  <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+  <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
   <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
   <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
   <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
@@ -1024,10 +1026,6 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     position: relative;
     margin-bottom: 2.5em;
     margin-top: 1.5em;
-  }
-
-  .figure img {
-    width: 100%;
   }
 
   .figure .caption {
@@ -1859,7 +1857,16 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
       // hoverable references
       $('span.citation[data-cites]').each(function() {
-        var refHtml = $('#ref-' + $(this).attr('data-cites')).html();
+        if ($(this).children()[0].nodeName == "D-FOOTNOTE") {
+          var fn = $(this).children()[0]
+          $(this).html(fn.shadowRoot.querySelector("sup"))
+          $(this).id = fn.id
+          fn.remove()
+        }
+        var refs = $(this).attr('data-cites').split(" ");
+        var refHtml = refs.map(function(ref) {
+          return "<p>" + $('#ref-' + ref).html() + "</p>";
+        }).join("\n");
         window.tippy(this, {
           allowHTML: true,
           content: refHtml,
@@ -1870,6 +1877,31 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
           placement: 'bottom-start'
         });
       });
+
+      // fix footnotes in tables (#411)
+      // replacing broken distill.pub feature
+      $('table d-footnote').each(function() {
+        // we replace internal showAtNode methode which is triggered when hovering a footnote
+        this.hoverBox.showAtNode = function(node) {
+          // ported from https://github.com/distillpub/template/pull/105/files
+          calcOffset = function(elem) {
+              let x = elem.offsetLeft;
+              let y = elem.offsetTop;
+              // Traverse upwards until an `absolute` element is found or `elem`
+              // becomes null.
+              while (elem = elem.offsetParent && elem.style.position != 'absolute') {
+                  x += elem.offsetLeft;
+                  y += elem.offsetTop;
+              }
+
+              return { left: x, top: y };
+          }
+          // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+          const bbox = node.getBoundingClientRect();
+          const offset = calcOffset(node);
+          this.show([offset.left + bbox.width, offset.top + bbox.height]);
+        }
+      })
 
       // clear polling timer
       clearInterval(tid);
@@ -1969,6 +2001,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // mark non-body figures created by knitr chunks as 100% width
     $('.layout-chunk').each(function(i, val) {
       var figures = $(this).find('img, .html-widget');
+      // ignore leaflet img layers (#106)
+      figures = figures.filter(':not(img[class*="leaflet"])')
       if ($(this).attr('data-layout') !== "l-body") {
         figures.css('width', '100%');
       } else {
@@ -1991,7 +2025,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // get rid of index.html references in header
     if (window.location.protocol !== "file:") {
       $('.distill-site-header a[href]').each(function(i,val) {
-        $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+        $(this).attr('href', $(this).attr('href').replace(/^index[.]html/, "./"));
       });
     }
 
@@ -2372,7 +2406,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     color: var(--hover-color, white);
   }</style>
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.8/header-attrs.js"></script>
+  <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
   <link href="site_libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
   <script src="site_libs/panelset-0.2.6/panelset.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
@@ -2449,9 +2483,11 @@ Lessons
 <nav class="l-text toc figcaption" id="TOC">
 <h3>Contents</h3>
 <ul>
-<li><a href="#what-does-it-mean-to-compile-a-document">What does it mean to “compile” a document?</a></li>
+<li><a href="#what-does-it-mean-to-compile-a-document">What does it mean
+to “compile” a document?</a></li>
 <li><a href="#compiled-files">Compiled Files</a></li>
-<li><a href="#compiling-and-sessionsenvironments">Compiling and Sessions/Environments</a></li>
+<li><a href="#compiling-and-sessionsenvironments">Compiling and
+Sessions/Environments</a></li>
 <li><a href="#the-setup-chunk">The “setup” chunk</a></li>
 </ul>
 </nav>
@@ -2479,57 +2515,110 @@ Lessons
 }
 </style>
 </div>
-<h2 id="what-does-it-mean-to-compile-a-document">What does it mean to “compile” a document?</h2>
+<h2 id="what-does-it-mean-to-compile-a-document">What does it mean to
+“compile” a document?</h2>
 <div class="layout-chunk" data-layout="l-body">
-<div class="figure" style="text-align: center"><span id="fig:render"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:render"></span>
 <img src="images/render.png" alt="Rendering (from https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)" width="308" />
 <p class="caption">
-Figure 1: Rendering (from <a href="https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf" class="uri">https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf</a>)
+Figure 1: Rendering (from <a
+href="https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf"
+class="uri">https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf</a>)
 </p>
 </div>
 </div>
-<p>Often, when talking about “compiling” RMarkdown documents, you will find different words used for this process, such as “compiling”, “rendering”, and “knitting”.</p>
-<p>The basic idea is that we are turning the <strong>.rmd</strong> file we are editing in RStudio into something much more reader-friendly, such as a <strong>.pdf</strong>, or an <strong>.html</strong>, or even a word file <strong>.docx</strong>.</p>
+<p>Often, when talking about “compiling” RMarkdown documents, you will
+find different words used for this process, such as “compiling”,
+“rendering”, and “knitting”.</p>
+<p>The basic idea is that we are turning the <strong>.rmd</strong> file
+we are editing in RStudio into something much more reader-friendly, such
+as a <strong>.pdf</strong>, or an <strong>.html</strong>, or even a word
+file <strong>.docx</strong>.</p>
 <div class="layout-chunk" data-layout="l-body">
 <p><img src="images/kniticon.png" width="75px" style="display: block; margin: auto auto auto 0;" /></p>
 </div>
-<p>If you open up the <strong>.rmd</strong> file from <a href="01-basics.html">Lesson 1</a>, and click the “knit” icon at the top of the document, you see lots of stuff happening below, and then a nicely formatted document will pop-up. (<strong>Note:</strong> If you have not already saved your RMarkdown document (hopefully you have!), then when you click “knit”, it will prompt you to save it first.)</p>
+<p>If you open up the <strong>.rmd</strong> file from <a
+href="01-basics.html">Lesson 1</a>, and click the “knit” icon at the top
+of the document, you see lots of stuff happening below, and then a
+nicely formatted document will pop-up. (<strong>Note:</strong> If you
+have not already saved your RMarkdown document (hopefully you have!),
+then when you click “knit”, it will prompt you to save it first.)</p>
 <center>
 <strong>Compiling a document</strong><br />
-<video width="320" height="240" controls> <source src="vids/knit1.mp4" type="video/mp4"> </video>
+<video width="320" height="240" controls>
+<source src="vids/knit1.mp4" type="video/mp4"> </video>
 </center>
 <div class="rtip">
-<p>You may find that the document pops up in a separate window, or in the “viewer” pane in the bottom right of RStudio.<br />
-You can control this behaviour by looking in the top menu of RStudio for <strong>“Tools” &gt; “Global Options” &gt; “RMarkdown” &gt; “Show output preview in:”</strong>.</p>
+<p>You may find that the document pops up in a separate window, or in
+the “viewer” pane in the bottom right of RStudio.<br />
+You can control this behaviour by looking in the top menu of RStudio for
+<strong>“Tools” &gt; “Global Options” &gt; “RMarkdown” &gt; “Show output
+preview in:”</strong>.</p>
 </div>
 <h2 id="compiled-files">Compiled Files</h2>
-<p>The compiled file will be in the same folder as where you have saved your <strong>.rmd</strong> file. If you are using an “Project”, or have set your working directory using <code>setwd()</code> (see <a href="https://uoepsy.github.io/r-bootcamp/02-data.html#directories">r-bootcamp Lesson 2</a>) then you can fine these easily in the Files tab of RStudio. You can also find these in your file-browser that you use to find all your other files on your computer.</p>
+<p>The compiled file will be in the same folder as where you have saved
+your <strong>.rmd</strong> file. If you are using an “Project”, or have
+set your working directory using <code>setwd()</code> (see <a
+href="https://uoepsy.github.io/r-bootcamp/02-data.html#directories">r-bootcamp
+Lesson 2</a>) then you can fine these easily in the Files tab of
+RStudio. You can also find these in your file-browser that you use to
+find all your other files on your computer.</p>
 <center>
-<strong>Locating .rmd and compiled document when using a Project</strong><br />
-<video width="320" height="240" controls> <source src="vids/files.mp4" type="video/mp4"> </video>
+<strong>Locating .rmd and compiled document when using a
+Project</strong><br />
+<video width="320" height="240" controls>
+<source src="vids/files.mp4" type="video/mp4"> </video>
 </center>
-<p>You should now have <strong>TWO</strong> files on your computer with the same name but one is an <strong>.Rmd</strong> and one is a <strong>.html</strong>. You could email the <strong>.html</strong> file to someone and they could open it in their web browser. The <strong>.Rmd</strong> file can only be opened and understood by someone who has access to R.</p>
-<h2 id="compiling-and-sessionsenvironments">Compiling and Sessions/Environments</h2>
+<p>You should now have <strong>TWO</strong> files on your computer with
+the same name but one is an <strong>.Rmd</strong> and one is a
+<strong>.html</strong>. You could email the <strong>.html</strong> file
+to someone and they could open it in their web browser. The
+<strong>.Rmd</strong> file can only be opened and understood by someone
+who has access to R.</p>
+<h2 id="compiling-and-sessionsenvironments">Compiling and
+Sessions/Environments</h2>
 <div class="imp">
-<p>When an RMarkdown document gets compiled, it does so as a <strong>self-contained process.</strong> This ensures reproducibility!</p>
-<p>It doesn’t matter what you can see in your Environment, nor what packages you have loaded.<br />
+<p>When an RMarkdown document gets compiled, it does so as a
+<strong>self-contained process.</strong> This ensures
+reproducibility!</p>
+<p>It doesn’t matter what you can see in your Environment, nor what
+packages you have loaded.<br />
 What matters is what is <strong>in</strong> the RMarkdown document.</p>
-<p>When you click “knit”, the lines of code in your RMarkdown document will be evaluated one-by-one, and the document must contain <strong>everything</strong> required to evaluate each line.</p>
+<p>When you click “knit”, the lines of code in your RMarkdown document
+will be evaluated one-by-one, and the document must contain
+<strong>everything</strong> required to evaluate each line.</p>
 <p>For example:</p>
 <ul>
-<li>if you have not got a line <em>in your document</em> that loads the tidyverse packages, then you will not be able to use functions like <code>group_by()</code>,<code>filter</code>,<code>%&gt;%</code> etc in the document, because it won’t know where to find them.<br />
+<li>if you have not got a line <em>in your document</em> that loads the
+tidyverse packages, then you will not be able to use functions like
+<code>group_by()</code>,<code>filter</code>,<code>%&gt;%</code> etc in
+the document, because it won’t know where to find them.<br />
 </li>
-<li>if you have not got the line that loads the tidyverse packages <strong>before</strong> you use functions like <code>group_by()</code>,<code>filter</code>,<code>%&gt;%</code> etc, then it won’t know where to find them.</li>
+<li>if you have not got the line that loads the tidyverse packages
+<strong>before</strong> you use functions like
+<code>group_by()</code>,<code>filter</code>,<code>%&gt;%</code> etc,
+then it won’t know where to find them.</li>
 </ul>
-<p>Where is the RMarkdown looking for objects/functions, if not your environment? It’s looking in its own environment!</p>
+<p>Where is the RMarkdown looking for objects/functions, if not your
+environment? It’s looking in its own environment!</p>
 </div>
 <center>
-<strong>Demonstration of compiling without defining objects</strong><br />
-<video width="320" height="240" controls> <source src="vids/compilingenv.mp4" type="video/mp4"> </video>
+<strong>Demonstration of compiling without defining
+objects</strong><br />
+<video width="320" height="240" controls>
+<source src="vids/compilingenv.mp4" type="video/mp4"> </video>
 </center>
 <h2 id="the-setup-chunk">The “setup” chunk</h2>
-<p>Because compiling an RMarkdown document requires everything necessary for all the code to run <strong>without errors</strong> to be included in the document and in the correct order, there is an optimum way to structure your document.<br />
-Immediately after the metadata (title, author etc), we specify the “setup” chunk (see below). In the setup chunk, we typically load <strong>all</strong> the packages we rely on in the rest of the document, so that they get loaded first.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> It is also typical to use this chunk to read in your data.<br />
+<p>Because compiling an RMarkdown document requires everything necessary
+for all the code to run <strong>without errors</strong> to be included
+in the document and in the correct order, there is an optimum way to
+structure your document.<br />
+Immediately after the metadata (title, author etc), we specify the
+“setup” chunk (see below). In the setup chunk, we typically load
+<strong>all</strong> the packages we rely on in the rest of the
+document, so that they get loaded first.<a href="#fn1"
+class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> It
+is also typical to use this chunk to read in your data.<br />
 You can see an example below.</p>
 <div class="frame">
 <pre><code>---
@@ -2539,11 +2628,15 @@ date: &quot;13/08/2021&quot;
 output: html_document
 ---</code></pre>
 <div class="spc1">
-<code> ```{r setup, include = FALSE}<br> library(tidyverse)<br> library(palmerpenguins)<br> somedata &lt;- read_csv(“<a href="https://edin.ac/2wJgYwL" class="uri">https://edin.ac/2wJgYwL</a>”)<br> ``` </code>
+<code> ```{r setup, include = FALSE}<br> library(tidyverse)<br>
+library(palmerpenguins)<br> somedata &lt;- read_csv(“<a
+href="https://edin.ac/2wJgYwL"
+class="uri">https://edin.ac/2wJgYwL</a>”)<br> ``` </code>
 </div>
 </div>
 <div class="imp">
-Note we now have some more stuff inside the brackets which start our code-chunk.<br />
+Note we now have some more stuff inside the brackets which start our
+code-chunk.<br />
 Instead of
 <div class="spc1">
 <code>```{r}</code>
@@ -2552,18 +2645,27 @@ we now have
 <div class="spc1">
 <code>```{r setup, include = FALSE}</code>
 </div>
-The first bit, <code>setup</code> is simply the name of our code-chunk. We can call it anything we want, for instance:<br />
-
+The first bit, <code>setup</code> is simply the name of our code-chunk.
+We can call it anything we want, for instance:<br />
 <div class="spc1">
 <code>```{r peppapig}</code>
 </div>
-<p>The second bit, the <code>include = FALSE</code> is what is known as a “chunk-option”, and we will get to these later on. What this does is basically mean that neither this chunk of code nor its output will be visible in the compiled document.</p>
+<p>The second bit, the <code>include = FALSE</code> is what is known as
+a “chunk-option”, and we will get to these later on. What this does is
+basically mean that neither this chunk of code nor its output will be
+visible in the compiled document.</p>
 </div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
-<section class="footnotes" role="doc-endnotes">
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<section class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
 <hr />
 <ol>
-<li id="fn1" role="doc-endnote"><p>Don’t use <code>install.packages()</code> here - or it will re-install the package every time you compile. Just use <code>install.packages()</code> in the console.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1" role="doc-endnote"><p>Don’t use
+<code>install.packages()</code> here - or it will re-install the package
+every time you compile. Just use <code>install.packages()</code> in the
+console.<a href="#fnref1" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 <!--radix_placeholder_article_footer-->

@@ -50,16 +50,17 @@ pre.numberSource code > span > a:first-child::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {   }
+  { color: #00769e; background-color: #f1f3f5; }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
+code span { color: #00769e; } /* Normal */
 code span.al { color: #ad0000; } /* Alert */
 code span.an { color: #5e5e5e; } /* Annotation */
-code span.at { color: #20794d; } /* Attribute */
+code span.at { color: #657422; } /* Attribute */
 code span.bn { color: #ad0000; } /* BaseN */
 code span.bu { } /* BuiltIn */
-code span.cf { color: #007ba5; } /* ControlFlow */
+code span.cf { color: #00769e; } /* ControlFlow */
 code span.ch { color: #20794d; } /* Char */
 code span.cn { color: #8f5902; } /* Constant */
 code span.co { color: #5e5e5e; } /* Comment */
@@ -73,17 +74,18 @@ code span.fl { color: #ad0000; } /* Float */
 code span.fu { color: #4758ab; } /* Function */
 code span.im { } /* Import */
 code span.in { color: #5e5e5e; } /* Information */
-code span.kw { color: #007ba5; } /* Keyword */
+code span.kw { color: #00769e; } /* Keyword */
 code span.op { color: #5e5e5e; } /* Operator */
-code span.ot { color: #007ba5; } /* Other */
+code span.ot { color: #00769e; } /* Other */
 code span.pp { color: #ad0000; } /* Preprocessor */
-code span.sc { color: #20794d; } /* SpecialChar */
+code span.sc { color: #5e5e5e; } /* SpecialChar */
 code span.ss { color: #20794d; } /* SpecialString */
 code span.st { color: #20794d; } /* String */
 code span.va { color: #111111; } /* Variable */
 code span.vs { color: #20794d; } /* VerbatimString */
 code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
+
 
   <!--radix_placeholder_meta_tags-->
   <title>RMarkdown: Referencing in RMarkdown</title>
@@ -452,7 +454,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
   </style>
 
-  <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+  <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
   <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
   <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
   <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
@@ -1024,10 +1026,6 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     position: relative;
     margin-bottom: 2.5em;
     margin-top: 1.5em;
-  }
-
-  .figure img {
-    width: 100%;
   }
 
   .figure .caption {
@@ -1859,7 +1857,16 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
       // hoverable references
       $('span.citation[data-cites]').each(function() {
-        var refHtml = $('#ref-' + $(this).attr('data-cites')).html();
+        if ($(this).children()[0].nodeName == "D-FOOTNOTE") {
+          var fn = $(this).children()[0]
+          $(this).html(fn.shadowRoot.querySelector("sup"))
+          $(this).id = fn.id
+          fn.remove()
+        }
+        var refs = $(this).attr('data-cites').split(" ");
+        var refHtml = refs.map(function(ref) {
+          return "<p>" + $('#ref-' + ref).html() + "</p>";
+        }).join("\n");
         window.tippy(this, {
           allowHTML: true,
           content: refHtml,
@@ -1870,6 +1877,31 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
           placement: 'bottom-start'
         });
       });
+
+      // fix footnotes in tables (#411)
+      // replacing broken distill.pub feature
+      $('table d-footnote').each(function() {
+        // we replace internal showAtNode methode which is triggered when hovering a footnote
+        this.hoverBox.showAtNode = function(node) {
+          // ported from https://github.com/distillpub/template/pull/105/files
+          calcOffset = function(elem) {
+              let x = elem.offsetLeft;
+              let y = elem.offsetTop;
+              // Traverse upwards until an `absolute` element is found or `elem`
+              // becomes null.
+              while (elem = elem.offsetParent && elem.style.position != 'absolute') {
+                  x += elem.offsetLeft;
+                  y += elem.offsetTop;
+              }
+
+              return { left: x, top: y };
+          }
+          // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+          const bbox = node.getBoundingClientRect();
+          const offset = calcOffset(node);
+          this.show([offset.left + bbox.width, offset.top + bbox.height]);
+        }
+      })
 
       // clear polling timer
       clearInterval(tid);
@@ -1969,6 +2001,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // mark non-body figures created by knitr chunks as 100% width
     $('.layout-chunk').each(function(i, val) {
       var figures = $(this).find('img, .html-widget');
+      // ignore leaflet img layers (#106)
+      figures = figures.filter(':not(img[class*="leaflet"])')
       if ($(this).attr('data-layout') !== "l-body") {
         figures.css('width', '100%');
       } else {
@@ -1991,7 +2025,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // get rid of index.html references in header
     if (window.location.protocol !== "file:") {
       $('.distill-site-header a[href]').each(function(i,val) {
-        $(this).attr('href', $(this).attr('href').replace("index.html", "./"));
+        $(this).attr('href', $(this).attr('href').replace(/^index[.]html/, "./"));
       });
     }
 
@@ -2372,7 +2406,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     color: var(--hover-color, white);
   }</style>
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.8/header-attrs.js"></script>
+  <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
   <link href="site_libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
   <script src="site_libs/panelset-0.2.6/panelset.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
@@ -2449,11 +2483,13 @@ Lessons
 <nav class="l-text toc figcaption" id="TOC">
 <h3>Contents</h3>
 <ul>
-<li><a href="#pre-requisites-to-enable-referencing">Pre-requisites to enable referencing</a></li>
+<li><a href="#pre-requisites-to-enable-referencing">Pre-requisites to
+enable referencing</a></li>
 <li><a href="#chunk-names">Chunk names!</a></li>
 <li><a href="#referencing-a-figure">Referencing a figure</a></li>
 <li><a href="#referencing-a-table">Referencing a table</a></li>
-<li><a href="#figures-tables-side-by-side">Figures &amp; Tables Side by Side</a></li>
+<li><a href="#figures-tables-side-by-side">Figures &amp; Tables Side by
+Side</a></li>
 </ul>
 </nav>
 </div>
@@ -2483,19 +2519,31 @@ Lessons
 }
 </style>
 </div>
-<h1 id="pre-requisites-to-enable-referencing">Pre-requisites to enable referencing</h1>
-<p>To enable cross referencing of plots, figures and tables, we need to change the output of our document slightly.</p>
+<h1 id="pre-requisites-to-enable-referencing">Pre-requisites to enable
+referencing</h1>
+<p>To enable cross referencing of plots, figures and tables, we need to
+change the output of our document slightly.</p>
 <p>We’re going to need to change the <strong>yaml:</strong></p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-2"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-2"></span>
 <img src="images/yaml.png" alt="The bit between three dashes is the `YAML`, and contains metadata about the document" width="198" />
 <p class="caption">
-Figure 1: The bit between three dashes is the <code>YAML</code>, and contains metadata about the document
+Figure 1: The bit between three dashes is the
+<code>YAML</code>, and contains metadata about the document
 </p>
 </div>
 </div>
-<p>Rather than using <code>output: html_document</code> or <code>output: pdf_document</code>, we are going to need to use some specific classes of output. The easy ones to start with are in the <strong>bookdown</strong> package.<br />
-Install the bookdown package and then change your output type to either <code>bookdown::html_document2</code> or <code>bookdown::pdf_document2</code>. This will allow us to do the various referencing of Figures and Tables detailed below.</p>
+<p>Rather than using <code>output: html_document</code> or
+<code>output: pdf_document</code>, we are going to need to use some
+specific classes of output. The easy ones to start with are in the
+<strong>bookdown</strong> package.<br />
+Install the bookdown package and then change your output type to either
+<code>bookdown::html_document2</code> or
+<code>bookdown::pdf_document2</code>. This will allow us to do the
+various referencing of Figures and Tables detailed below. (Please note,
+for referencing to work appropriately when knitting to pdf, it is
+<strong>crucial</strong> that you have tinytex installed (see <a
+href="01-basics.html#prerequisite-packages">Lesson 1</a>)).</p>
 <pre><code>---
 title: &quot;this is my title&quot;
 author: &quot;I am the author&quot;
@@ -2503,62 +2551,82 @@ date: &quot;13/08/2021&quot;
 output: bookdown::html_document2
 ---</code></pre>
 <h1 id="chunk-names">Chunk names!</h1>
-<p>We reference a figure or table based on the code-chunk in which it is produced. For example, once we provide a name for the code-chunk below (“penguinplot”) we can then reference in text the Figure which has been produced by that chunk, and the numbering will be automatically sorted for us!</p>
+<p>We reference a figure or table based on the code-chunk in which it is
+produced. For example, once we provide a name for the code-chunk below
+(“penguinplot”) we can then reference in text the Figure which has been
+produced by that chunk, and the numbering will be automatically sorted
+for us!</p>
 <div class="spc1">
-<code> ```{r penguinplot, fig.cap=“Counts of penguins of different species”}<br> library(palmerpenguins)<br> barplot(table(penguins$species))<br> ``` </code>
+<code> ```{r penguinplot, fig.cap=“Counts of penguin species”}
+library(palmerpenguins)<br> barplot(table(penguins$species))<br> ```
+</code>
 </div>
 <p><br></p>
 <h1 id="referencing-a-figure">Referencing a figure</h1>
-<p>To reference a figure, we use the format \@ref(fig:<strong>chunkname</strong>), where <strong>chunkname</strong> is the name of the code-chunk that outputs our figure. You can find an example below.</p>
+<p>To reference a figure, we use the format
+\@ref(fig:<strong>chunkname</strong>), where <strong>chunkname</strong>
+is the name of the code-chunk that outputs our figure. You can find an
+example below.</p>
 <div class="panelset">
-<section id="write-this" class="panel">
-<h4>Write this:</h4>
-<pre><code>As you can see in Figure \@ref(fig:penguinplot), there are various penguins of different species</code></pre>
+<section id="writing-this" class="panel">
+<h4>Writing this:</h4>
+<pre><code>As you can see in Figure \@ref(fig:penguinplot), 
+there are various penguin species</code></pre>
 <div class="spc1">
-<code> ```{r penguinplot, fig.cap=“Counts of penguins of different species”}<br> library(palmerpenguins)<br> barplot(table(penguins$species))<br> ``` </code>
+<code> ```{r penguinplot, fig.cap=“Counts of penguin species”}
+library(palmerpenguins)<br> barplot(table(penguins$species))<br> ```
+</code>
 </div>
 <p><br></p>
 </section>
 <section id="compiles-to-this" class="panel">
 <h4>Compiles to this:</h4>
-<p>As you can see in Figure <a href="#fig:penguinplot">2</a>, there are various penguins of different species</p>
+<p>As you can see in Figure <a href="#fig:penguinplot">2</a>, there are various
+penguin species</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://allisonhorst.github.io/palmerpenguins/'>palmerpenguins</a></span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/barplot.html'>barplot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='va'>penguins</span><span class='op'>$</span><span class='va'>species</span><span class='op'>)</span><span class='op'>)</span>
 </code></pre>
 </div>
-<div class="figure" style="text-align: center"><span id="fig:penguinplot"></span>
-<img src="07-refs_files/figure-html5/penguinplot-1.png" alt="Counts of penguins of different species" width="624" />
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:penguinplot"></span>
+<img src="07-refs_files/figure-html5/penguinplot-1.png" alt="Counts of penguin species" width="624" />
 <p class="caption">
-Figure 2: Counts of penguins of different species
+Figure 2: Counts of penguin species
 </p>
 </div>
 </div>
 </section>
 </div>
 <h1 id="referencing-a-table">Referencing a table</h1>
-<p>To reference a table, we use the format \@ref(tab:<strong>chunkname</strong>), where <strong>chunkname</strong> is the name of the code-chunk that outputs our table. You can find an example below.</p>
+<p>To reference a table, we use the format
+\@ref(tab:<strong>chunkname</strong>), where <strong>chunkname</strong>
+is the name of the code-chunk that outputs our table. You can find an
+example below.</p>
 <div class="panelset">
-<section id="write-this-1" class="panel">
+<section id="write-this" class="panel">
 <h4>Write this:</h4>
-<pre><code>As you can see in Table \@ref(tab:penguinplot), there are various penguins of different species</code></pre>
+<pre><code>As you can see in Table \@ref(tab:penguinplot), 
+there are various penguin species</code></pre>
 <div class="spc1">
-<code> ```{r penguintable}<br> library(palmerpenguins)<br> knitr::kable(table(penguins$species), caption = “counts of penguins of different species”)<br> ``` </code>
+<code> ```{r penguintable}<br> library(palmerpenguins)
+knitr::kable(table(penguins$species), caption = “counts of penguin
+species”)<br> ``` </code>
 </div>
 <p><br></p>
 </section>
 <section id="compiles-to-this-1" class="panel">
 <h4>Compiles to this:</h4>
-<p>As you can see in Table <a href="#tab:penguintable">1</a>, there are various penguins of different species</p>
+<p>As you can see in Table <a href="#tab:penguintable">1</a>, there are various
+penguin species</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://allisonhorst.github.io/palmerpenguins/'>palmerpenguins</a></span><span class='op'>)</span>
-<span class='fu'>knitr</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/knitr/man/kable.html'>kable</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='va'>penguins</span><span class='op'>$</span><span class='va'>species</span><span class='op'>)</span>, caption <span class='op'>=</span> <span class='st'>"counts of penguins of different species"</span><span class='op'>)</span>
+<span class='fu'>knitr</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/knitr/man/kable.html'>kable</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='va'>penguins</span><span class='op'>$</span><span class='va'>species</span><span class='op'>)</span>, caption <span class='op'>=</span> <span class='st'>"counts of penguin species"</span><span class='op'>)</span>
 </code></pre>
 </div>
 <table>
-<caption><span id="tab:penguintable">Table 1: </span>counts of penguins of different species</caption>
+<caption><span id="tab:penguintable">Table 1: </span>counts of penguin species</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Var1</th>
@@ -2583,28 +2651,41 @@ Figure 2: Counts of penguins of different species
 </div>
 </section>
 </div>
-<h1 id="figures-tables-side-by-side">Figures &amp; Tables Side by Side</h1>
-<p>This also works when arranging figures and tables side-by-side. For instance:</p>
+<h1 id="figures-tables-side-by-side">Figures &amp; Tables Side by
+Side</h1>
+<p>This also works when arranging figures and tables side-by-side. For
+instance:</p>
 <div class="panelset">
-<section id="writing-this" class="panel">
+<section id="writing-this-1" class="panel">
 <h4>Writing this:</h4>
-<p>Oh look! A lovely plot can be found in figure \<span class="citation" data-cites="ref">@ref</span>(fig:thisismyplot). And a lovely table in Table \<span class="citation" data-cites="ref">@ref</span>(tab:thisismytable).</p>
-<p>&lt;div style=“display: inline-block; max-width: 45%; vertical-align: top;”&gt;</p>
+<p>Oh look! A lovely plot can be found in figure
+\@ref(fig:thisismyplot). And a lovely table in Table
+\@ref(tab:thisismytable).</p>
+<p>&lt;div style=“display: inline-block; max-width: 45%; vertical-align:
+top;”&gt;</p>
 <div class="spc1">
-<p><code> ```{r thisismytable, echo = FALSE}<br> library(knitr)<br> pass_scores &lt;- read.csv(“<a href="https://edin.ac/2wJgYwL" class="uri">https://edin.ac/2wJgYwL</a>”)<br> kable(table(pass_scores$school), caption=“Oh Look! A table!”)<br> ``` </code><br></p>
+<p><code> ```{r thisismytable, echo = FALSE}<br> library(knitr)
+pass_scores &lt;- read.csv(“<a href="https://edin.ac/2wJgYwL"
+class="uri">https://edin.ac/2wJgYwL</a>”)
+kable(table(pass_scores$school), caption=“Oh Look! A table!”)<br> ```
+</code><br></p>
 </div>
 <p>&lt;/div&gt;</p>
-<p>&lt;div style=“display: inline-block; max-width: 45%; vertical-align: top;”&gt;</p>
+<p>&lt;div style=“display: inline-block; max-width: 45%; vertical-align:
+top;”&gt;</p>
 <div class="spc1">
-<p><code> ```{r thisismyplot, echo = FALSE, fig.cap=“It’s a plot!”}<br> barplot(table(pass_scores$school))<br> ``` </code><br></p>
+<p><code> ```{r thisismyplot, echo = FALSE, fig.cap=“It’s a plot!”}
+barplot(table(pass_scores$school))<br> ``` </code><br></p>
 </div>
 <p>&lt;/div&gt;</p>
 </section>
 <section id="will-compile-to-this" class="panel">
 <h4>Will compile to this:</h4>
-<p>Oh look! A lovely plot can be found in figure <a href="#fig:thisismyplot">3</a>. And a lovely table in Table <a href="#tab:thisismytable">2</a>.</p>
+<p>Oh look! A lovely plot can be found in figure <a href="#fig:thisismyplot">3</a>.
+And a lovely table in Table <a href="#tab:thisismytable">2</a>.</p>
 <div>
-<div style="display: inline-block; max-width: 45%; vertical-align: top; margin: 10px">
+<div
+style="display: inline-block; max-width: 45%; vertical-align: top; margin: 10px">
 <div class="layout-chunk" data-layout="l-body">
 <table>
 <caption><span id="tab:thisismytable">Table 2: </span>This is a table!</caption>
@@ -2647,9 +2728,10 @@ Figure 2: Counts of penguins of different species
 </table>
 </div>
 </div>
-<div style="display: inline-block; max-width: 45%; vertical-align: top; margin: 10px">
+<div
+style="display: inline-block; max-width: 45%; vertical-align: top; margin: 10px">
 <div class="layout-chunk" data-layout="l-body">
-<div class="figure" style="text-align: center"><span id="fig:thisismyplot"></span>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:thisismyplot"></span>
 <img src="07-refs_files/figure-html5/thisismyplot-1.png" alt="This is a plot!" width="624" />
 <p class="caption">
 Figure 3: This is a plot!
@@ -2660,7 +2742,8 @@ Figure 3: This is a plot!
 </div>
 </section>
 </div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

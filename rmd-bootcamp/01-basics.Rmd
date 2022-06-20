@@ -10,9 +10,6 @@ knitr::opts_chunk$set(echo = TRUE, fig.align="center")
 xaringanExtra::use_panelset()
 ```
 
-## What is RMarkdown?
-
-
 ## Why use RMarkdown?
 
 Rmarkdown documents combine the analytical power of R and the utility of a text-processor. 
@@ -33,6 +30,17 @@ knitr::include_graphics("images/rmdworkflow.png")
 <!-- Step 2. Know *where* on your computer that document is.   -->
 <!-- Step 3. In the **console**, type `knitr::spin("insert-your-filepath-here.R")` and press enter.   -->
 
+
+## Prerequisite packages  
+
+Prior to starting, we need to make sure we have all the required packages installed. 
+Run these two lines in your console. It may take some time, so be patient. 
+The rmarkdown and knitr packages are going to be necessary for rendering any RMarkdown document. To enable us to compile to a PDF, we're going to need the tinytex package, and we're going to need to use it to install a minimal version of LaTeX on our system:  
+
+```{r eval=F}
+install.packages(c("rmarkdown","tinytex","knitr"))
+tinytex::install_tinytex()
+```
 
 ## Getting Started
 
