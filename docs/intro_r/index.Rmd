@@ -41,11 +41,11 @@ The short course will run over the course of three days.
 
 + Seminar 2.A: 9:30 - 11:00 | Materials
 
-+ Lab 2: 11:00 - 13:00 | Materials
++ Lab 2: 11:00 - 13:00 | [Materials](lab2.pdf)
 
 + Lunch break: 13:00 - 14:00
 
-+ Seminar 2.B: 14:00 - 15:00 | [Materials](lab2.pdf)
++ Seminar 2.B: 14:00 - 15:00 | Materials
 
 
 # Instructor
