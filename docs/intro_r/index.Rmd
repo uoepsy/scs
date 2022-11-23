@@ -18,7 +18,7 @@ Prior to Day 1, please follow this guide to install a local copy of both R and R
 
 [Installing R and RStudio](https://uoepsy.github.io/files/install-update-r.html)
 
-The short course will run over the course of three days. 
+The short course will run over the course of two days. 
 
 
 # Schedule
