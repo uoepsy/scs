@@ -16,7 +16,7 @@ knitr::opts_chunk$set(cache = TRUE)
 
 Prior to Day 1, please follow this guide to install a local copy of both R and RStudio on your laptop.
 
-[Installing R and RStudio](https://uoepsy.github.io/files/install-update-r.html)
+[Installing R and RStudio](https://uoepsy.github.io/files/install-update-r.html){target="_blank"}
 
 The short course will run over the course of two days. 
 
