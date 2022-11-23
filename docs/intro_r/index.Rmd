@@ -1,0 +1,56 @@
+---
+title: "R & RStudio"
+date: "Dec 2022"
+output:
+  rmdformats::material:
+    highlight: kate
+---
+
+```{r setup, include=FALSE}
+## Global options
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+
+# In Preparation
+
+Prior to Day 1, please follow this guide to install a local copy of both R and RStudio on your laptop.
+
+[Installing R and RStudio](https://uoepsy.github.io/files/install-update-r.html)
+
+The short course will run over the course of three days. 
+
+
+# Schedule
+
+
+**Day 1: Tuesday 6th December 2022**  
+
++ Where: Lister Learning and Teaching Centre, room 1.16
+
++ Seminar 1: 9:30 - 11:00 | Materials
+
++ Lunch break: 11:00 - 13:00
+
++ Lab 1: 13:00 - 15:00 | [Materials](lab1.pdf)
+
+
+**Day 2: Wednesday 7th December 2022**  
+
++ Where: Lister Learning and Teaching Centre, room 1.16
+
++ Seminar 2.A: 9:30 - 11:00 | Materials
+
++ Lab 2: 11:00 - 13:00 | Materials
+
++ Lunch break: 13:00 - 14:00
+
++ Seminar 2.B: 14:00 - 15:00 | [Materials](lab2.pdf)
+
+
+# Instructor
+
+Dr Umberto Noe  
+Senior Teaching Coordinator (Statistics)  
+Department of Psychology
+
