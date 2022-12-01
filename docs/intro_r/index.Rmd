@@ -28,9 +28,11 @@ The short course will run over the course of two days.
 
 + Where: Lister Learning and Teaching Centre, room 1.16
 
-+ Seminar 1: 9:30 - 11:00 | Materials
++ Seminar 1: 9:00 - 11:00 | Materials
 
-+ Lunch break: 11:00 - 13:00
++ Installing R: 11:00 - 12:00
+
++ Lunch break: 12:00 - 13:00
 
 + Lab 1: 13:00 - 15:00 | [Materials](lab1.pdf){target="_blank"}
 
@@ -39,7 +41,7 @@ The short course will run over the course of two days.
 
 + Where: Lister Learning and Teaching Centre, room 1.16
 
-+ Seminar 2.A: 9:30 - 11:00 | Materials
++ Seminar 2.A: 9:00 - 11:00 | Materials
 
 + Lab 2: 11:00 - 13:00 | [Materials](lab2.pdf){target="_blank"}
 
