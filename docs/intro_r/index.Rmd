@@ -28,26 +28,40 @@ The short course will run over the course of two days.
 
 + Where: Lister Learning and Teaching Centre, room 1.16
 
-+ Seminar 1: 9:00 - 11:00 | Materials
++ Seminar 1: 9:00 - 11:00
+    
+    + [Materials](intro-r.pdf){target="_blank"}
 
 + Installing R: 11:00 - 12:00
 
 + Lunch break: 12:00 - 13:00
 
-+ Lab 1: 13:00 - 15:00 | [Materials](lab1.pdf){target="_blank"}
++ Lab 1: 13:00 - 15:00
+
+    + [Materials](lab1.pdf){target="_blank"}
 
 
 **Day 2: Wednesday 7th December 2022**  
 
 + Where: Lister Learning and Teaching Centre, room 1.16
 
-+ Seminar 2.A: 9:00 - 11:00 | Materials
++ Seminar 2.A: 9:00 - 11:00
 
-+ Lab 2: 11:00 - 13:00 | [Materials](lab2.pdf){target="_blank"}
+    + [Materials](intro-r.pdf){target="_blank"}
+    + [palmer_penguins.csv](data/palmer_penguins.csv){target="_blank"}
+
++ Lab 2: 11:00 - 13:00
+    
+    + [Materials](lab2.pdf){target="_blank"}
+    + [Kenya.csv](data/Kenya.csv){target="_blank"}
+    + [Sweden.csv](data/Sweden.csv){target="_blank"}
+    + [World.csv](data/World.csv){target="_blank"}
 
 + Lunch break: 13:00 - 14:00
 
-+ Seminar 2.B: 14:00 - 15:00 | Materials
++ Seminar 2.B: 14:00 - 15:00
+
+    + [Materials](intro-r.pdf){target="_blank"}
 
 
 # Instructor
