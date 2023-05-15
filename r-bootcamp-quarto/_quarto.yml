@@ -1,0 +1,65 @@
+project:
+  type: website
+  render:
+    - "*.qmd"
+  output-dir: ../docs/r-bootcamp/
+
+website:
+  title: "Psychology R Bootcamp"
+  page-navigation: true
+  back-to-top-navigation: true
+  search: true
+  sidebar:
+    collapse-level: 2
+    contents:
+      - href: index.qmd
+        text: "Homepage"
+      - section: "Lessons"
+        contents:
+        - href: 00-getting-started.qmd
+          text: "0: Getting started"
+        - href: 01-basics.qmd
+          text: "1: R basics"
+        - href: 02-data.qmd
+          text: "2: Working with data"
+        # - href: cpt-data.qmd
+        #   text: "Checkpoint"
+        - href: 03-exploring-data.qmd
+          text: "3: Exploring data"
+        - href: 04-insights-from-data.qmd
+          text: "4: Insights from data"
+        - href: 05-making-decisions.qmd
+          text: "5: Making decisions"
+      - href: next.qmd
+        text: "What's next"
+      - href: about.qmd
+        text: "About us"
+# navbar:
+  #   search: true
+  #   left:
+  #     - href: index.qmd
+  #       text: Home
+  #     - about.qmd
+    # right:
+    #   - text: "Lessons"
+    #     menu:
+    #       - href: 00-getting-started.qmd
+    #         text: "L0: Getting started"
+    #       - href: 01-basics.qmd
+    #         text: "L1: R basics"
+    #       - href: 02-data.qmd
+    #         text: "L2: Working with data"
+    #       - href: cpt-data.qmd
+    #         text: "C2: Checkpoint"
+    #       - href: 03-exploring-data.qmd
+    #         text: "L3: Exploring data"
+    #       - href: 04-insights-from-data.qmd
+    #         text: "L4: Insights from data"
+    #       - href: 05-making-decisions.qmd
+    #         text: "L5: Making decisions"
+format:
+  html:
+    theme: zephyr
+    css: styles.css
+    toc: true
+    code-link: true
