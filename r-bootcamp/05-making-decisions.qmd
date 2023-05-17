@@ -1,5 +1,5 @@
 ---
-title: "Making decisions"
+title: "5: Making decisions"
 ---
 
 ```{r setup, include=FALSE}
@@ -83,6 +83,10 @@ library(knitr)
 
 kable(stats, digits = 2)
 ```
+
+<aside>
+The argument `digits = 2` displays numbers rounded to 2 decimal places. This is important for journal articles or reports.
+</aside>
 
 ```{r echo=F}
 diff_M <- stats$M[2] - stats$M[1]

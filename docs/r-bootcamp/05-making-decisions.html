@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.3.340">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Psychology R Bootcamp - Making decisions</title>
+<title>Psychology R Bootcamp - 5: Making decisions</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -204,8 +204,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
-<h1 class="title">Making decisions</h1>
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">5: Making decisions</h1>
 </div>
 
 
@@ -279,7 +279,7 @@ dbl (1): Leniency
 </div>
 </div>
 <p>The left panel displays two right skewed distributions. The right panel shows that the median leniency score seems to be higher in the smiling group. There appears to be an outlier in the neutral face expression group, having a leniency score of approximately 8.</p>
-</section><section id="data-summary" class="level2"><h2 class="anchored" data-anchor-id="data-summary">Data summary</h2>
+</section><section id="data-summary" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="data-summary">Data summary</h2>
 <p>Let’s now compute the number of participants in each group, as well as the mean leniency score and its standard deviation in each group.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">stats</span> <span class="op">&lt;-</span> <span class="va">smiles</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -326,7 +326,9 @@ dbl (1): Leniency
 </table>
 </div>
 </div>
-<p>In the sample, the mean leniency score was higher in the smiling group than the neutral expression group. The difference in mean leniency scores between the smiling and neutral group is 0.79.</p>
+<aside>
+The argument <code>digits = 2</code> displays numbers rounded to 2 decimal places. This is important for journal articles or reports.
+</aside><p>In the sample, the mean leniency score was higher in the smiling group than the neutral expression group. The difference in mean leniency scores between the smiling and neutral group is 0.79.</p>
 <p>You can get this by looking at the summary stats:</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">stats</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>

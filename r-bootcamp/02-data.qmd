@@ -1,5 +1,5 @@
 ---
-title: "Working with data"
+title: "2: Working with data"
 ---
 
 ```{r setup, include=FALSE}
@@ -21,13 +21,13 @@ You only need to install a package _once_, to bring it from the web to your loca
 Then, to actually use the package in every R session, you simply need to load the package (and not install it every single time).
 
 <center>
-![](images/install-load-package.png){width=80%}
+![](images/install-load-package.png){width=100%}
 </center>
 
 You install a package by going to the Files & Plots panel, click "Packages" in the tabs, then select Install, type the package names and click Install.
 
 <center>
-![](images/install-packages.png){width=80%}
+![](images/install-packages.png){width=100%}
 </center>
 
 Remember, you only need to do this once. 
@@ -35,7 +35,7 @@ Remember, you only need to do this once.
 As we said, package are pre-shipped with your R installation. Examples are the base, stats, and graphics packages. Each of those can be considered as a "folder" providing different functionality. You will see the use of those functions later on in the course.
 
 <center>
-![](images/packages-example.png){width=60%}
+![](images/packages-example.png){width=80%}
 </center>
 
 Actually, when you install R it comes with many more packages. Some are automatically loaded when you open R, making their functionality immediately available to you, while others are left in the background unopened. In the picture below, the loaded packages are shown in orange, and the ones not loaded are in gray.
@@ -43,7 +43,7 @@ Actually, when you install R it comes with many more packages. Some are automati
 For each new R session, in order to use the functionality from packages that are not automatically loaded, or that you have installed later, you must load the package with the function `library(package_name)` at the top of the R script.
 
 <center>
-![](images/default-loaded-packages.png){width=60%}
+![](images/default-loaded-packages.png){width=80%}
 </center>
 
 
@@ -225,7 +225,12 @@ round(exp(sqrt(1:10)), 2)
 ```
 
 
-To make the tables even nicer, you can use the `kable()` function from the `knitr` package.
+To format the tables for journals or reports, you can use one of the following options.
+
+::: {.panel-tabset}
+### Option 1: kable()
+
+The `kable()` function from the `knitr` package. If you don't have the package installed, make sure you run `install.packages("knitr")` before!
 
 ```{r}
 library(knitr)
@@ -233,13 +238,16 @@ library(knitr)
 kable(stats)
 ```
 
-Alternatively, you can use the `gt` package.
+### Option 2: gt()
+
+The `gt()` function from the `gt` package. If you don't have the package installed, make sure you run `install.packages("gt")` before!
 
 ```{r}
 library(gt)
 
 gt(stats)
 ```
+:::
 
 
 ## Indexing data tables

@@ -1,5 +1,5 @@
 ---
-title: "Insights from data"
+title: "4: Insights from data"
 ---
 
 ```{r setup, include=FALSE}
@@ -142,6 +142,10 @@ many_means <- replicate(1000,
                         simplify = FALSE)
 head(many_means)
 ```
+
+<aside>
+replicate(n, code, simplify = FALSE) runs the code n times, and simplify = FALSE is an option for how the output should be stored (don't worry about this).
+</aside>
 
 We will now combine into a single tibble the 1000 means, each one computed from a different sample of 50 people:
 

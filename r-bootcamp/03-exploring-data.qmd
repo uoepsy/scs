@@ -1,5 +1,5 @@
 ---
-title: "Exploring data"
+title: "3: Exploring data"
 ---
 
 ```{r setup, include=FALSE}
