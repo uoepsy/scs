@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.340">
+<meta name="generator" content="quarto-1.3.433">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Psychology R Bootcamp - 0: Getting started</title>
 <style>
@@ -52,7 +52,8 @@ ul.task-list li input[type="checkbox"] {
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script><link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script><link rel="stylesheet" href="styles.css">
@@ -67,7 +68,7 @@ ul.task-list li input[type="checkbox"] {
       <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./00-getting-started.html">Lessons</a></li><li class="breadcrumb-item"><a href="./00-getting-started.html">0: Getting started</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
-      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -225,23 +226,23 @@ Artwork by @allison_horst
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 
-<div id="ynxvfphyjh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ynxvfphyjh table {
+<div id="ombjpokqkh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ombjpokqkh table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ynxvfphyjh thead, #ynxvfphyjh tbody, #ynxvfphyjh tfoot, #ynxvfphyjh tr, #ynxvfphyjh td, #ynxvfphyjh th {
+#ombjpokqkh thead, #ombjpokqkh tbody, #ombjpokqkh tfoot, #ombjpokqkh tr, #ombjpokqkh td, #ombjpokqkh th {
   border-style: none;
 }
 
-#ynxvfphyjh p {
+#ombjpokqkh p {
   margin: 0;
   padding: 0;
 }
 
-#ynxvfphyjh .gt_table {
+#ombjpokqkh .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -267,12 +268,12 @@ Artwork by @allison_horst
   border-left-color: #D3D3D3;
 }
 
-#ynxvfphyjh .gt_caption {
+#ombjpokqkh .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ynxvfphyjh .gt_title {
+#ombjpokqkh .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -284,7 +285,7 @@ Artwork by @allison_horst
   border-bottom-width: 0;
 }
 
-#ynxvfphyjh .gt_subtitle {
+#ombjpokqkh .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -296,7 +297,7 @@ Artwork by @allison_horst
   border-top-width: 0;
 }
 
-#ynxvfphyjh .gt_heading {
+#ombjpokqkh .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -308,13 +309,13 @@ Artwork by @allison_horst
   border-right-color: #D3D3D3;
 }
 
-#ynxvfphyjh .gt_bottom_border {
+#ombjpokqkh .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ynxvfphyjh .gt_col_headings {
+#ombjpokqkh .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -329,7 +330,7 @@ Artwork by @allison_horst
   border-right-color: #D3D3D3;
 }
 
-#ynxvfphyjh .gt_col_heading {
+#ombjpokqkh .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -349,7 +350,7 @@ Artwork by @allison_horst
   overflow-x: hidden;
 }
 
-#ynxvfphyjh .gt_column_spanner_outer {
+#ombjpokqkh .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -361,15 +362,15 @@ Artwork by @allison_horst
   padding-right: 4px;
 }
 
-#ynxvfphyjh .gt_column_spanner_outer:first-child {
+#ombjpokqkh .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ynxvfphyjh .gt_column_spanner_outer:last-child {
+#ombjpokqkh .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ynxvfphyjh .gt_column_spanner {
+#ombjpokqkh .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -381,11 +382,11 @@ Artwork by @allison_horst
   width: 100%;
 }
 
-#ynxvfphyjh .gt_spanner_row {
+#ombjpokqkh .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ynxvfphyjh .gt_group_heading {
+#ombjpokqkh .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -411,7 +412,7 @@ Artwork by @allison_horst
   text-align: left;
 }
 
-#ynxvfphyjh .gt_empty_group_heading {
+#ombjpokqkh .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -426,15 +427,15 @@ Artwork by @allison_horst
   vertical-align: middle;
 }
 
-#ynxvfphyjh .gt_from_md > :first-child {
+#ombjpokqkh .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ynxvfphyjh .gt_from_md > :last-child {
+#ombjpokqkh .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ynxvfphyjh .gt_row {
+#ombjpokqkh .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -453,7 +454,7 @@ Artwork by @allison_horst
   overflow-x: hidden;
 }
 
-#ynxvfphyjh .gt_stub {
+#ombjpokqkh .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -466,7 +467,7 @@ Artwork by @allison_horst
   padding-right: 5px;
 }
 
-#ynxvfphyjh .gt_stub_row_group {
+#ombjpokqkh .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -480,15 +481,15 @@ Artwork by @allison_horst
   vertical-align: top;
 }
 
-#ynxvfphyjh .gt_row_group_first td {
+#ombjpokqkh .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ynxvfphyjh .gt_row_group_first th {
+#ombjpokqkh .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ynxvfphyjh .gt_summary_row {
+#ombjpokqkh .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -498,16 +499,16 @@ Artwork by @allison_horst
   padding-right: 5px;
 }
 
-#ynxvfphyjh .gt_first_summary_row {
+#ombjpokqkh .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ynxvfphyjh .gt_first_summary_row.thick {
+#ombjpokqkh .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ynxvfphyjh .gt_last_summary_row {
+#ombjpokqkh .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -517,7 +518,7 @@ Artwork by @allison_horst
   border-bottom-color: #D3D3D3;
 }
 
-#ynxvfphyjh .gt_grand_summary_row {
+#ombjpokqkh .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -527,7 +528,7 @@ Artwork by @allison_horst
   padding-right: 5px;
 }
 
-#ynxvfphyjh .gt_first_grand_summary_row {
+#ombjpokqkh .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -537,7 +538,7 @@ Artwork by @allison_horst
   border-top-color: #D3D3D3;
 }
 
-#ynxvfphyjh .gt_last_grand_summary_row_top {
+#ombjpokqkh .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -547,11 +548,11 @@ Artwork by @allison_horst
   border-bottom-color: #D3D3D3;
 }
 
-#ynxvfphyjh .gt_striped {
+#ombjpokqkh .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ynxvfphyjh .gt_table_body {
+#ombjpokqkh .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -560,7 +561,7 @@ Artwork by @allison_horst
   border-bottom-color: #D3D3D3;
 }
 
-#ynxvfphyjh .gt_footnotes {
+#ombjpokqkh .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -574,7 +575,7 @@ Artwork by @allison_horst
   border-right-color: #D3D3D3;
 }
 
-#ynxvfphyjh .gt_footnote {
+#ombjpokqkh .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -583,7 +584,7 @@ Artwork by @allison_horst
   padding-right: 5px;
 }
 
-#ynxvfphyjh .gt_sourcenotes {
+#ombjpokqkh .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -597,7 +598,7 @@ Artwork by @allison_horst
   border-right-color: #D3D3D3;
 }
 
-#ynxvfphyjh .gt_sourcenote {
+#ombjpokqkh .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -605,63 +606,63 @@ Artwork by @allison_horst
   padding-right: 5px;
 }
 
-#ynxvfphyjh .gt_left {
+#ombjpokqkh .gt_left {
   text-align: left;
 }
 
-#ynxvfphyjh .gt_center {
+#ombjpokqkh .gt_center {
   text-align: center;
 }
 
-#ynxvfphyjh .gt_right {
+#ombjpokqkh .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ynxvfphyjh .gt_font_normal {
+#ombjpokqkh .gt_font_normal {
   font-weight: normal;
 }
 
-#ynxvfphyjh .gt_font_bold {
+#ombjpokqkh .gt_font_bold {
   font-weight: bold;
 }
 
-#ynxvfphyjh .gt_font_italic {
+#ombjpokqkh .gt_font_italic {
   font-style: italic;
 }
 
-#ynxvfphyjh .gt_super {
+#ombjpokqkh .gt_super {
   font-size: 65%;
 }
 
-#ynxvfphyjh .gt_footnote_marks {
+#ombjpokqkh .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ynxvfphyjh .gt_asterisk {
+#ombjpokqkh .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ynxvfphyjh .gt_indent_1 {
+#ombjpokqkh .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ynxvfphyjh .gt_indent_2 {
+#ombjpokqkh .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ynxvfphyjh .gt_indent_3 {
+#ombjpokqkh .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ynxvfphyjh .gt_indent_4 {
+#ombjpokqkh .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ynxvfphyjh .gt_indent_5 {
+#ombjpokqkh .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -767,7 +768,7 @@ Artwork by @allison_horst
 </div>
 </div>
 </div>
-<p>The code you type using the R programming language then will need to be converted to lower level instructions for the computer, such as “store this number into memory location with a specific address”. This is done by the <em>interpreter</em> which, is also called R. So R is both the programming language and the interpreter telling the computer what to do with your commands.</p>
+<p>The code you type using the R programming language then will need to be converted to lower level instructions for the computer, such as “store this number into memory location with a specific address”. This is done by the <em>interpreter</em> which is also called R. So R is both the programming language and the interpreter telling the computer what to do with your commands.</p>
 <p>How does R look? Exactly as the picture below. It comes into a window called the <em>Console</em>, which is where any R code you type there will be executed.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">

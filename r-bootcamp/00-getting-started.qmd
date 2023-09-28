@@ -130,7 +130,7 @@ knitr::include_graphics('images/r-logo.svg')
 
 
 
-The code you type using the R programming language then will need to be converted to lower level instructions for the computer, such as "store this number into memory location with a specific address". This is done by the *interpreter* which, is also called R. So R is both the programming language and the interpreter telling the computer what to do with your commands.
+The code you type using the R programming language then will need to be converted to lower level instructions for the computer, such as "store this number into memory location with a specific address". This is done by the *interpreter* which is also called R. So R is both the programming language and the interpreter telling the computer what to do with your commands.
 
 
 How does R look? Exactly as the picture below. It comes into a window called the *Console*, which is where any R code you type there will be executed.

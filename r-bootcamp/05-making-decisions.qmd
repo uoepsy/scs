@@ -262,14 +262,12 @@ In order for the results of the two-sample t-test to be valid, we need that:
 
 1. The data arise from random assignment of subjects to two groups or from two independent random samples from the population
 
-2. Either:  
-<br>
-Each sample should be sufficiently large ($n_1 \geq 30, n_2 \geq 30$ as a guideline)  
-<br>
-Or:  
-<br>
-Both samples came from normal distributions.
+2. One of these two options:
+  
+  - Either: Each sample should be sufficiently large ($n_1 \geq 30, n_2 \geq 30$ as a guideline)
+  - Or: Both samples came from normal distributions.
 
+In terms of checking the validity conditions:
 
 1. Should be described by the study design.
 
@@ -288,7 +286,6 @@ smiles %>%
 ```
 
 Both groups appear to be consistent with samples from a normal distribution. The validity conditions are met.
-
 
 
 On top of this, also in this case we have the other alternative condition to be true. Both distributions have enough data, 34 in each group, no strong outliers or skeweness:

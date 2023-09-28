@@ -130,8 +130,7 @@ Let's consider again this operation:
 3 * 4
 ```
 
-In the above example, [1] indicates that the output is the first element of a vector of length 1 (we will discuss vectors later in this course). 
-
+In the above example, the [1] indicates that the result of this operation is one number, and that number is 12. Later in the course we will see the case when, rather than a single number, you have a collection of numbers.
 
 It is important for you to try the extra examples that follow. Remember that to successfully learn programming you need to actually type the code.
 
@@ -792,6 +791,42 @@ class(my_mean)
 Clearly, it's an object of class function.
 
 
+### Computations involving missing values
+
+Suppose you wanted to compute the mean of `world_pop_new`. First, recall that the vector includes a missing value:
+
+```{r}
+world_pop_new
+```
+
+Any computation involving a missing value will return NA as R is unsure how to deal with something that is unknown.
+
+```{r}
+mean(world_pop_new)
+```
+
+You have two options to tell R to compute the mean of the `world_pop_new` vector, but ignoring the missing value:
+
+::: {.panel-tabset}
+#### Option 1: Indexing
+
+You can index the vector to only keep the non-missing values
+
+```{r}
+mean(world_pop_new[!is.na(world_pop_new)])
+```
+
+
+#### Option 2: na.rm argument
+
+You can specify an additional argument to the `mean()` function, `na.rm = TRUE`, which will tell R to remove the missing values. If you don't include this argument, the default is `na.rm = FALSE`, which doesn't remove missing values and hence would return NA.
+
+```{r}
+mean(world_pop_new, na.rm = TRUE)
+```
+
+
+:::
 
 
 ## Factors

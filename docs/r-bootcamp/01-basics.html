@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.340">
+<meta name="generator" content="quarto-1.3.433">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Psychology R Bootcamp - 1: R basics</title>
 <style>
@@ -86,7 +86,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script><link rel="stylesheet" href="styles.css">
 </head>
@@ -100,7 +101,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./00-getting-started.html">Lessons</a></li><li class="breadcrumb-item"><a href="./01-basics.html">1: R basics</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
-      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -200,7 +201,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#vectors" id="toc-vectors" class="nav-link" data-scroll-target="#vectors">Vectors</a></li>
   <li><a href="#logical-indexing" id="toc-logical-indexing" class="nav-link" data-scroll-target="#logical-indexing">Logical indexing</a></li>
   <li><a href="#not-avaible-i.e.-missing-values" id="toc-not-avaible-i.e.-missing-values" class="nav-link" data-scroll-target="#not-avaible-i.e.-missing-values">Not avaible (i.e.&nbsp;missing) values</a></li>
-  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a></li>
+  <li>
+<a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a>
+  <ul class="collapse">
+<li><a href="#computations-involving-missing-values" id="toc-computations-involving-missing-values" class="nav-link" data-scroll-target="#computations-involving-missing-values">Computations involving missing values</a></li>
+  </ul>
+</li>
   <li>
 <a href="#factors" id="toc-factors" class="nav-link" data-scroll-target="#factors">Factors</a>
   <ul class="collapse">
@@ -329,7 +335,7 @@ Checkpoint
 <pre><code>[1] 12</code></pre>
 </div>
 </div>
-<p>In the above example, [1] indicates that the output is the first element of a vector of length 1 (we will discuss vectors later in this course).</p>
+<p>In the above example, the [1] indicates that the result of this operation is one number, and that number is 12. Later in the course we will see the case when, rather than a single number, you have a collection of numbers.</p>
 <p>It is important for you to try the extra examples that follow. Remember that to successfully learn programming you need to actually type the code.</p>
 <div class="cell">
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fl">5</span> <span class="op">*</span> <span class="op">(</span><span class="fl">4</span> <span class="op">-</span> <span class="fl">2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -749,23 +755,23 @@ This section will present the simplest and <em>most inefficient</em> way of ente
 <div class="cell">
 <div class="cell-output-display">
 
-<div id="gkzaycubly" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#gkzaycubly table {
+<div id="vlxfqgtsqi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#vlxfqgtsqi table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#gkzaycubly thead, #gkzaycubly tbody, #gkzaycubly tfoot, #gkzaycubly tr, #gkzaycubly td, #gkzaycubly th {
+#vlxfqgtsqi thead, #vlxfqgtsqi tbody, #vlxfqgtsqi tfoot, #vlxfqgtsqi tr, #vlxfqgtsqi td, #vlxfqgtsqi th {
   border-style: none;
 }
 
-#gkzaycubly p {
+#vlxfqgtsqi p {
   margin: 0;
   padding: 0;
 }
 
-#gkzaycubly .gt_table {
+#vlxfqgtsqi .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -791,12 +797,12 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   border-left-color: #D3D3D3;
 }
 
-#gkzaycubly .gt_caption {
+#vlxfqgtsqi .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#gkzaycubly .gt_title {
+#vlxfqgtsqi .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -808,7 +814,7 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   border-bottom-width: 0;
 }
 
-#gkzaycubly .gt_subtitle {
+#vlxfqgtsqi .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -820,7 +826,7 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   border-top-width: 0;
 }
 
-#gkzaycubly .gt_heading {
+#vlxfqgtsqi .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -832,13 +838,13 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   border-right-color: #D3D3D3;
 }
 
-#gkzaycubly .gt_bottom_border {
+#vlxfqgtsqi .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#gkzaycubly .gt_col_headings {
+#vlxfqgtsqi .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -853,7 +859,7 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   border-right-color: #D3D3D3;
 }
 
-#gkzaycubly .gt_col_heading {
+#vlxfqgtsqi .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -873,7 +879,7 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   overflow-x: hidden;
 }
 
-#gkzaycubly .gt_column_spanner_outer {
+#vlxfqgtsqi .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -885,15 +891,15 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   padding-right: 4px;
 }
 
-#gkzaycubly .gt_column_spanner_outer:first-child {
+#vlxfqgtsqi .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#gkzaycubly .gt_column_spanner_outer:last-child {
+#vlxfqgtsqi .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#gkzaycubly .gt_column_spanner {
+#vlxfqgtsqi .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -905,11 +911,11 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   width: 100%;
 }
 
-#gkzaycubly .gt_spanner_row {
+#vlxfqgtsqi .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#gkzaycubly .gt_group_heading {
+#vlxfqgtsqi .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -935,7 +941,7 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   text-align: left;
 }
 
-#gkzaycubly .gt_empty_group_heading {
+#vlxfqgtsqi .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -950,15 +956,15 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   vertical-align: middle;
 }
 
-#gkzaycubly .gt_from_md > :first-child {
+#vlxfqgtsqi .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#gkzaycubly .gt_from_md > :last-child {
+#vlxfqgtsqi .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#gkzaycubly .gt_row {
+#vlxfqgtsqi .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -977,7 +983,7 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   overflow-x: hidden;
 }
 
-#gkzaycubly .gt_stub {
+#vlxfqgtsqi .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -990,7 +996,7 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   padding-right: 5px;
 }
 
-#gkzaycubly .gt_stub_row_group {
+#vlxfqgtsqi .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1004,15 +1010,15 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   vertical-align: top;
 }
 
-#gkzaycubly .gt_row_group_first td {
+#vlxfqgtsqi .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#gkzaycubly .gt_row_group_first th {
+#vlxfqgtsqi .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#gkzaycubly .gt_summary_row {
+#vlxfqgtsqi .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1022,16 +1028,16 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   padding-right: 5px;
 }
 
-#gkzaycubly .gt_first_summary_row {
+#vlxfqgtsqi .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#gkzaycubly .gt_first_summary_row.thick {
+#vlxfqgtsqi .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#gkzaycubly .gt_last_summary_row {
+#vlxfqgtsqi .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1041,7 +1047,7 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   border-bottom-color: #D3D3D3;
 }
 
-#gkzaycubly .gt_grand_summary_row {
+#vlxfqgtsqi .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1051,7 +1057,7 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   padding-right: 5px;
 }
 
-#gkzaycubly .gt_first_grand_summary_row {
+#vlxfqgtsqi .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1061,7 +1067,7 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   border-top-color: #D3D3D3;
 }
 
-#gkzaycubly .gt_last_grand_summary_row_top {
+#vlxfqgtsqi .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1071,11 +1077,11 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   border-bottom-color: #D3D3D3;
 }
 
-#gkzaycubly .gt_striped {
+#vlxfqgtsqi .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#gkzaycubly .gt_table_body {
+#vlxfqgtsqi .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1084,7 +1090,7 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   border-bottom-color: #D3D3D3;
 }
 
-#gkzaycubly .gt_footnotes {
+#vlxfqgtsqi .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1098,7 +1104,7 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   border-right-color: #D3D3D3;
 }
 
-#gkzaycubly .gt_footnote {
+#vlxfqgtsqi .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1107,7 +1113,7 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   padding-right: 5px;
 }
 
-#gkzaycubly .gt_sourcenotes {
+#vlxfqgtsqi .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1121,7 +1127,7 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   border-right-color: #D3D3D3;
 }
 
-#gkzaycubly .gt_sourcenote {
+#vlxfqgtsqi .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1129,63 +1135,63 @@ This section will present the simplest and <em>most inefficient</em> way of ente
   padding-right: 5px;
 }
 
-#gkzaycubly .gt_left {
+#vlxfqgtsqi .gt_left {
   text-align: left;
 }
 
-#gkzaycubly .gt_center {
+#vlxfqgtsqi .gt_center {
   text-align: center;
 }
 
-#gkzaycubly .gt_right {
+#vlxfqgtsqi .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#gkzaycubly .gt_font_normal {
+#vlxfqgtsqi .gt_font_normal {
   font-weight: normal;
 }
 
-#gkzaycubly .gt_font_bold {
+#vlxfqgtsqi .gt_font_bold {
   font-weight: bold;
 }
 
-#gkzaycubly .gt_font_italic {
+#vlxfqgtsqi .gt_font_italic {
   font-style: italic;
 }
 
-#gkzaycubly .gt_super {
+#vlxfqgtsqi .gt_super {
   font-size: 65%;
 }
 
-#gkzaycubly .gt_footnote_marks {
+#vlxfqgtsqi .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#gkzaycubly .gt_asterisk {
+#vlxfqgtsqi .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#gkzaycubly .gt_indent_1 {
+#vlxfqgtsqi .gt_indent_1 {
   text-indent: 5px;
 }
 
-#gkzaycubly .gt_indent_2 {
+#vlxfqgtsqi .gt_indent_2 {
   text-indent: 10px;
 }
 
-#gkzaycubly .gt_indent_3 {
+#vlxfqgtsqi .gt_indent_3 {
   text-indent: 15px;
 }
 
-#gkzaycubly .gt_indent_4 {
+#vlxfqgtsqi .gt_indent_4 {
   text-indent: 20px;
 }
 
-#gkzaycubly .gt_indent_5 {
+#vlxfqgtsqi .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -1581,7 +1587,49 @@ This section will present the simplest and <em>most inefficient</em> way of ente
 </div>
 </div>
 <p>Clearly, it’s an object of class function.</p>
-</section><section id="factors" class="level2"><h2 class="anchored" data-anchor-id="factors">Factors</h2>
+<section id="computations-involving-missing-values" class="level3"><h3 class="anchored" data-anchor-id="computations-involving-missing-values">Computations involving missing values</h3>
+<p>Suppose you wanted to compute the mean of <code>world_pop_new</code>. First, recall that the vector includes a missing value:</p>
+<div class="cell">
+<div class="sourceCode" id="cb237"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">world_pop_new</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2536431 3034950 3700437 4458003 5327231 6143494 6956824 7794799      NA</code></pre>
+</div>
+</div>
+<p>Any computation involving a missing value will return NA as R is unsure how to deal with something that is unknown.</p>
+<div class="cell">
+<div class="sourceCode" id="cb239"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">world_pop_new</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+</div>
+<p>You have two options to tell R to compute the mean of the <code>world_pop_new</code> vector, but ignoring the missing value:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist">
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">Option 1: Indexing</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Option 2: na.rm argument</a></li>
+</ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<p>You can index the vector to only keep the non-missing values</p>
+<div class="cell">
+<div class="sourceCode" id="cb241"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">world_pop_new</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">world_pop_new</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4994021</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<p>You can specify an additional argument to the <code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code> function, <code>na.rm = TRUE</code>, which will tell R to remove the missing values. If you don’t include this argument, the default is <code>na.rm = FALSE</code>, which doesn’t remove missing values and hence would return NA.</p>
+<div class="cell">
+<div class="sourceCode" id="cb243"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">world_pop_new</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4994021</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section></section><section id="factors" class="level2"><h2 class="anchored" data-anchor-id="factors">Factors</h2>
 <p>So far we have seen different classes of objects:</p>
 <ul>
 <li>numeric</li>
@@ -1593,7 +1641,7 @@ This section will present the simplest and <em>most inefficient</em> way of ente
 <p>Clearly, in the clinical trial it would be an error if one of the data said “DrugE” as this is not identified in the problem. Similarly, in the questionnaire example, it would be an error if a data value said “peppapig”.</p>
 <p>To protect ourselves from wrong entries and to tell R that some data can only take a limited set of values, we use factors.</p>
 <div class="cell">
-<div class="sourceCode" id="cb237"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">clinical</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'A'</span>, <span class="st">'Placebo'</span>,<span class="st">'A'</span>, <span class="st">'Placebo'</span>, <span class="st">'B'</span>, <span class="st">'Placebo'</span><span class="op">)</span>,</span>
+<div class="sourceCode" id="cb245"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">clinical</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'A'</span>, <span class="st">'Placebo'</span>,<span class="st">'A'</span>, <span class="st">'Placebo'</span>, <span class="st">'B'</span>, <span class="st">'Placebo'</span><span class="op">)</span>,</span>
 <span>                   levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Placebo'</span>, <span class="st">'A'</span>, <span class="st">'B'</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">clinical</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1603,24 +1651,24 @@ Levels: Placebo A B</code></pre>
 </div>
 <p>The distinct categories that the data can take are called levels of the factors. You can inspect the factor levels with the <code><a href="https://rdrr.io/r/base/levels.html">levels()</a></code> function:</p>
 <div class="cell">
-<div class="sourceCode" id="cb239"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span><span class="op">(</span><span class="va">clinical</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb247"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span><span class="op">(</span><span class="va">clinical</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Placebo" "A"       "B"      </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb241"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">clinical</span><span class="op">)</span> <span class="co"># we have 8 elements in the vector</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb249"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">clinical</span><span class="op">)</span> <span class="co"># we have 8 elements in the vector</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 8</code></pre>
 </div>
-<div class="sourceCode" id="cb243"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">clinical</span><span class="op">)</span> <span class="co"># factor vector</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb251"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">clinical</span><span class="op">)</span> <span class="co"># factor vector</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "factor"</code></pre>
 </div>
 </div>
 <p>What if we made an error when inputting the data and the 3rd participants had actually taken drug B? We can fix it as follows:</p>
 <div class="cell">
-<div class="sourceCode" id="cb245"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">clinical</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">'B'</span></span>
+<div class="sourceCode" id="cb253"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">clinical</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">'B'</span></span>
 <span><span class="va">clinical</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] A       B       B       Placebo A       Placebo B       Placebo
@@ -1629,22 +1677,22 @@ Levels: Placebo A B</code></pre>
 </div>
 <p>Now, say you made a typing error and wrote lowercase b (note that R distinguishes between uppercase and lowercase, they are not the same thing!), you would get a <na> (= not available) value because “b” is not among the pre-specified values. This safeguards you from potential errors, for example if you tried to write anything else, like drug C (which didn’t exist) or anything else, e.g.&nbsp;“peppapig”:</na></p>
 <div class="cell">
-<div class="sourceCode" id="cb247"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">clinical</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">'b'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb255"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">clinical</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">'b'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in `[&lt;-.factor`(`*tmp*`, 3, value = "b"): invalid factor level, NA
 generated</code></pre>
 </div>
-<div class="sourceCode" id="cb249"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">clinical</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb257"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">clinical</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] A       B       &lt;NA&gt;    Placebo A       Placebo B       Placebo
 Levels: Placebo A B</code></pre>
 </div>
-<div class="sourceCode" id="cb251"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">clinical</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">'peppapig'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb259"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">clinical</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">'peppapig'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in `[&lt;-.factor`(`*tmp*`, 3, value = "peppapig"): invalid factor level,
 NA generated</code></pre>
 </div>
-<div class="sourceCode" id="cb253"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">clinical</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb261"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">clinical</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] A       B       &lt;NA&gt;    Placebo A       Placebo B       Placebo
 Levels: Placebo A B</code></pre>
@@ -1653,23 +1701,23 @@ Levels: Placebo A B</code></pre>
 <section id="renaming-a-level-of-a-factor" class="level3"><h3 class="anchored" data-anchor-id="renaming-a-level-of-a-factor">Renaming a level of a factor</h3>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist">
-<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">Exercise</a></li>
-<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Answer</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">Exercise</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false">Answer</a></li>
 </ul>
 <div class="tab-content">
-<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
 <p>Rename the values “Placebo” to “P”.</p>
 <p><strong>Hint:</strong> look at the help for the <code><a href="https://rdrr.io/r/base/factor.html">factor()</a></code> function. The argument <code>labels</code> might be helpful.</p>
 <div class="cell">
-<div class="sourceCode" id="cb255"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">clinical</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'A'</span>, <span class="st">'Placebo'</span>,<span class="st">'A'</span>, <span class="st">'Placebo'</span>, <span class="st">'B'</span>, <span class="st">'Placebo'</span><span class="op">)</span>,</span>
+<div class="sourceCode" id="cb263"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">clinical</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'A'</span>, <span class="st">'Placebo'</span>,<span class="st">'A'</span>, <span class="st">'Placebo'</span>, <span class="st">'B'</span>, <span class="st">'Placebo'</span><span class="op">)</span>,</span>
 <span>                   levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Placebo'</span>, <span class="st">'A'</span>, <span class="st">'B'</span><span class="op">)</span>,</span>
 <span>                   labels <span class="op">=</span> <span class="va">...</span><span class="op">)</span></span>
 <span><span class="va">clinical</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
 <div class="cell">
-<div class="sourceCode" id="cb256"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">clinical</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'A'</span>, <span class="st">'Placebo'</span>,<span class="st">'A'</span>, <span class="st">'Placebo'</span>, <span class="st">'B'</span>, <span class="st">'Placebo'</span><span class="op">)</span>,</span>
+<div class="sourceCode" id="cb264"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">clinical</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'A'</span>, <span class="st">'Placebo'</span>,<span class="st">'A'</span>, <span class="st">'Placebo'</span>, <span class="st">'B'</span>, <span class="st">'Placebo'</span><span class="op">)</span>,</span>
 <span>                   levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Placebo'</span>, <span class="st">'A'</span>, <span class="st">'B'</span><span class="op">)</span>,</span>
 <span>                   labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'P'</span>, <span class="st">'A'</span>, <span class="st">'B'</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">clinical</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1684,22 +1732,22 @@ Levels: P A B</code></pre>
 </section><section id="collapsing-two-levels-into-a-single-one" class="level3"><h3 class="anchored" data-anchor-id="collapsing-two-levels-into-a-single-one">Collapsing two levels into a single one</h3>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist">
-<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">Exercise</a></li>
-<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false">Answer</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true">Exercise</a></li>
+<li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false">Answer</a></li>
 </ul>
 <div class="tab-content">
-<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
 <p>Relabel drug A and B to just be “Treatment”. In other words, the factor should just say whether the participant had a placebo or was treated.</p>
 <div class="cell">
-<div class="sourceCode" id="cb258"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">clinical</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'A'</span>, <span class="st">'Placebo'</span>,<span class="st">'A'</span>, <span class="st">'Placebo'</span>, <span class="st">'B'</span>, <span class="st">'Placebo'</span><span class="op">)</span>,</span>
+<div class="sourceCode" id="cb266"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">clinical</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'A'</span>, <span class="st">'Placebo'</span>,<span class="st">'A'</span>, <span class="st">'Placebo'</span>, <span class="st">'B'</span>, <span class="st">'Placebo'</span><span class="op">)</span>,</span>
 <span>                   levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Placebo'</span>, <span class="st">'A'</span>, <span class="st">'B'</span><span class="op">)</span>,</span>
 <span>                   labels <span class="op">=</span> <span class="va">...</span><span class="op">)</span></span>
 <span><span class="va">clinical</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
 <div class="cell">
-<div class="sourceCode" id="cb259"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">clinical</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'A'</span>, <span class="st">'Placebo'</span>,<span class="st">'A'</span>, <span class="st">'Placebo'</span>, <span class="st">'B'</span>, <span class="st">'Placebo'</span><span class="op">)</span>,</span>
+<div class="sourceCode" id="cb267"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">clinical</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'A'</span>, <span class="st">'Placebo'</span>,<span class="st">'A'</span>, <span class="st">'Placebo'</span>, <span class="st">'B'</span>, <span class="st">'Placebo'</span><span class="op">)</span>,</span>
 <span>                   levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Placebo'</span>, <span class="st">'A'</span>, <span class="st">'B'</span><span class="op">)</span>,</span>
 <span>                   labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Placebo'</span>, <span class="st">'Treatment'</span>, <span class="st">'Treatment'</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">clinical</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
