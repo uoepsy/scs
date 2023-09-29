@@ -16,7 +16,7 @@ xaringanExtra::use_panelset()
   background-color: #eaeaea;
 }
 .spc1 code{
-  font-size: .8em !important;
+  font-size: .9em !important;
 }
 .frame {
     border: 1px solid #333333 !important; 
@@ -39,34 +39,32 @@ Remember in the [lesson on compiling](02-compiling.html), we saw that it is typi
 
 A normal code-chunk looks like:  
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r}<br>
-<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r}
+```
+  
+```
+&grave;&grave;&grave;</code></div><br>
 
 And we had a special chunk which looked like:  
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r setup, include = FALSE}<br>
-<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r setup, include = FALSE}
+```
+  
+```
+&grave;&grave;&grave;</code></div><br>
 
 # Chunk name
 
 The first thing to note is that we can give our code-chunks a name.  
 This is usually the first thing inside the \{\} after the letter "r":  
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r mychunkname}<br>
-<br>
-&grave;&grave;&grave;
-</code></div>
+<div class="spc1"><code>&grave;&grave;&grave;{r mychunkname}
+```
+  
+```
+&grave;&grave;&grave;</code></div>
 
-This will come in handy later on when we want to reference the output from certain code-chunks. One immediate benefit is that you can easily navigate through your document to get to the code-chunk you want, by using the menu in the bottom-left of the editor in RStudio: 
-
-[insert video of chunk scrolling]
+This will come in handy later on when we want to reference the output from certain code-chunks. One immediate benefit is that you can easily navigate through your document to get to the code-chunk you want, by using the menu in the bottom-left of the editor in RStudio.  
 
 # Chunk options
 
@@ -77,11 +75,11 @@ Along with providing a name for each code-chunk, we can specify how we want it t
 The most straightforward way to set the options for a given code-chunk is to include it inside the \{\} bits of the code-chunk.  
 In the code-chunk below (named "mychunkname"), we have set `include = FALSE` inside the squiggly-brackets \{\}. This means that for this code-chunk, the `include` option will be set as `FALSE` (we'll learn what that actually __does__ in just a minute!).
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r mychunkname, include = FALSE}<br>
-plot(mtcars)<br>
-&grave;&grave;&grave;
-</code></div>
+<div class="spc1"><code>&grave;&grave;&grave;{r mychunkname, include = FALSE}
+```
+plot(mtcars)
+```
+&grave;&grave;&grave;</code></div>
 
 # echo = ?
 
@@ -95,12 +93,12 @@ the "echo" option sets whether or not the code is printed to the compiled docume
 
 Writing this:  
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r mychunkname, echo = TRUE}<br>
-pass_scores <- read.csv("https://edin.ac/2wJgYwL")<br>
-barplot(table(pass_scores$school))<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r mychunkname, echo = TRUE}
+```
+pass_scores <- read.csv("https://edin.ac/2wJgYwL")
+barplot(table(pass_scores$school))
+```
+&grave;&grave;&grave;</code></div><br>
 
 Will compile to this:  
 
@@ -116,12 +114,12 @@ barplot(table(pass_scores$school))
 
 Writing this:  
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r mychunkname, echo = FALSE}<br>
-pass_scores <- read.csv("https://edin.ac/2wJgYwL")<br>
-barplot(table(pass_scores$school))<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r mychunkname, echo = FALSE}
+```
+pass_scores <- read.csv("https://edin.ac/2wJgYwL")
+barplot(table(pass_scores$school))
+```
+&grave;&grave;&grave;</code></div><br>
 
 Will compile to this:  
 
@@ -150,16 +148,17 @@ The "eval" option sets whether or not a code-chunk will be evaluated. For instan
 
 Writing this:  
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r mychunkname, eval = TRUE}<br>
-pass_scores <- read.csv("https://edin.ac/2wJgYwL")<br>
-&grave;&grave;&grave;
-</code></div><br>
-<div class="spc1"><code>
-&grave;&grave;&grave;{r mychunk2}<br>
-barplot(table(pass_scores$school))<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r mychunkname, eval = TRUE}
+```
+pass_scores <- read.csv("https://edin.ac/2wJgYwL")
+```
+&grave;&grave;&grave;</code></div><br>
+
+<div class="spc1"><code>&grave;&grave;&grave;{r mychunk2}
+```
+barplot(table(pass_scores$school))
+```
+&grave;&grave;&grave;</code></div><br>
 
 Will compile to this:  
 
@@ -181,16 +180,17 @@ rm(pass_scores)
 
 Writing this:
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r mychunkname, eval = FALSE}<br>
-pass_scores <- read.csv("https://edin.ac/2wJgYwL")<br>
-&grave;&grave;&grave;
-</code></div><br>
-<div class="spc1"><code>
-&grave;&grave;&grave;{r mychunk2}<br>
-barplot(table(pass_scores$school))<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r mychunkname, eval = FALSE}
+```
+pass_scores <- read.csv("https://edin.ac/2wJgYwL")
+```
+&grave;&grave;&grave;</code></div><br>
+
+<div class="spc1"><code>&grave;&grave;&grave;{r mychunk2}
+```
+barplot(table(pass_scores$school))
+```
+&grave;&grave;&grave;</code></div><br>
 
 Will compile to this:  
 
@@ -218,18 +218,19 @@ The `include` option is a bit of a funny one. It will not change whether the cod
 
 Writing this:  
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r mychunkname, include = TRUE}<br>
-pass_scores <- read.csv("https://edin.ac/2wJgYwL")<br>
-mytable <- table(pass_scores$school)<br>
-mytable<br>
-&grave;&grave;&grave;
-</code></div><br>
-<div class="spc1"><code>
-&grave;&grave;&grave;{r mychunk2}<br>
-barplot(mytable)<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r mychunkname, include = TRUE}
+```
+pass_scores <- read.csv("https://edin.ac/2wJgYwL")
+mytable <- table(pass_scores$school)
+mytable
+```
+&grave;&grave;&grave;</code></div><br>
+
+<div class="spc1"><code>&grave;&grave;&grave;{r mychunk2}
+```
+barplot(mytable)
+```
+&grave;&grave;&grave;</code></div><br>
 
 Will compile to this:  
 
@@ -250,18 +251,19 @@ barplot(mytable)
 
 Writing this:
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r mychunkname, include = FALSE}<br>
-pass_scores <- read.csv("https://edin.ac/2wJgYwL")<br>
-mytable <- table(pass_scores$school)<br>
-mytable<br>
-&grave;&grave;&grave;
-</code></div><br>
-<div class="spc1"><code>
-&grave;&grave;&grave;{r mychunk2}<br>
-barplot(mytable)<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r mychunkname, include = FALSE}
+```
+pass_scores <- read.csv("https://edin.ac/2wJgYwL")
+mytable <- table(pass_scores$school)
+mytable
+```
+&grave;&grave;&grave;</code></div><br>
+
+<div class="spc1"><code>&grave;&grave;&grave;{r mychunk2}
+```
+barplot(mytable)
+```
+&grave;&grave;&grave;</code></div><br>
 
 Will compile to this:  
 
@@ -291,11 +293,12 @@ These are perhaps the most intuitive of the chunk options to remember. Some line
 
 Writing this:  
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r mychunkname, message = TRUE}<br>
-library(tidyverse)<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r mychunkname, message = TRUE}
+```
+library(tidyverse)
+```
+&grave;&grave;&grave;</code></div><br>
+
 Will compile to this:  
 
 ```{r message=TRUE}
@@ -309,11 +312,12 @@ library(tidyverse)
 
 Writing this:  
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r mychunkname, message = FALSE}<br>
-library(tidyverse)<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r mychunkname, message = FALSE}
+```
+library(tidyverse)
+```
+&grave;&grave;&grave;</code></div><br>
+
 Will compile to this:  
 
 ```{r message=FALSE}
@@ -327,12 +331,13 @@ library(tidyverse)
 
 Writing this:  
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r mychunkname, warning = TRUE}<br>
-x <- c("2", -3, "end", 0, 4, 0.2)<br>
-as.numeric(x)<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r mychunkname, warning = TRUE}
+```
+x <- c("2", -3, "end", 0, 4, 0.2)
+as.numeric(x)
+```
+&grave;&grave;&grave;</code></div><br>
+
 Will compile to this:  
 
 ```{r warning = TRUE}
@@ -347,12 +352,12 @@ as.numeric(x)
 
 Writing this:  
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r mychunkname, warning = FALSE}<br>
-x <- c("2", -3, "end", 0, 4, 0.2)<br>
-as.numeric(x)<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r mychunkname, warning = FALSE}
+```
+x <- c("2", -3, "end", 0, 4, 0.2)
+as.numeric(x)
+```
+&grave;&grave;&grave;</code></div><br>
 
 Will compile to this:  
 
@@ -371,12 +376,12 @@ As well as being able to set the options for specific code-chunks, we can set th
 
 We can do this inside a code-chunk (seems weird, I know!), code like this in our first chunk (the "setup" chunk):
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r setup, include = FALSE}<br>
+<div class="spc1"><code>&grave;&grave;&grave;{r setup, include = FALSE}
+```
 library(knitr)
-opts_chunk$set(echo = FALSE, message = FALSE)<br>
-&grave;&grave;&grave;
-</code></div><br>
+opts_chunk$set(echo = FALSE, message = FALSE)
+```
+&grave;&grave;&grave;</code></div><br>
 
 This will mean that for all subsequent code-chunks, the code will not get printed in the final document, and no messages will get printed either (this is unless we specifically set `echo = TRUE` for a code-chunk later on, which will override the global option).  
 

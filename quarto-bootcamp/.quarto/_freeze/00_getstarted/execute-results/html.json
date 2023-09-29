@@ -1,0 +1,20 @@
+{
+  "hash": "0eef702f6c9225f0c1b6bd4973f5fd5e",
+  "result": {
+    "markdown": "---\ntitle: \"Getting started\"\n---\n\n\n\n::: {.cell layout-align=\"center\"}\n::: {.cell-output-display}\n\n:::\n:::\n\n\n\n## Prelude\n\nWriting scientific and statistical reports can be a laborious process. Typically, data analysis has been conducted using one piece of statistical analysis software, and the writing process takes place in another (e.g. Microsoft Word). This means the author needs to get the information from the analysis software into the word processing software. This introduces a lot of room for error (e.g. you write the wrong numbers in your paper), and even more room for frustration (your analysis changes slightly and all your numbers change, meaning you have to re-copy everything across).  \n\nThe tools you learn in these lessons aim to solve this, by allowing you to combine your analysis and write-up in one, fully reproducible document.  \n\n## What you need\n\n1. __A laptop__\n2. __R and Rstudio__  \nEither a locally installed version of R and RStudio on your laptop, or access to RStudio on a server. \n3. Very basic knowledge of programming in R __(see below).__\n4. __Active learning__  \nJust reading the material won’t be enough, you need to type along the code and get familiar with errors.\n5. __Willingness to learn__  \nIf you approach the material with an inquisitive attitude, it will be easier to learn.\n\n## Experience with R/Rstudio \n\nThis course assumes that the reader has had some experience of using RStudio and programming in R. \nFor an indicator, we will assume that the reader is familiar with the code below and understands what each line will do.  \n\n\n::: {.cell layout-align=\"center\"}\n\n```{.r .cell-code}\nlibrary(tidyverse)\ntipjoke <- read_csv('https://uoepsy.github.io/data/TipJoke.csv')\ntiptable <- table(tipjoke$Card, tipjoke$Tip)\ntiptable\n\npass_scores <- read_csv(\"https://edin.ac/2wJgYwL\") \nbarplot(table(pass_scores$school))\nt.test(pass_scores$PASS, mu = 33, alternative = \"less\")\npass_scores %>% group_by(school) %>%\n  summarise(\n    meanPASS = mean(PASS),\n    sdPASS = sd(PASS)\n  )\n```\n:::\n\n\nWe also assume that the reader is familiar with the general setup of the RStudio IDE (@fig-ide).  \n\nWriting in Quarto is similar to writing in an R Script - it involves writing code in the Editor pane, which can then be sent to the Console to be evaluated. The only difference is the addition of the written text component in the file we have open in the Editor. \n\n\n::: {.cell layout-align=\"center\"}\n::: {.cell-output-display}\n![RStudio Interface](images/rstudio-panes.png){#fig-ide fig-align='center' width=804}\n:::\n:::\n",
+    "supporting": [
+      "00_getstarted_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {
+      "include-in-header": [
+        "<link href=\"site_libs/panelset-0.2.6/panelset.css\" rel=\"stylesheet\" />\r\n<script src=\"site_libs/panelset-0.2.6/panelset.js\"></script>\r\n"
+      ]
+    },
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

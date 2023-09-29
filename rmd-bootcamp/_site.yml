@@ -1,6 +1,7 @@
 name: "rmd-help"
 title: "RMarkdown"
 theme: theme.css
+smart: false
 output_dir: "docs"
 navbar:
   type: default
@@ -33,6 +34,7 @@ navbar:
         href: zz-packs.html
 output: 
   distill::distill_article:
+    smart: FALSE
     toc: true
     toc_depth: 2
     toc_float: true

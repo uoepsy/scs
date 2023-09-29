@@ -16,7 +16,7 @@ xaringanExtra::use_panelset()
   background-color: #eaeaea;
 }
 .spc1 code{
-  font-size: .8em !important;
+  font-size: .9em !important;
 }
 .frame {
     border: 1px solid #333333 !important; 
@@ -62,14 +62,14 @@ date: "13/08/2021"
 output: html_document
 ---
 ```
-<div class="spc1"><code>
-&grave;&grave;&grave;{r setup, include = FALSE}<br>
-library(tidyverse)<br>
-library(palmerpenguins)<br>
-somedata <- read_csv("https://edin.ac/2wJgYwL")<br> 
-set.seed(942) #set random seed<br>
-&grave;&grave;&grave;
-</code></div>
+<div class="spc1"><code>&grave;&grave;&grave;{r setup, include = FALSE}
+```
+library(tidyverse)
+library(palmerpenguins)
+somedata <- read_csv("https://edin.ac/2wJgYwL")
+set.seed(942) #set random seed
+```
+&grave;&grave;&grave;</code></div>
 
 :::
 

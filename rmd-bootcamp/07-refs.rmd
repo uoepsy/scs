@@ -17,7 +17,7 @@ xaringanExtra::use_panelset()
   background-color: #eaeaea;
 }
 .spc1 code{
-  font-size: .8em !important;
+  font-size: .9em !important;
 }
 .frame {
     border: 1px solid #333333 !important; 
@@ -61,12 +61,12 @@ output: bookdown::html_document2
 
 We reference a figure or table based on the code-chunk in which it is produced. For example, once we provide a name for the code-chunk below ("penguinplot") we can then reference in text the Figure which has been produced by that chunk, and the numbering will be automatically sorted for us! 
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r penguinplot, fig.cap="Counts of penguin species"}
-library(palmerpenguins)<br>
-barplot(table(penguins$species))<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r penguinplot, fig.cap="Counts of penguin species"}
+```
+library(palmerpenguins)
+barplot(table(penguins$species))
+```
+&grave;&grave;&grave;</code></div><br>
 
 # Referencing a figure 
 
@@ -82,12 +82,12 @@ As you can see in Figure \@ref(fig:penguinplot),
 there are various penguin species
 ```
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r penguinplot, fig.cap="Counts of penguin species"}
-library(palmerpenguins)<br>
-barplot(table(penguins$species))<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r penguinplot, fig.cap="Counts of penguin species"}
+```
+library(palmerpenguins)
+barplot(table(penguins$species))
+```
+&grave;&grave;&grave;</code></div><br>
 
 :::
 
@@ -120,12 +120,12 @@ As you can see in Table \@ref(tab:penguinplot),
 there are various penguin species
 ```
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r penguintable}<br>
+<div class="spc1"><code>&grave;&grave;&grave;{r penguintable}
+```
 library(palmerpenguins)
-knitr::kable(table(penguins$species), caption = "counts of penguin species")<br>
-&grave;&grave;&grave;
-</code></div><br>
+knitr::kable(table(penguins$species), caption = "counts of penguin species")
+```
+&grave;&grave;&grave;</code></div><br>
 
 :::
 
@@ -159,26 +159,23 @@ Oh look! A lovely plot can be found in figure \\\@ref(fig:thisismyplot). And a l
 
 \<div style="display: inline-block; max-width: 45%; vertical-align: top;"\>
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r thisismytable, echo = FALSE}<br>
+<div class="spc1"><code>&grave;&grave;&grave;{r thisismytable, echo = FALSE}
+```
 library(knitr)
 pass_scores <- read.csv("https://edin.ac/2wJgYwL")
-kable(table(pass_scores$school), caption="Oh Look! A table!")<br>
-&grave;&grave;&grave;
-</code><br>
-</div>
+kable(table(pass_scores$school), caption="Oh Look! A table!")
+```
+&grave;&grave;&grave;</code></div>
 
 \</div\>
 
 \<div style="display: inline-block; max-width: 45%; vertical-align: top;"\>
 
-<div class="spc1">
-<code>
-&grave;&grave;&grave;{r thisismyplot, echo = FALSE, fig.cap="It's a plot!"}
-barplot(table(pass_scores$school))<br>
-&grave;&grave;&grave;
-</code><br>
-</div>
+<div class="spc1"><code>&grave;&grave;&grave;{r thisismyplot, echo = FALSE, fig.cap="It's a plot!"}
+```
+barplot(table(pass_scores$school))
+```
+&grave;&grave;&grave;</code></div>
 
 \</div\>
 

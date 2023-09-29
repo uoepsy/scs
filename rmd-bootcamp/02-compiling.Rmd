@@ -115,13 +115,13 @@ date: "13/08/2021"
 output: html_document
 ---
 ```
-<div class="spc1"><code>
-&grave;&grave;&grave;{r setup, include = FALSE}<br>
-library(tidyverse)<br>
-library(palmerpenguins)<br>
-somedata <- read_csv("https://edin.ac/2wJgYwL")<br> 
-&grave;&grave;&grave;
-</code></div>
+<div class="spc1"><code>&grave;&grave;&grave;{r setup, include = FALSE}
+```
+library(tidyverse)
+library(palmerpenguins)
+somedata <- read_csv("https://edin.ac/2wJgYwL")
+```
+&grave;&grave;&grave;</code></div>
 
 :::
 

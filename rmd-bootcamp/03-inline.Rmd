@@ -16,7 +16,7 @@ xaringanExtra::use_panelset()
   background-color: #eaeaea;
 }
 .spc{
-  font-size: .9em !important;
+  font-size: .8em !important;
 }
 .spc1{
   background-color: #eaeaea;
@@ -40,11 +40,11 @@ xaringanExtra::use_panelset()
 
 Inline R code is just another way of including R code in an RMarkdown document, such that it gets evaluated when it gets compiled (or "knitted"). As well as including R code in a code-chunk:
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r setup, include = FALSE}<br>
-mean(mydata$outcome_variable)<br>
-&grave;&grave;&grave;
-</code></div>
+<div class="spc1"><code>&grave;&grave;&grave;{r setup, include = FALSE}
+```
+mean(mydata$outcome_variable)
+```
+&grave;&grave;&grave;</code></div>
 
 We can include little bits of R code in our text, to integrate it full with our written report:
   

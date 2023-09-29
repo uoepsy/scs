@@ -1,0 +1,21 @@
+---
+title: "quarto-bootcamp"
+---
+
+A compact course to take you from zero to Quarto-hero!
+
+The list of self-paced lessons is as follows. Make sure to try things out for yourself, do not simply read it and think "oh I understand it, hence I can surely do it without guidance".  
+  
+Learn through trial and error!
+
+- [Lesson 0: Getting Started](00_getstarted.html)  
+- [Lesson 1: The basics](01_basics.html)  
+- [Lesson 2: Compiling documents](02_compiling.html)  
+- [Lesson 3: Inline R code](03_inline.html)  
+- [Lesson 4: Making pretty tables](04_tables.html)  
+- [Lesson 5: Hiding Code, Hiding Output](05_opts.html)  
+- [Lesson 6: Plots & Figures](06_plots.html)  
+- [Lesson 7: Referencing](07_referencing.html)  
+- [Lesson 8: Reproducibility](08_repro.html)  
+- [Useful packages](zz_packages.html)  
+

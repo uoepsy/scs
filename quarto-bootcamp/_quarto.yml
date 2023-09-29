@@ -1,0 +1,37 @@
+project:
+  type: website
+
+website:
+  title: "quarto-bootcamp"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - text: "Lesson 0: Getting Started"
+        href: 00_getstarted.html
+      - text: "Lesson 1: The basics"
+        href: 01_basics.html
+      - text: "Lesson 2: Compiling documents"
+        href: 02_compiling.html
+      - text: "Lesson 3: Inline R code"
+        href: ""
+      - text: "Lesson 4: Making pretty tables"
+        href: ""
+      - text: "Lesson 5: Hiding Code, Hiding Output"
+        href: ""
+      - text: "Lesson 6: Plots & Figures"
+        href: ""
+      - text: "Lesson 7: Referencing"
+        href: ""
+      - text: "Lesson 8: Reproducibility"
+        href: ""
+      - text: "Useful packages"
+        href: ""
+format:
+  html:
+    theme: journal
+    css: styles.css
+    toc: true
+
+
+

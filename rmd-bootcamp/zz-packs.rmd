@@ -17,7 +17,7 @@ xaringanExtra::use_panelset()
   background-color: #eaeaea;
 }
 .spc1 code{
-  font-size: .8em !important;
+  font-size: .9em !important;
 }
 .frame {
     border: 1px solid #333333 !important; 
@@ -42,14 +42,15 @@ xaringanExtra::use_panelset()
 
 My regression results are in Table \\\@ref(tab:modtab). 
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r resultschunk}<br>
-library(sjPlot)<br>
-df <- read.csv('https://uoepsy.github.io/data/cognitive_experiment.csv')<br>
-mymodel <- lm(Score ~ 1 + Diagnosis * Task, data = df)<br>
-tab_model(mymodel, title="(\\#tab:modtab) THIS IS MY MODEL. NOT YOURS! GET YOUR OWN MODEL")<br>
+<div class="spc1"><code>&grave;&grave;&grave;{r resultschunk}
+```
+library(sjPlot)
+df <- read.csv('https://uoepsy.github.io/data/cognitive_experiment.csv')
+mymodel <- lm(Y ~ 1 + Diagnosis * Task, data = df)
+tab_model(mymodel, title="(\\#tab:modtab) THIS IS MY MODEL. NOT YOURS! GET YOUR OWN MODEL")
+```
 &grave;&grave;&grave;
-</code></div><br>
+</code></div>
 
 :::
 

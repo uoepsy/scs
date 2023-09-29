@@ -1,0 +1,135 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "quarto-bootcamp",
+    "section": "",
+    "text": "A compact course to take you from zero to Quarto-hero!\nThe list of self-paced lessons is as follows. Make sure to try things out for yourself, do not simply read it and think “oh I understand it, hence I can surely do it without guidance”.\nLearn through trial and error!\n\nLesson 0: Getting Started\n\nLesson 1: The basics\n\nLesson 2: Compiling documents\n\nLesson 3: Inline R code\n\nLesson 4: Making pretty tables\n\nLesson 5: Hiding Code, Hiding Output\n\nLesson 6: Plots & Figures\n\nLesson 7: Referencing\n\nLesson 8: Reproducibility\n\nUseful packages"
+  },
+  {
+    "objectID": "00_getstarted.html#prelude",
+    "href": "00_getstarted.html#prelude",
+    "title": "Getting started",
+    "section": "Prelude",
+    "text": "Prelude\nWriting scientific and statistical reports can be a laborious process. Typically, data analysis has been conducted using one piece of statistical analysis software, and the writing process takes place in another (e.g. Microsoft Word). This means the author needs to get the information from the analysis software into the word processing software. This introduces a lot of room for error (e.g. you write the wrong numbers in your paper), and even more room for frustration (your analysis changes slightly and all your numbers change, meaning you have to re-copy everything across).\nThe tools you learn in these lessons aim to solve this, by allowing you to combine your analysis and write-up in one, fully reproducible document."
+  },
+  {
+    "objectID": "00_getstarted.html#what-you-need",
+    "href": "00_getstarted.html#what-you-need",
+    "title": "Getting started",
+    "section": "What you need",
+    "text": "What you need\n\nA laptop\nR and Rstudio\nEither a locally installed version of R and RStudio on your laptop, or access to RStudio on a server.\nVery basic knowledge of programming in R (see below).\nActive learning\nJust reading the material won’t be enough, you need to type along the code and get familiar with errors.\nWillingness to learn\nIf you approach the material with an inquisitive attitude, it will be easier to learn."
+  },
+  {
+    "objectID": "00_getstarted.html#experience-with-rrstudio",
+    "href": "00_getstarted.html#experience-with-rrstudio",
+    "title": "Getting started",
+    "section": "Experience with R/Rstudio",
+    "text": "Experience with R/Rstudio\nThis course assumes that the reader has had some experience of using RStudio and programming in R. For an indicator, we will assume that the reader is familiar with the code below and understands what each line will do.\n\nlibrary(tidyverse)\ntipjoke <- read_csv('https://uoepsy.github.io/data/TipJoke.csv')\ntiptable <- table(tipjoke$Card, tipjoke$Tip)\ntiptable\n\npass_scores <- read_csv(\"https://edin.ac/2wJgYwL\") \nbarplot(table(pass_scores$school))\nt.test(pass_scores$PASS, mu = 33, alternative = \"less\")\npass_scores %>% group_by(school) %>%\n  summarise(\n    meanPASS = mean(PASS),\n    sdPASS = sd(PASS)\n  )\n\nWe also assume that the reader is familiar with the general setup of the RStudio IDE (Figure 1).\nWriting in Quarto is similar to writing in an R Script - it involves writing code in the Editor pane, which can then be sent to the Console to be evaluated. The only difference is the addition of the written text component in the file we have open in the Editor.\n\n\n\n\n\nFigure 1: RStudio Interface"
+  },
+  {
+    "objectID": "01_basics.html",
+    "href": "01_basics.html",
+    "title": "Quarto Basics",
+    "section": "",
+    "text": "TODO rmd > qmd this course is intermediate. lots more it can do"
+  },
+  {
+    "objectID": "01_basics.html#prerequisite-packages",
+    "href": "01_basics.html#prerequisite-packages",
+    "title": "Quarto Basics",
+    "section": "Prerequisite packages",
+    "text": "Prerequisite packages\nPrior to starting, we need to make sure we have all the required packages installed. Run these two lines in your console. It may take some time, so be patient. The rmarkdown and knitr packages are going to be necessary for rendering any RMarkdown document. To enable us to compile to a PDF, we’re going to need the tinytex package, and we’re going to need to use it to install a minimal version of LaTeX on our system:\n\ninstall.packages(c(\"rmarkdown\",\"tinytex\",\"knitr\"))\ntinytex::install_tinytex()"
+  },
+  {
+    "objectID": "01_basics.html#getting-started",
+    "href": "01_basics.html#getting-started",
+    "title": "Quarto Basics",
+    "section": "Getting Started",
+    "text": "Getting Started\nFirst things first, we need to open an RMarkdown document.\nIn the top menu bar, click on File > New File > RMarkdown\nA dialgue box will pop-up\n\nCreating a new RMarkdown doc"
+  },
+  {
+    "objectID": "01_basics.html#yaml",
+    "href": "01_basics.html#yaml",
+    "title": "Quarto Basics",
+    "section": "yaml",
+    "text": "yaml\n\n\n\n\n\nThe bit between three dashes is the YAML, and contains metadata about the document\n\n\n\n\nThe bit at the top of your document between the three dashes --- is the “metadata”. This is the information about your document. Things like the title, author, output format (html/pdf). For now, we can leave it as it is, but there are lots and lots of features you can exploit via the yaml, such as including stylesheets for html (which is how we set the colours/fonts etc in these pages), to setting custom parameters which enable you to bulk create multiple reports for different values (e.g. a different report on each country in a list). We won’t cover this sort of stuff in this course as it is not so useful for producing scientific reports, but once you are an RMarkdown pro, if you get interested in this sort of thing there is lots of info at https://bookdown.org/yihui/rmarkdown/params-knit.html.\nWe will come back to editing the yaml a little bit in Lesson 7, but for now we can leave it as it is, having been automatically generated based on the author and title we gave the little pop-up box."
+  },
+  {
+    "objectID": "01_basics.html#remove-the-template-text",
+    "href": "01_basics.html#remove-the-template-text",
+    "title": "Quarto Basics",
+    "section": "Remove the template text",
+    "text": "Remove the template text\nWhen you open a new RMarkdown document, it opens a template for you, to help with learning how to use it. Read through the template, and follow along with the video to delete all of it - we want to start fresh:\n\nRemoving the template"
+  },
+  {
+    "objectID": "01_basics.html#text-and-code-chunks",
+    "href": "01_basics.html#text-and-code-chunks",
+    "title": "Quarto Basics",
+    "section": "Text and Code-Chunks",
+    "text": "Text and Code-Chunks\n\n\nWriting Text\nAs mentioned, RMarkdown is a format in which we can write both code and text. It has lots of useful advantages - you can write in such a way that if your data or analysis changes, then your results, plots and tables will automatically update to reflect these changes.\nWriting text involves formatting your words in plain-text “markdown”. There are a few rules to get to grips with, but it is fairly straightforward to start typing your paragraph in your document:\n\nWe use the # symbol to denote a section heading (with ## being a subsection, and ### being subsubsection, and so on.)\n\nBold text is made by wrapping a sentence in two asterisks **, or two underscores __\nitalic text is made by wrapping it in one * or _.\n\n\n\n\n\n\nWriting in Markdown (from https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)\n\n\n\n\n\n\nAdding Code-Chunks\nAs shown in Figure @ref(fig:chunk), We include code-chunks by using three backticks ``` followed by squiggly brackets with “r” in them {r}, to specify in the document that this is R code (we can actually also include other programming languages!). We then end the code chunk with three backticks again. Everything between these backticks will get evaluated as a chunk of R code, and things outside these chunks will be considered text.\n\n\n\n\n\nThis is a code-chunk\n\n\n\n\nThere are a couple of short cuts for adding a new code-chunk. Either of the options below will create a code-chunk wherever your cursor is in the document at that time.\n\nAt the top-right of your document, there will be a set of icons. One of these is a little “c” inside a box with a plus in the corner. Click this and choose R from the menu.\n::: {.cell layout-align=“left”} ::: {.cell-output-display}  ::: :::\nType Ctrl+Alt+i on your keyboard ( Cmd+Opt+i for Mac).\n\n\n\n\nWriting text\n \n\n\nAdding code-chunks"
+  },
+  {
+    "objectID": "01_basics.html#running-code",
+    "href": "01_basics.html#running-code",
+    "title": "Quarto Basics",
+    "section": "Running Code",
+    "text": "Running Code\nThere are various ways you can send code from your RMarkdown document to the console to be evaluated.\n\n\n\n\n\nRunning code chunks\n\n\n\n\n\nRunning the line of code under the cursor\nAs with an R Script, when your cursor is on a line of R code, you can type Ctrl+Enter ( Cmd+Enter for Mac users) to evaluate that line of code. The cursor will automatically move down to the next line of code, so you can keep pressing your keyboard to run lines sequentially. Alternatively, in the top-right of your document you can press the run icon and choose to run the selected line.\n\n\n\n\n\n\n\n\n\n\nRunning a line of code\n  \n\nYou can also highlight lines to run them together.\n\n\nRunning a chunk of code\n\n\n\n\n\n\n\n\n\nThe little green arrow at the top right of the code-chunk allows you to run that whole code-chunk.\n\nRunning current code-chunk\n  \n\n\n\nRunning all code-chunks above the current code-chunk\n\n\n\n\n\n\n\n\n\nThe little downwards arrow enables you to run all the code-chunks above that code-chunk. This is useful to do a quick refresh of your analysis process up to that point.\n\nRunning code-chunks above"
+  },
+  {
+    "objectID": "01_basics.html#why-use-rmarkdown",
+    "href": "01_basics.html#why-use-rmarkdown",
+    "title": "Quarto Basics",
+    "section": "Why use RMarkdown?",
+    "text": "Why use RMarkdown?\nQuarto documents combine the analytical power of R and the utility of a text-processor. We can have one document which contains all of our analysis as well as our written text, and can be compiled into a nicely formatted report. This saves us doing analysis in R and copying results across to Microsoft Word. It ensures our report accurately reflects our analysis. Everything that you’re reading now has all been written in Quarto!\nThe fundamental idea of Quarto is to be able to write normal text interspersed with “code-chunks” (i.e., chunks of code!). With Quarto documents we are able to see and edit the code along with specifying formatting of our text. We then compile our document into a nice file (e.g. a .pdf file or a .html file) which formats our text and shows/hides code and output according to what we have specified.\nYou can see a Quarto workflow in Figure 1\n\n\n\n\n\nFigure 1: RMarkdown Workflow (from https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)"
+  },
+  {
+    "objectID": "01_basics.html#my-first-quarto-doc",
+    "href": "01_basics.html#my-first-quarto-doc",
+    "title": "Quarto Basics",
+    "section": "My first Quarto doc",
+    "text": "My first Quarto doc\nFirst things first, we need to open an RMarkdown document.\nIn the top menu bar, click on File > New File > RMarkdown\nA dialgue box will pop-up\n\nCreating a new RMarkdown doc"
+  },
+  {
+    "objectID": "02_compiling.html#what-does-it-mean-to-compile-a-document",
+    "href": "02_compiling.html#what-does-it-mean-to-compile-a-document",
+    "title": "Compiling RMarkdown Documents",
+    "section": "What does it mean to “compile” a document?",
+    "text": "What does it mean to “compile” a document?\n\n\n\n\n\nRendering (from https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)\n\n\n\n\nOften, when talking about “compiling” RMarkdown documents, you will find different words used for this process, such as “compiling”, “rendering”, and “knitting”.\nThe basic idea is that we are turning the .rmd file we are editing in RStudio into something much more reader-friendly, such as a .pdf, or an .html, or even a word file .docx.\n\n\n\n\n\n\n\n\n\nIf you open up the .rmd file from Lesson 1, and click the “knit” icon at the top of the document, you see lots of stuff happening below, and then a nicely formatted document will pop-up. (Note: If you have not already saved your RMarkdown document (hopefully you have!), then when you click “knit”, it will prompt you to save it first.)\n\nCompiling a document\n  \n\n\nYou may find that the document pops up in a separate window, or in the “viewer” pane in the bottom right of RStudio.\nYou can control this behaviour by looking in the top menu of RStudio for “Tools” > “Global Options” > “RMarkdown” > “Show output preview in:”."
+  },
+  {
+    "objectID": "02_compiling.html#compiled-files",
+    "href": "02_compiling.html#compiled-files",
+    "title": "Compiling RMarkdown Documents",
+    "section": "Compiled Files",
+    "text": "Compiled Files\nThe compiled file will be in the same folder as where you have saved your .rmd file. If you are using an “Project”, or have set your working directory using setwd() (see r-bootcamp Lesson 2) then you can fine these easily in the Files tab of RStudio. You can also find these in your file-browser that you use to find all your other files on your computer.\n\nLocating .rmd and compiled document when using a Project\n  \n\nYou should now have TWO files on your computer with the same name but one is an .Rmd and one is a .html. You could email the .html file to someone and they could open it in their web browser. The .Rmd file can only be opened and understood by someone who has access to R."
+  },
+  {
+    "objectID": "02_compiling.html#compiling-and-sessionsenvironments",
+    "href": "02_compiling.html#compiling-and-sessionsenvironments",
+    "title": "Compiling RMarkdown Documents",
+    "section": "Compiling and Sessions/Environments",
+    "text": "Compiling and Sessions/Environments\n\nWhen an RMarkdown document gets compiled, it does so as a self-contained process. This ensures reproducibility!\nIt doesn’t matter what you can see in your Environment, nor what packages you have loaded.\nWhat matters is what is in the RMarkdown document.\nWhen you click “knit”, the lines of code in your RMarkdown document will be evaluated one-by-one, and the document must contain everything required to evaluate each line.\nFor example:\n\nif you have not got a line in your document that loads the tidyverse packages, then you will not be able to use functions like group_by(),filter,%>% etc in the document, because it won’t know where to find them.\n\nif you have not got the line that loads the tidyverse packages before you use functions like group_by(),filter,%>% etc, then it won’t know where to find them.\n\nWhere is the RMarkdown looking for objects/functions, if not your environment? It’s looking in its own environment!\n\n\nDemonstration of compiling without defining objects"
+  },
+  {
+    "objectID": "02_compiling.html#the-setup-chunk",
+    "href": "02_compiling.html#the-setup-chunk",
+    "title": "Compiling RMarkdown Documents",
+    "section": "The “setup” chunk",
+    "text": "The “setup” chunk\nBecause compiling an RMarkdown document requires everything necessary for all the code to run without errors to be included in the document and in the correct order, there is an optimum way to structure your document.\nImmediately after the metadata (title, author etc), we specify the “setup” chunk (see below). In the setup chunk, we typically load all the packages we rely on in the rest of the document, so that they get loaded first.1 It is also typical to use this chunk to read in your data.\nYou can see an example below.\n\n---\ntitle: \"this is my title\"\nauthor: \"I am the author\"\ndate: \"13/08/2021\"\noutput: html_document\n---\n\n ```{r setup, include = FALSE} library(tidyverse) library(palmerpenguins) somedata <- read_csv(“https://edin.ac/2wJgYwL”) ``` \n\n\n\nNote we now have some more stuff inside the brackets which start our code-chunk.\nInstead of\n\n```{r}\n\nwe now have\n\n```{r setup, include = FALSE}\n\nThe first bit, setup is simply the name of our code-chunk. We can call it anything we want, for instance:\n\n\n```{r peppapig}\n\nThe second bit, the include = FALSE is what is known as a “chunk-option”, and we will get to these later on. What this does is basically mean that neither this chunk of code nor its output will be visible in the compiled document."
+  },
+  {
+    "objectID": "01_basics.html#why-use-quarto",
+    "href": "01_basics.html#why-use-quarto",
+    "title": "Quarto Basics",
+    "section": "Why use Quarto?",
+    "text": "Why use Quarto?\nQuarto documents combine the analytical power of R and the utility of a text-processor. We can have one document which contains all of our analysis as well as our written text, and can be compiled into a nicely formatted report. This saves us doing analysis in R and copying results across to Microsoft Word. It ensures our report accurately reflects our analysis. Everything that you’re reading now has all been written in Quarto!\nThe fundamental idea of Quarto is to be able to write normal text interspersed with “code-chunks” (i.e., chunks of code!). With Quarto documents we are able to see and edit the code along with specifying formatting of our text. We then compile our document into a nice file (e.g. a .pdf file or a .html file) which formats our text and shows/hides code and output according to what we have specified.\nYou can see a Quarto workflow in Figure 1\n\n\n\n\n\nFigure 1: RMarkdown Workflow (from https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)"
+  }
+]

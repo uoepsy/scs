@@ -16,7 +16,7 @@ xaringanExtra::use_panelset()
   background-color: #eaeaea;
 }
 .spc1 code{
-  font-size: .8em !important;
+  font-size: .9em !important;
 }
 .frame {
     border: 1px solid #333333 !important; 
@@ -45,13 +45,13 @@ barplot(table(pass_scores$school))
 ```
 However, we can also include images from files stored locally on our computer, or stored on the internet. We can do so using the `include_graphics()` function from the __knitr__ package:
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r}<br>
-library(knitr)<br>
-include_graphics("https://edin.ac/37Ml3Q2")<br>
-include_graphics("images/dougal.jpeg")<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r}
+```
+library(knitr)
+include_graphics("https://edin.ac/37Ml3Q2")
+include_graphics("images/dougal.jpeg")
+```
+&grave;&grave;&grave;</code></div><br>
 
 ```{r out.width="150px"}
 library(knitr)
@@ -77,12 +77,12 @@ To simply scale up/down any image at all, we can use the `out.width` and `out.he
 
 Writing this: 
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r out.width="150px"}<br>
-include_graphics("https://edin.ac/37Ml3Q2")<br>
-barplot(table(pass_scores$school))<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r out.width="150px"}
+```
+include_graphics("https://edin.ac/37Ml3Q2")
+barplot(table(pass_scores$school))
+```
+&grave;&grave;&grave;</code></div><br>
 
 Compiles to this:
 
@@ -93,12 +93,12 @@ barplot(table(pass_scores$school))
 
 Writing this: 
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r out.width="300px", out.height = "50px"}<br>
-include_graphics("https://edin.ac/37Ml3Q2")<br>
-barplot(table(pass_scores$school))<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r out.width="300px", out.height = "50px"}
+```
+include_graphics("https://edin.ac/37Ml3Q2")
+barplot(table(pass_scores$school))
+```
+&grave;&grave;&grave;</code></div><br>
 
 Compiles to this:
 
@@ -118,11 +118,11 @@ Note that this method of resizing adjusts the plotting area but preserves things
 
 Writing this: 
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r}<br>
-barplot(table(pass_scores$school))<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r}
+```
+barplot(table(pass_scores$school))
+```
+&grave;&grave;&grave;</code></div><br>
 
 Compiles to this: 
 
@@ -132,11 +132,11 @@ barplot(table(pass_scores$school))
 
 Writing this:
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r fig.width=3, fig.height=6}<br>
-barplot(table(pass_scores$school))<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r fig.width=3, fig.height=6}
+```
+barplot(table(pass_scores$school))
+```
+&grave;&grave;&grave;</code></div><br>
 
 Compiles to this:
 
@@ -152,33 +152,33 @@ barplot(table(pass_scores$school))
 
 This one should be fairly intuitive: do you want your image on the left, middle or right?
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r fig.align="left"}<br>
-include_graphics("https://edin.ac/37Ml3Q2")<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r fig.align="left"}
+```
+include_graphics("https://edin.ac/37Ml3Q2")
+```
+&grave;&grave;&grave;</code></div><br>
 
 ```{r out.width="150px", fig.align="left"}
 library(knitr)
 include_graphics("https://edin.ac/37Ml3Q2")
 ```
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r fig.align="center"}<br>
-include_graphics("https://edin.ac/37Ml3Q2")<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r fig.align="center"}
+```
+include_graphics("https://edin.ac/37Ml3Q2")
+```
+&grave;&grave;&grave;</code></div><br>
 
 ```{r out.width="150px", fig.align="center"}
 library(knitr)
 include_graphics("https://edin.ac/37Ml3Q2")
 ```
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r fig.align="right"}<br>
-include_graphics("https://edin.ac/37Ml3Q2")<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r fig.align="right"}
+```
+include_graphics("https://edin.ac/37Ml3Q2")
+```
+&grave;&grave;&grave;</code></div><br>
 
 ```{r out.width="150px", fig.align="right"}
 library(knitr)
@@ -192,19 +192,19 @@ We can include captions for an image or a plot by using the `fig.cap` option. No
 
 Writing this:
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r fig.cap="Counts of penguins of different species"}<br>
-library(palmerpenguins)<br>
-barplot(table(penguins$species))<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r fig.cap="Counts of penguins of different species"}
+```
+library(palmerpenguins)
+barplot(table(penguins$species))
+```
+&grave;&grave;&grave;</code></div><br>
   
 <br>
-<div class="spc1"><code>
-&grave;&grave;&grave;{r fig.cap="a picture of a brain..."}<br>
-include_graphics("https://edin.ac/37Ml3Q2")<br>
-&grave;&grave;&grave;
-</code></div><br>
+<div class="spc1"><code>&grave;&grave;&grave;{r fig.cap="a picture of a brain..."}
+```
+include_graphics("https://edin.ac/37Ml3Q2")
+```
+&grave;&grave;&grave;</code></div><br>
 
 Compiles to this:  
 
@@ -233,26 +233,23 @@ The easiest way (only when compiling to .html) is to include write some quick ht
 
 \<div style="display: inline-block; max-width: 45%; vertical-align: top;"\>
 
-<div class="spc1"><code>
-&grave;&grave;&grave;{r mychunkname, echo = FALSE}<br>
-library(knitr)<br>
-pass_scores <- read.csv("https://edin.ac/2wJgYwL")<br>
-kable(table(pass_scores$school))<br>
-&grave;&grave;&grave;
-</code><br>
-</div>
+<div class="spc1"><code>&grave;&grave;&grave;{r mychunkname, echo = FALSE}
+```
+library(knitr)
+pass_scores <- read.csv("https://edin.ac/2wJgYwL")
+kable(table(pass_scores$school))
+```
+&grave;&grave;&grave;</code><br></div>
 
 \</div\>
 
 \<div style="display: inline-block; max-width: 45%; vertical-align: top;"\>
 
-<div class="spc1">
-<code>
-&grave;&grave;&grave;{r mychunkname2, echo = FALSE}<br>
-barplot(table(pass_scores$school))<br>
-&grave;&grave;&grave;
-</code><br>
-</div>
+<div class="spc1"><code>&grave;&grave;&grave;{r mychunkname2, echo = FALSE}
+```
+barplot(table(pass_scores$school))
+```
+&grave;&grave;&grave;</code><br></div>
 
 \</div\>
 
