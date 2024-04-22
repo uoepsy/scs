@@ -1,0 +1,91 @@
+---
+title: "Linear models @ DPUK"
+date: "April 2024"
+output:
+  rmdformats::material:
+    highlight: kate
+---
+
+```{r setup, include=FALSE}
+## Global options
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+
+# Start here
+
+This is a short course on linear models using the R programming language.
+
+Each day will comprise a 1 hour lecture in the morning, and a practical in the afternoon.
+
+Before starting, please make sure you are able to access RStudio on the DPUK Research platform. During the training event you will be primarily working on the research platform.
+
+If you wish to install RStudio locally on your own laptop, you can find detailed instructions at [this link](install-update-r.html). However, you won't have access to the DPUK data outside of the DPUK research platform.
+
+
+# Day 1: Monday
+
+- Lecture
+    + [Day 1 Slides](DPUK_IntroLM_v2.html#1)
+    + [Exam Score Data](dapr2_lec07.csv)
+
+- Guided Practice
+    + [Introduction to R, RStudio, and linear models](day1_practical.R)
+    + [Riverview data](riverview.csv)
+
+- Further reading from our courses at the University of Edinburgh:
+    + [Introduction to R and RStudio](https://uoepsy.github.io/dapr1/labs/intro_r_rstudio_year1.html)
+    + [Simple linear regression](https://uoepsy.github.io/dapr2/labs/1_02_slr.html)
+
+
+# Day 2: Tuesday
+
+- Lecture
+    + [Day 2 Slides](DPUK_IntroLM_v2.html#61)
+    + [Salary 1](salary_lec.csv)
+
+- Guided Practice
+    + [R script](day2_practical.R)
+    + [Riverview data](riverview.csv)
+    
+- Further reading from our courses at the University of Edinburgh:
+    + [Multiple linear regression](https://uoepsy.github.io/dapr2/labs/1_04_mlr.html)
+
+
+# Day 3: Wednesday
+
+- Lecture
+    + [Day 3 Slides](DPUK_IntroLM_v2.html#124)
+    + [Salary 2](salary2.csv)
+    + Salary 3 data (on it's way)
+
+- Guided Practice
+    + [R script](day3_practical.R)
+    + [ACER data](acer.csv)
+
+- Further reading from our courses at the University of Edinburgh:
+    + [Interactions 1: Categorical*Continuous](https://uoepsy.github.io/dapr2/labs/1_05_int_nc.html)
+    + [Interactions 2: Continuous*Continuous](https://uoepsy.github.io/dapr2/labs/1_05_int_nc.html)
+    + [Interactions 3: Categorical*Categorical](https://uoepsy.github.io/dapr2/labs/1_05_int_nc.html)
+
+
+# Day 4: Thursday
+
+- Lecture
+    + [Day 4 Slides](DPUK_IntroLM_v2.html#165)
+
+- Guided Practice
+    + [R script](day4_practical.R)
+    + [Influencer data](sillydata.csv)
+
+- Further reading from our courses at the University of Edinburgh:
+    + [Assumptions & Diagnostics](https://uoepsy.github.io/dapr2/labs/1_09_assumptions.html)
+    + [Writing up](https://uoepsy.github.io/dapr2/labs/1_11_write_up.html)
+
+
+# Staff
+
+- [Dr Tom Booth](https://www.ed.ac.uk/profile/tom-booth)
+- [Dr Josiah King](https://www.ed.ac.uk/profile/josiah-pj-king)
+- [Dr Umberto Noe](https://www.ed.ac.uk/profile/umberto-noe)
+
