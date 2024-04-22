@@ -660,7 +660,7 @@ test <- test %>%
   )
 
 res_z <- lm(z_score ~ z_hours, data = test)
-summary(res_z)$coefficients
+round(summary(res_z)$coefficients, 3)
 ```
 
 
@@ -682,7 +682,7 @@ summary(res_z)$coefficients
 + In our example, $\hat \beta_{hours}^*$ = 0.72
 
 ```{r}
-cor(test$hours, test$score)
+round(cor(test$hours, test$score),3)
 ```
 
 + $r$ is a standardized measure of linear association
@@ -1608,23 +1608,6 @@ anova(m0, m1, m2)
 
 
 ---
-# Other uses for `anova()`
-
-+ Another main use of the `anova()` function is when analysing linear models with categorical variables with 2+ levels.
-
-+ This type of model is common in experimental designs
-  + It is the type of model typically described in the literature as an ANOVA model (or analysed using ANOVA)
-  + Note ANOVA = linear model
-  
----
-# Categorical data and `anova()`
-
-```{r}
-anova(dummy1)
-```
-
-
----
 class: center, middle
 # Thanks all!
 
@@ -1660,12 +1643,13 @@ $$y_i = \beta_0 + \beta_1 x_{i} + \beta_2 z_{i} + \beta_3 xz_{i} + \epsilon_i$$
 #  General definition of interaction
 
 + When the effects of one predictor on the outcome differ across levels of another predictor.
+  + **Important**: When we have an interaction, we can no longer talk about the overall effect of a variable, holding the others constant.
+  + The effects change
+  + The effects at specific variables of the interacting variable are called marginal effects.
 
 + Note interactions are symmetrical. 
-
-+ What does this mean?
-  + We can talk about interaction of X with Z, or Z with X.
-  + These are identical.
+  + What does this mean?
+    + We can talk about interaction of X with Z, or Z with X.
 
 ---
 #  General definition 
@@ -1831,21 +1815,6 @@ salary1 %>%
   labs(x = "Years of Service", y = "Salary (£1000)") 
 ```
 ]
-
-
-
----
-#  Marginal effects 
-
-+ Recall when we have a linear model with multiple predictors, we interpret the $\beta_j$ as the effect "holding all other variables constant".
-
-+ Also note, with interactions, the effect of $x$ on $y$ changes dependent on the value of $z$.
-  + More formally, it is the effect of $x$ is conditional on $z$ and vice versa.
-
-+ What this means is that we can no longer talk about holding an effect constant.
-  + In the presence of an interaction, by definition, this effect changes.
-
-+ So where as in a linear model without an interaction $\beta_j$ = main effects, with an interaction we refer to **marginal** or **conditional** effects.
 
 
 ---
@@ -2265,13 +2234,13 @@ plot_model(int4, type = "int")
 #  Example: Categorical*categorical
 ```{r, echo=FALSE}
 res <- summary(int4)
-round(res$coefficients,2)
+round(res$coefficients,3)
 ```
 
 .pull-left[
 + $\beta_0$ = Value of $y$ when $x$ and $z$ are 0
 
-+ Expected salary for Accounts in London is £50,670.
++ Expected salary for Accounts in London is £50,660.
 ]
 
 
@@ -2280,7 +2249,7 @@ round(res$coefficients,2)
 salary3 %>%
   group_by(location, department) %>%
   summarise(
-    Salary = mean(salary)
+    Salary = round(mean(salary),3)
   ) %>%
   kable(.)
 ```
@@ -2290,13 +2259,13 @@ salary3 %>%
 #  Example: Categorical*categorical
 ```{r, echo=FALSE}
 res <- summary(int4)
-round(res$coefficients,2)
+round(res$coefficients,3)
 ```
 
 .pull-left[
 + $\beta_1$ = Difference between levels of $x$ when $z$ = 0
 
-+ The difference in salary between Accounts in London and Birmingham is £1,980. The salary is lower in Birmingham. 
++ The difference in salary between Accounts in London and Birmingham is £1,927. The salary is lower in Birmingham. 
 
 ]
 
@@ -2306,7 +2275,7 @@ round(res$coefficients,2)
 salary3 %>%
   group_by(location, department) %>%
   summarise(
-    Salary = mean(salary)
+    Salary = round(mean(salary),3)
   ) %>%
   kable(.)
 ```
@@ -2317,13 +2286,13 @@ salary3 %>%
 #  Example: Categorical*categorical
 ```{r, echo=FALSE}
 res <- summary(int4)
-round(res$coefficients,2)
+round(res$coefficients,3)
 ```
 
 .pull-left[
 + $\beta_2$ = Difference between levels of $z$ when $x$ = 0.
 
-+ The difference in salary between Accounts and Store managers in London is £3,460. The salary is lower for Store Managers. 
++ The difference in salary between Accounts and Store managers in London is £3,360. The salary is lower for Store Managers. 
 ]
 
 
@@ -2332,7 +2301,7 @@ round(res$coefficients,2)
 salary3 %>%
   group_by(location, department) %>%
   summarise(
-    Salary = mean(salary)
+    Salary = round(mean(salary),3)
   ) %>%
   kable(.)
 ```
@@ -2342,13 +2311,13 @@ salary3 %>%
 #  Example: Categorical*categorical
 ```{r, echo=FALSE}
 res <- summary(int4)
-round(res$coefficients,2)
+round(res$coefficients,3)
 ```
 
 .pull-left[
 +  $\beta_3$ = Difference between levels of $x$ across levels of $z$
 
-+ The difference between salary for Accounts and Store managers between London and Birmingham, differs by £8,420. The difference is greater in Birmingham than in London.
++ The difference between salary for Accounts and Store managers between London and Birmingham, differs by £8,640. The difference is greater in Birmingham than in London.
 ]
 
 
@@ -2357,7 +2326,7 @@ round(res$coefficients,2)
 salary3 %>%
   group_by(location, department) %>%
   summarise(
-    Salary = mean(salary)
+    Salary = round(mean(salary),3)
   ) %>%
   kable(.)
 ```

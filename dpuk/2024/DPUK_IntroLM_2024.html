@@ -299,19 +299,67 @@ $$
 
 .pull-left[
 
-
-|student | hours| score|
-|:-------|-----:|-----:|
-|ID1     |   0.5|     1|
-|ID2     |   1.0|     3|
-|ID3     |   1.5|     1|
-|ID4     |   2.0|     2|
-|ID5     |   2.5|     2|
-|ID6     |   3.0|     6|
-|ID7     |   3.5|     3|
-|ID8     |   4.0|     3|
-|ID9     |   4.5|     4|
-|ID10    |   5.0|     8|
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; student &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; hours &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; score &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ID1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ID2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ID3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ID4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ID5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ID6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ID7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ID8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ID9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ID10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 
 ]
 
@@ -666,13 +714,13 @@ test &lt;- test %&gt;%
   )
 
 res_z &lt;- lm(z_score ~ z_hours, data = test)
-summary(res_z)$coefficients
+round(summary(res_z)$coefficients, 3)
 ```
 
 ```
-##                  Estimate Std. Error       t value  Pr(&gt;|t|)
-## (Intercept) -1.208554e-16  0.2323550 -5.201327e-16 1.0000000
-## z_hours      7.211789e-01  0.2449237  2.944504e+00 0.0185812
+##             Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)    0.000      0.232   0.000    1.000
+## z_hours        0.721      0.245   2.945    0.019
 ```
 
 
@@ -695,11 +743,11 @@ summary(res_z)$coefficients
 
 
 ```r
-cor(test$hours, test$score)
+round(cor(test$hours, test$score),3)
 ```
 
 ```
-## [1] 0.7211789
+## [1] 0.721
 ```
 
 + `\(r\)` is a standardized measure of linear association
@@ -1754,35 +1802,6 @@ anova(m0, m1, m2)
 
 
 ---
-# Other uses for `anova()`
-
-+ Another main use of the `anova()` function is when analysing linear models with categorical variables with 2+ levels.
-
-+ This type of model is common in experimental designs
-  + It is the type of model typically described in the literature as an ANOVA model (or analysed using ANOVA)
-  + Note ANOVA = linear model
-  
----
-# Categorical data and `anova()`
-
-
-```r
-anova(dummy1)
-```
-
-```
-## Analysis of Variance Table
-## 
-## Response: exam
-##           Df Sum Sq Mean Sq F value    Pr(&gt;F)    
-## method     2 219.56 109.780  26.291 7.529e-10 ***
-## Residuals 97 405.03   4.176                      
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-```
-
-
----
 class: center, middle
 # Thanks all!
 
@@ -1818,12 +1837,13 @@ class: inverse, center, middle
 #  General definition of interaction
 
 + When the effects of one predictor on the outcome differ across levels of another predictor.
+  + **Important**: When we have an interaction, we can no longer talk about the overall effect of a variable, holding the others constant.
+  + The effects change
+  + The effects at specific variables of the interacting variable are called marginal effects.
 
 + Note interactions are symmetrical. 
-
-+ What does this mean?
-  + We can talk about interaction of X with Z, or Z with X.
-  + These are identical.
+  + What does this mean?
+    + We can talk about interaction of X with Z, or Z with X.
 
 ---
 #  General definition 
@@ -1941,7 +1961,7 @@ salary1 %&gt;%
 
 .pull-right[
 
-![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-46-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-45-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -2002,23 +2022,8 @@ int &lt;- lm(salary ~ service + dept + service*dept, data = salary1)
 
 
 .pull-right[
-![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-49-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-48-1.png)&lt;!-- --&gt;
 ]
-
-
-
----
-#  Marginal effects 
-
-+ Recall when we have a linear model with multiple predictors, we interpret the `\(\beta_j\)` as the effect "holding all other variables constant".
-
-+ Also note, with interactions, the effect of `\(x\)` on `\(y\)` changes dependent on the value of `\(z\)`.
-  + More formally, it is the effect of `\(x\)` is conditional on `\(z\)` and vice versa.
-
-+ What this means is that we can no longer talk about holding an effect constant.
-  + In the presence of an interaction, by definition, this effect changes.
-
-+ So where as in a linear model without an interaction `\(\beta_j\)` = main effects, with an interaction we refer to **marginal** or **conditional** effects.
 
 
 ---
@@ -2247,7 +2252,7 @@ plot_model(int3, type = "int")
 ]
 
 .pull-right[
-![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-57-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-56-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -2277,11 +2282,27 @@ class: inverse, center, middle
 .pull-left[
 
 
-
-|         | London| Birmingham|
-|:--------|------:|----------:|
-|Accounts |     50|         40|
-|Manager  |     30|         20|
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; London &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Birmingham &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 40 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 
 + In each plot we look at, think about subtracting the average store managers salary (blue triangle) from the average accounts salary (red circle)
 
@@ -2294,7 +2315,7 @@ class: inverse, center, middle
 
 .pull-right[
 
-![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-60-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-59-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -2305,11 +2326,27 @@ class: inverse, center, middle
 .pull-left[
 
 
-
-|         | London| Birmingham|
-|:--------|------:|----------:|
-|Accounts |     50|         40|
-|Manager  |     40|         20|
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; London &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Birmingham &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 40 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 40 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 
 + This time we can see the difference differs.
   + £20,000 in Birmingham
@@ -2323,7 +2360,7 @@ class: inverse, center, middle
 
 .pull-right[
 
-![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-63-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-62-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -2333,11 +2370,27 @@ class: inverse, center, middle
 .pull-left[
 
 
-
-|         | London| Birmingham|
-|:--------|------:|----------:|
-|Accounts |     40|         40|
-|Manager  |     60|         20|
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; London &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Birmingham &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 40 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 40 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 60 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 
 + This time we can see the difference differs.
   + £20,000 in Birmingham
@@ -2351,7 +2404,7 @@ class: inverse, center, middle
 
 .pull-right[
 
-![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-66-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-65-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -2415,7 +2468,7 @@ plot_model(int4, type = "int")
 ]
 
 .pull-right[
-![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-70-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-69-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -2426,27 +2479,51 @@ plot_model(int4, type = "int")
 
 ```
 ##                                      Estimate Std. Error t value Pr(&gt;|t|)
-## (Intercept)                             50.66       0.72   70.80     0.00
-## locationBirmingham                      -1.93       1.49   -1.29     0.20
-## departmentManager                       -3.36       1.34   -2.51     0.01
-## locationBirmingham:departmentManager    -8.64       2.28   -3.79     0.00
+## (Intercept)                            50.660      0.715  70.804    0.000
+## locationBirmingham                     -1.927      1.489  -1.294    0.199
+## departmentManager                      -3.360      1.339  -2.510    0.014
+## locationBirmingham:departmentManager   -8.640      2.281  -3.787    0.000
 ```
 
 .pull-left[
 + `\(\beta_0\)` = Value of `\(y\)` when `\(x\)` and `\(z\)` are 0
 
-+ Expected salary for Accounts in London is £50,670.
++ Expected salary for Accounts in London is £50,660.
 ]
 
 
 .pull-right[
-
-|location   |department |   Salary|
-|:----------|:----------|--------:|
-|London     |Accounts   | 50.66000|
-|London     |Manager    | 47.30000|
-|Birmingham |Accounts   | 48.73333|
-|Birmingham |Manager    | 36.73333|
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; location &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; department &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Salary &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; London &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50.660 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; London &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 47.300 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Birmingham &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 48.733 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Birmingham &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36.733 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 ]
 
 ---
@@ -2454,28 +2531,52 @@ plot_model(int4, type = "int")
 
 ```
 ##                                      Estimate Std. Error t value Pr(&gt;|t|)
-## (Intercept)                             50.66       0.72   70.80     0.00
-## locationBirmingham                      -1.93       1.49   -1.29     0.20
-## departmentManager                       -3.36       1.34   -2.51     0.01
-## locationBirmingham:departmentManager    -8.64       2.28   -3.79     0.00
+## (Intercept)                            50.660      0.715  70.804    0.000
+## locationBirmingham                     -1.927      1.489  -1.294    0.199
+## departmentManager                      -3.360      1.339  -2.510    0.014
+## locationBirmingham:departmentManager   -8.640      2.281  -3.787    0.000
 ```
 
 .pull-left[
 + `\(\beta_1\)` = Difference between levels of `\(x\)` when `\(z\)` = 0
 
-+ The difference in salary between Accounts in London and Birmingham is £1,980. The salary is lower in Birmingham. 
++ The difference in salary between Accounts in London and Birmingham is £1,927. The salary is lower in Birmingham. 
 
 ]
 
 
 .pull-right[
-
-|location   |department |   Salary|
-|:----------|:----------|--------:|
-|London     |Accounts   | 50.66000|
-|London     |Manager    | 47.30000|
-|Birmingham |Accounts   | 48.73333|
-|Birmingham |Manager    | 36.73333|
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; location &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; department &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Salary &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; London &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50.660 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; London &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 47.300 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Birmingham &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 48.733 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Birmingham &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36.733 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 ]
 
 
@@ -2484,27 +2585,51 @@ plot_model(int4, type = "int")
 
 ```
 ##                                      Estimate Std. Error t value Pr(&gt;|t|)
-## (Intercept)                             50.66       0.72   70.80     0.00
-## locationBirmingham                      -1.93       1.49   -1.29     0.20
-## departmentManager                       -3.36       1.34   -2.51     0.01
-## locationBirmingham:departmentManager    -8.64       2.28   -3.79     0.00
+## (Intercept)                            50.660      0.715  70.804    0.000
+## locationBirmingham                     -1.927      1.489  -1.294    0.199
+## departmentManager                      -3.360      1.339  -2.510    0.014
+## locationBirmingham:departmentManager   -8.640      2.281  -3.787    0.000
 ```
 
 .pull-left[
 + `\(\beta_2\)` = Difference between levels of `\(z\)` when `\(x\)` = 0.
 
-+ The difference in salary between Accounts and Store managers in London is £3,460. The salary is lower for Store Managers. 
++ The difference in salary between Accounts and Store managers in London is £3,360. The salary is lower for Store Managers. 
 ]
 
 
 .pull-right[
-
-|location   |department |   Salary|
-|:----------|:----------|--------:|
-|London     |Accounts   | 50.66000|
-|London     |Manager    | 47.30000|
-|Birmingham |Accounts   | 48.73333|
-|Birmingham |Manager    | 36.73333|
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; location &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; department &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Salary &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; London &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50.660 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; London &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 47.300 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Birmingham &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 48.733 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Birmingham &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36.733 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 ]
 
 ---
@@ -2512,27 +2637,51 @@ plot_model(int4, type = "int")
 
 ```
 ##                                      Estimate Std. Error t value Pr(&gt;|t|)
-## (Intercept)                             50.66       0.72   70.80     0.00
-## locationBirmingham                      -1.93       1.49   -1.29     0.20
-## departmentManager                       -3.36       1.34   -2.51     0.01
-## locationBirmingham:departmentManager    -8.64       2.28   -3.79     0.00
+## (Intercept)                            50.660      0.715  70.804    0.000
+## locationBirmingham                     -1.927      1.489  -1.294    0.199
+## departmentManager                      -3.360      1.339  -2.510    0.014
+## locationBirmingham:departmentManager   -8.640      2.281  -3.787    0.000
 ```
 
 .pull-left[
 +  `\(\beta_3\)` = Difference between levels of `\(x\)` across levels of `\(z\)`
 
-+ The difference between salary for Accounts and Store managers between London and Birmingham, differs by £8,420. The difference is greater in Birmingham than in London.
++ The difference between salary for Accounts and Store managers between London and Birmingham, differs by £8,640. The difference is greater in Birmingham than in London.
 ]
 
 
 .pull-right[
-
-|location   |department |   Salary|
-|:----------|:----------|--------:|
-|London     |Accounts   | 50.66000|
-|London     |Manager    | 47.30000|
-|Birmingham |Accounts   | 48.73333|
-|Birmingham |Manager    | 36.73333|
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; location &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; department &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Salary &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; London &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50.660 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; London &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 47.300 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Birmingham &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Accounts &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 48.733 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Birmingham &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Manager &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36.733 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
 ]
 
 
@@ -2731,13 +2880,13 @@ m1 &lt;- lm(salary ~ perf + serv, data = salary2)
 
 .pull-left[
 
-![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-81-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-80-1.png)&lt;!-- --&gt;
 
 ]
 
 .pull-right[
 
-![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-82-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-81-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -2775,7 +2924,7 @@ lin_m1 &lt;- salary2 %&gt;%
 ]
 
 .pull-right[
-![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-84-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-83-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -2814,7 +2963,7 @@ crPlots(m1)
 
 ---
 #  `crPlots()`
-![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-86-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-85-1.png)&lt;!-- --&gt;
 
 
 ???
@@ -2859,14 +3008,14 @@ hist(m1$residuals)
 
 .pull-left[
 
-![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-89-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-88-1.png)&lt;!-- --&gt;
 
 ]
 
 
 .pull-right[
 
-![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-90-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-89-1.png)&lt;!-- --&gt;
 
 ]
 
@@ -2903,12 +3052,12 @@ plot(m1, which = 1)
 #  Residual-vs-predicted values plot 
 
 .pull-left[
-![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-93-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-92-1.png)&lt;!-- --&gt;
 
 ]
 
 .pull-right[
-![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-94-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-93-1.png)&lt;!-- --&gt;
 ]
 
 
@@ -3130,7 +3279,7 @@ salary2 %&gt;%
 ]
 
 .pull-right[
-![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-97-1.png)&lt;!-- --&gt;
+![](DPUK_IntroLM_2024_files/figure-html/unnamed-chunk-96-1.png)&lt;!-- --&gt;
 
 ]
 
