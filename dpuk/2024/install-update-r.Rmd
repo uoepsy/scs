@@ -50,7 +50,7 @@ If you have a previous R installation, please uninstall the following software f
 
 #### Install R
 
-Download the installer: https://cran.r-project.org/bin/windows/base/R-4.3.3-win.exe
+Download the installer: https://cran.r-project.org/bin/windows/base/R-4.4.0-win.exe
 
 Open the installer and follow the instructions.
 
@@ -80,9 +80,9 @@ If you have a previous R installation, please go to the Applications folder in y
 
 Check which Apple PC you have. On the top-left of your screen click the Apple logo, click About This Mac, note what the Processor line says. If it has the word "Intel", you want to follow 1 below, and 2 otherwise.
 
-1. Download this if you have an Apple M1-M3 macOS PC: https://cran.r-project.org/bin/macosx/big-sur-arm64/base/R-4.3.3-arm64.pkg
+1. Download this if you have an Apple M1-M3 macOS PC: https://cran.r-project.org/bin/macosx/big-sur-arm64/base/R-4.4.0-arm64.pkg
 
-2. Download this if you have an older Intel-based macOS PC: https://cran.r-project.org/bin/macosx/big-sur-x86_64/base/R-4.3.3-x86_64.pkg
+2. Download this if you have an older Intel-based macOS PC: https://cran.r-project.org/bin/macosx/big-sur-x86_64/base/R-4.4.0-x86_64.pkg
 
 Open the installer and follow the instructions.
 
@@ -150,7 +150,7 @@ os             << this will be different for each of you >>
 system         << this will be different for each of you >>        
 status                                     
 major          4                           
-minor          3.3                         
+minor          4.0                         
 << and more lines which you can ignore... >>
 ```
 

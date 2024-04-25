@@ -2,8 +2,8 @@
 title: "Linear models @ DPUK"
 date: "April 2024"
 output:
-  rmdformats::material:
-    highlight: kate
+  html_document:
+      theme: readable
 ---
 
 ```{r setup, include=FALSE}
@@ -12,7 +12,7 @@ knitr::opts_chunk$set(cache = TRUE)
 ```
 
 
-# Start here
+## Start here
 
 This is a short course on linear models using the R programming language.
 
@@ -23,69 +23,72 @@ Before starting, please make sure you are able to access RStudio on the DPUK Res
 If you wish to install RStudio locally on your own laptop, you can find detailed instructions at [this link](install-update-r.html). However, you won't have access to the DPUK data outside of the DPUK research platform.
 
 
-# Day 1: Monday
+## Schedule {.tabset .tabset-pills}
+
+### Day 1: Monday
 
 - Lecture
-    + [Day 1 Slides](DPUK_IntroLM_v2.html#1)
+    + [Day 1 Slides](DPUK_IntroLM_2024.html#1)
     + [Exam Score Data](dapr2_lec07.csv)
-
+ 
 - Guided Practice
     + [Introduction to R, RStudio, and linear models](day1_practical.R)
     + [Riverview data](riverview.csv)
-
+ 
 - Further reading from our courses at the University of Edinburgh:
     + [Introduction to R and RStudio](https://uoepsy.github.io/dapr1/labs/intro_r_rstudio_year1.html)
-    + [Simple linear regression](https://uoepsy.github.io/dapr2/labs/1_02_slr.html)
+    + [Simple linear regression](https://uoepsy.github.io/dapr2/2324/labs/1_01_slr.html)
 
 
-# Day 2: Tuesday
+### Day 2: Tuesday
 
 - Lecture
-    + [Day 2 Slides](DPUK_IntroLM_v2.html#61)
+    + [Day 2 Slides](DPUK_IntroLM_2024.html#61)
     + [Salary 1](salary_lec.csv)
-
+ 
 - Guided Practice
     + [R script](day2_practical.R)
     + [Riverview data](riverview.csv)
-    
 - Further reading from our courses at the University of Edinburgh:
-    + [Multiple linear regression](https://uoepsy.github.io/dapr2/labs/1_04_mlr.html)
+    + [Multiple linear regression](https://uoepsy.github.io/dapr2/2324/labs/1_02_mlr.html)
+    + [Multiple linear regression & Standardization](https://uoepsy.github.io/dapr2/2324/labs/1_03_mlr_stz.html)
+    + [Model Comparison](https://uoepsy.github.io/dapr2/2324/labs/1_04_model_fit_comp.html)
 
 
-# Day 3: Wednesday
+### Day 3: Wednesday
 
 - Lecture
-    + [Day 3 Slides](DPUK_IntroLM_v2.html#124)
+    + [Day 3 Slides](DPUK_IntroLM_2024.html#122)
     + [Salary 2](salary2.csv)
     + Salary 3 data (on it's way)
-
+ 
 - Guided Practice
     + [R script](day3_practical.R)
     + [ACER data](acer.csv)
-
+ 
 - Further reading from our courses at the University of Edinburgh:
-    + [Interactions 1: Categorical*Continuous](https://uoepsy.github.io/dapr2/labs/1_05_int_nc.html)
-    + [Interactions 2: Continuous*Continuous](https://uoepsy.github.io/dapr2/labs/1_05_int_nc.html)
-    + [Interactions 3: Categorical*Categorical](https://uoepsy.github.io/dapr2/labs/1_05_int_nc.html)
+    + [Interactions 1: Categorical*Continuous](https://uoepsy.github.io/dapr2/2324/labs/2_01_int1_nc.html)
+    + [Interactions 2: Continuous*Continuous](https://uoepsy.github.io/dapr2/2324/labs/2_02_int2_nn.html)
+    + [Interactions 3: Categorical*Categorical](https://uoepsy.github.io/dapr2/2324/labs/2_03_int3_cc.html)
 
 
-# Day 4: Thursday
+### Day 4: Thursday
 
 - Lecture
-    + [Day 4 Slides](DPUK_IntroLM_v2.html#165)
-
+    + [Day 4 Slides](DPUK_IntroLM_v2.html#162)
+ 
 - Guided Practice
     + [R script](day4_practical.R)
     + [Influencer data](sillydata.csv)
-
+ 
 - Further reading from our courses at the University of Edinburgh:
-    + [Assumptions & Diagnostics](https://uoepsy.github.io/dapr2/labs/1_09_assumptions.html)
-    + [Writing up](https://uoepsy.github.io/dapr2/labs/1_11_write_up.html)
+    + [Assumptions & Diagnostics](https://uoepsy.github.io/dapr2/2324/labs/1_08_assump_diag.html)
+    + [Writing up](https://uoepsy.github.io/dapr2/2324/labs/1_10_writeup_recap_blk2.html)
 
 
 # Staff
 
-- [Dr Tom Booth](https://www.ed.ac.uk/profile/tom-booth)
+- [Dr Tom Booth](https://www.ed.ac.uk/profile/tom-booth) - Reach out at [tom.booth@ed.ac.uk](mailto:tom.booth@ed.ac.uk)
 - [Dr Josiah King](https://www.ed.ac.uk/profile/josiah-pj-king)
 - [Dr Umberto Noe](https://www.ed.ac.uk/profile/umberto-noe)
 
