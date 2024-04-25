@@ -36,7 +36,7 @@ If you wish to install RStudio locally on your own laptop, you can find detailed
     + [Riverview data](riverview.csv)
  
 - Further reading from our courses at the University of Edinburgh:
-    + [Introduction to R and RStudio](https://uoepsy.github.io/dapr1/labs/intro_r_rstudio_year1.html)
+    + [Introduction to R and RStudio](https://uoepsy.github.io/dapr1/2122/labs/intro_r_rstudio_year1.html)
     + [Simple linear regression](https://uoepsy.github.io/dapr2/2324/labs/1_01_slr.html)
 
 
@@ -75,7 +75,7 @@ If you wish to install RStudio locally on your own laptop, you can find detailed
 ### Day 4: Thursday
 
 - Lecture
-    + [Day 4 Slides](DPUK_IntroLM_v2.html#162)
+    + [Day 4 Slides](DPUK_IntroLM_2024.html#162)
  
 - Guided Practice
     + [R script](day4_practical.R)
