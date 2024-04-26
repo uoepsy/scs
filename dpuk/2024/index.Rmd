@@ -33,7 +33,7 @@ If you wish to install RStudio locally on your own laptop, you can find detailed
  
 - Guided Practice
     + [Introduction to R, RStudio, and linear models](day1_practical.R)
-    + [Riverview data](riverview.csv)
+    + [stroke.csv data](stroke.csv)
  
 - Further reading from our courses at the University of Edinburgh:
     + [Introduction to R and RStudio](https://uoepsy.github.io/dapr1/2122/labs/intro_r_rstudio_year1.html)
@@ -48,7 +48,7 @@ If you wish to install RStudio locally on your own laptop, you can find detailed
  
 - Guided Practice
     + [R script](day2_practical.R)
-    + [Riverview data](riverview.csv)
+    + [stroke.csv data](stroke.csv)
 - Further reading from our courses at the University of Edinburgh:
     + [Multiple linear regression](https://uoepsy.github.io/dapr2/2324/labs/1_02_mlr.html)
     + [Multiple linear regression & Standardization](https://uoepsy.github.io/dapr2/2324/labs/1_03_mlr_stz.html)
@@ -64,7 +64,7 @@ If you wish to install RStudio locally on your own laptop, you can find detailed
  
 - Guided Practice
     + [R script](day3_practical.R)
-    + [ACER data](acer.csv)
+    + [acer.csv data](acer.csv)
  
 - Further reading from our courses at the University of Edinburgh:
     + [Interactions 1: Categorical*Continuous](https://uoepsy.github.io/dapr2/2324/labs/2_01_int1_nc.html)

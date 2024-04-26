@@ -9,59 +9,71 @@ library(tidyverse)
 library(psych)
 
 
-# Riverview data
+# Stroke data
 # ==============
 
-riverview <- read_csv("riverview.csv")
-head(riverview)
+# Imagine a study into the recovery of stroke patients. 
+# We have 32 patients who suffered strokes. The severity of the stroke was recorded, along with whether the left or right side of the brain was affected. 
+# 2 weeks following the stroke, patients recovery was measured with the "Timed Up & Go" test - a measure of physical functioning. We also have data on the number of hours spent in physiotherapy over the 2 week period. 
 
-riverview %>%
-    select(party) %>%
+# The attributes include:
+#   physio: Hours spent in physiotherapy over 2 weeks
+#   TUG: Timed Up & Go test (lower scores indicate better physical functioning)
+#   NIHSS: NIH Stroke Severity Scale (higher values indicate more severe stroke)
+#   side: Side of the brain affected
+#   Leftside: Dummy coded variable (0 = Right-side, 1 = Left-side)
+#   hosp: Hospital patient was admitted at
+
+stroke <- read_csv("stroke.csv")
+head(stroke)
+
+stroke %>%
+    select(hosp) %>%
     table()
 
-riverview$party <- 
-    factor(riverview$party, 
-           levels = c("Independent", "Republican", "Democrat"))
+stroke$hosp <- 
+    factor(stroke$hosp, 
+           levels = c("HospitalA","HospitalB","HospitalC"))
 
-riverview %>%
-    select(gender) %>%
+stroke %>%
+    select(side) %>%
     table()
 
-riverview$gender <- 
-    factor(riverview$gender, 
-           levels = c("female", "male"))
+stroke$side <- 
+    factor(stroke$side, 
+           levels = c("Left","Right"))
 
-riverview %>%
-    select(male) %>%
+stroke %>%
+    select(Leftside) %>%
     table()
 
-head(riverview)
+head(stroke)
 
 # Summary statistics, but omit factors
-describe(riverview, omit = TRUE)
+describe(stroke, omit = TRUE)
 
 # Summary statistics, but omit factors
-riverview %>%
-    select(-male) %>%
+stroke %>%
+    select(-Leftside) %>%
     describe(omit = TRUE)
 
 # Pairwise scatterplots
-riverview %>%
-    select(education, income, seniority) %>%
+stroke %>%
+    select(physio, TUG, NIHSS) %>%
     pairs()
 
-riverview %>%
-    select(education, income, seniority) %>%
+stroke %>%
+  select(physio, TUG, NIHSS) %>%
     pairs.panels()
 
 # Remove clutter
-riverview %>%
-    select(education, income, seniority) %>%
+stroke %>%
+  select(physio, TUG, NIHSS) %>%
     pairs.panels(ellipses = FALSE, smooth = FALSE)
 
 # Correlations
-riverview %>%
-    select(education, income, seniority) %>%
+stroke %>%
+  select(physio, TUG, NIHSS) %>%
     cor()
 
 
@@ -70,63 +82,63 @@ riverview %>%
 # =================================
 
 # Find the numeric variables
-names(riverview)
-num <- c("education", "income", "seniority")
-describe(riverview[, num])
+names(stroke)
+num <- c("physio", "TUG", "NIHSS")
+describe(stroke[, num])
 
 # Pairwise scatterplots and correlations
-pairs(riverview[, num])
-pairs.panels(riverview[, num])
+pairs(stroke[, num])
+pairs.panels(stroke[, num])
 
 # Correlations
-cor(riverview[, num])
+cor(stroke[, num])
 # ***
 
 
-# Riverview modelling
+# Stroke modelling
 # ===================
 
 # Model 0: intercept-only model
 
-mdl0 <- lm(income ~ 1, data = riverview)
+mdl0 <- lm(TUG ~ 1, data = stroke)
 summary(mdl0)
 
-ggplot(riverview, aes(x = education, y = income)) +
+ggplot(stroke, aes(x = physio, y = TUG)) +
     geom_point(alpha = 0.5) +
     geom_abline(intercept = 53.742, slope = 0, color = 'blue') +
-    labs(x = "Education (in years)", 
-         y = "Income (in thousands of U.S. dollars)")
+    labs(x = "Physiotherapy (Hours)", 
+         y = "Timed Up & Go Test (seconds)")
 
-riverview <- riverview %>%
-    mutate(income_hat_mdl0 = predict(mdl0, newdata = riverview))
-riverview
+stroke <- stroke %>%
+    mutate(income_hat_mdl0 = predict(mdl0, newdata = stroke))
+stroke
 
 
-# Model 1: income ~ education
+# Model 1: TUG ~ physio
 
-mdl1 <- lm(income ~ education, data = riverview)
+mdl1 <- lm(TUG ~ physio, data = stroke)
 summary(mdl1)
 
-ggplot(riverview, aes(x = education, y = income)) +
-    geom_point(alpha = 0.5) +
-    geom_abline(intercept = 11.3214, slope = 2.6513, color = 'blue') +
-    labs(x = "Education (in years)", 
-         y = "Income (in thousands of U.S. dollars)")
+ggplot(stroke, aes(x = physio, y = TUG)) +
+  geom_point(alpha = 0.5) +
+  geom_abline(intercept = 74.9525, slope = -2.6513, color = 'blue') +
+  labs(x = "Physiotherapy (Hours)", 
+       y = "Timed Up & Go Test (seconds)")
 
-riverview <- riverview %>%
-    mutate(income_hat_mdl1 = predict(mdl1, newdata = riverview))
-riverview
+stroke <- stroke %>%
+  mutate(income_hat_mdl1 = predict(mdl1, newdata = stroke))
+stroke
 
-
-# Model 2: income ~ education + seniority
+# Model 2: TUG ~ NIHSS + physio
 # =======================================
 
-mdl2 <- lm(income ~ education + seniority, data = riverview)
+mdl2 <- lm(TUG ~ NIHSS + physio, data = stroke)
 summary(mdl2)
 
-riverview <- riverview %>%
-    mutate(income_hat_mdl2 = predict(mdl2, newdata = riverview))
-riverview
+stroke <- stroke %>%
+  mutate(income_hat_mdl2 = predict(mdl2, newdata = stroke))
+stroke
+
 
 
 # Model comparison
@@ -139,13 +151,13 @@ anova(mdl0, mdl1, mdl2)
 # Residuals and residual sum of squares
 # =====================================
 
-riverview <- riverview %>%
-    mutate(resid0 = income - income_hat_mdl0,
-           resid1 = income - income_hat_mdl1,
-           resid2 = income - income_hat_mdl2)
-riverview
+stroke <- stroke %>%
+    mutate(resid0 = TUG - income_hat_mdl0,
+           resid1 = TUG - income_hat_mdl1,
+           resid2 = TUG - income_hat_mdl2)
+stroke
 
-rss <- riverview %>%
+rss <- stroke %>%
     summarise(RSS0 = sum(resid0^2),
               RSS1 = sum(resid1^2),
               RSS2 = sum(resid2^2))
@@ -158,17 +170,20 @@ deviance(mdl2)
 # ***
 
 
-# Riverview with categorical predictor
+# With categorical predictor
 # =======================================
 
-# 1. Mean-centre education for better interpretability.
+# Suppose we didn't have the exact "hours of physio therapy" recorded, but just a note from
+# the consultant about whether patients were meeting the recommended 45 mins a day (or 10.5 hours over 2 weeks).
+stroke$min_physio <- ifelse(stroke$physio > 10.5, "Y", "N") 
 
-# 2. Fit a model that uses mean-centred education and gender as predictors of income.
+# 1. Mean-centre NIHSS for better interpretability.
 
-# 3. Is there a significant difference in pay between males and females after accounting for 
-# education?
+# 2. Fit a model that uses mean-centred NIHSS and completing recommended physio as predictors of income.
 
-# 4. Is the difference still significant if you also control for years of seniority?
+# 3. Is there a significant difference in physical functioning (TUG) between those who did and did not meet the recommended physio hours, after accounting for stroke severity?
+
+# 4. Is the difference still significant if you also control for the side of the brain affecred?
 
 # 5. Discussion
 

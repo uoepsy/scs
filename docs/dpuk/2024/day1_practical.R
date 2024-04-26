@@ -263,124 +263,77 @@ children %>%
 # Reading data
 # ============
 
-# Imagine a study into income disparity for workers in a local authority. 
-# We might carry out interviews and find that there is a link between the level of 
-# education and an employee's income. Those with more formal education seem to be 
-# better paid. Now we wouldn't have time to interview everyone who works for 
-# the local authority so we would have to interview a sample, say 10%.
-# We will use the riverview data (see below) to examine whether education level 
-# is related to income among the employees working for the city of Riverview, 
-# a hypothetical midwestern city in the US.
-
-# The riverview data come from Lewis-Beck and Lewis-Beck (2015) and contain  
-# data collected from a random sample of n = 32 employees working for the 
-# city of Riverview, a hypothetical midwestern city in the US. 
+# Imagine a study into the recovery of stroke patients. 
+# We have 32 patients who suffered strokes. The severity of the stroke was recorded, along with whether the left or right side of the brain was affected. 
+# 2 weeks following the stroke, patients recovery was measured with the "Timed Up & Go" test - a measure of physical functioning. We also have data on the number of hours spent in physiotherapy over the 2 week period. 
 
 # The attributes include:
-#   education: Years of formal education
-#   income: Annual income (in thousands of U.S. dollars)
-#   seniority: Years of seniority
-#   gender: Employee’s gender
-#   male: Dummy coded gender variable (0 = Female, 1 = Male)
-#   party: Political party affiliation
+#   physio: Hours spent in physiotherapy over 2 weeks
+#   TUG: Timed Up & Go test (lower scores indicate better physical functioning)
+#   NIHSS: NIH Stroke Severity Scale (higher values indicate more severe stroke)
+#   side: Side of the brain affected
+#   Leftside: Dummy coded variable (0 = Right-side, 1 = Left-side)
+#   hosp: Hospital patient was admitted at
 
 library(tidyverse)
-riverview <- read_csv("SUBSTITUTE PATH TO RIVERVIEW DATA")
-head(riverview)
+stroke <- read_csv("stroke.csv")
+head(stroke)
 
-ggplot(riverview)
+ggplot(stroke)
 
-ggplot(riverview, aes(x = education, y = income))
+ggplot(stroke, aes(x = physio, y = TUG))
 
-ggplot(riverview, aes(x = education, y = income)) +
+ggplot(stroke, aes(x = physio, y = TUG)) +
     geom_point()
 
-ggplot(riverview, aes(x = education, y = income)) +
+ggplot(stroke, aes(x = physio, y = TUG)) +
     geom_point(alpha = 0.5)
 
-ggplot(riverview, aes(x = education, y = income)) +
+ggplot(stroke, aes(x = physio, y = TUG)) +
     geom_point(alpha = 0.5) +
-    labs(x = "Education (in years)", 
-         y = "Income (in thousands of U.S. dollars)")
+    labs(x = "Physiotherapy (Hours)", 
+       y = "Timed Up & Go Test (seconds)")
 
-ggplot(data = riverview, aes(x = education, y = income)) +
+ggplot(stroke, aes(x = physio, y = TUG)) +
     geom_jitter(width = 0.1, height = 0, shape = 1) +
-    labs(x = "Education (in years)", 
-         y = "Income (in thousands of U.S. dollars)",
-         title = "Income vs Education")
+    labs(x = "Physiotherapy (Hours)", 
+       y = "Timed Up & Go Test (seconds)",
+       title = "Physical Functioning vs Physiotherapy")
 
 
 # What will R print?
 
-ggplot(riverview, aes(x = party, y = education)) +
+ggplot(stroke, aes(x = side, y = NIHSS)) +
     geom_boxplot()
 
-ggplot(riverview, aes(x = income)) +
+ggplot(stroke, aes(x = TUG)) +
     geom_density()
 
-ggplot(riverview, aes(x = income, color = party)) +
+ggplot(stroke, aes(x = TUG, color = side)) +
     geom_density()
 
-ggplot(riverview, aes(x = income)) +
+ggplot(stroke, aes(x = TUG)) +
     geom_density() +
-    facet_grid(~ party)
+    facet_grid(~ side)
 
 
 # Guided practice
 # ===============
 
-# 1. Locate the path to the riverview data on the shared folder. 
+# 1. Locate the path to the stroke data on the shared folder. 
 # Read the data into R using that path and perform some exploratory data analysis.
 
-library(tidyverse)
-riverview <- read_csv("SUBSTITUTE PATH TO RIVERVIEW DATA")
-head(riverview)
-
-ggplot(riverview, aes(x = education, y = income)) +
-    geom_point(alpha = 0.5) +
-    labs(x = "Education (in years)", 
-         y = "Income (in thousands of U.S. dollars)")
-
-riverview %>%
-    select(education, income) %>%
-    cor()
-
-
-# 2. Outcome variable = income, explanatory variable = education. 
+# 2. Outcome variable = TUG, explanatory variable = physio. 
 # Fit a linear model that uses the explanatory variable to predict the outcome.
-
-mdl <- lm(income ~ education, data = riverview)
-summary(mdl)
-coef(mdl)
-
 
 # 3. Write down an interpretation of the model results. This typically includes a
 # few sentences about the coefficients.
 
-#   We can interpret the estimated intercept as follows:
-#   The estimated average income associated to zero years of formal education 
-#   is $11,321.
-# 
-#   For the estimated slope we might write:
-#   The estimated increase in average income associated to a one year increase 
-#   in education is $2,651.
-
-
 # 4. Create a plot of the fitted line. 
 #    Hint: geom_abline(intercept = ?, slope = ?)
 
-betas <- coef(mdl)
-betas
 
-ggplot(riverview, aes(x = education, y = income)) +
-    geom_point(alpha = 0.5) + 
-    geom_abline(intercept = betas[1], slope = betas[2], color = 'blue') +
-    labs(x = "Education (in years)", 
-         y = "Income (in thousands of U.S. dollars)")
 
-ggplot(riverview, aes(x = education, y = income)) +
-    geom_point(alpha = 0.5) + 
-    geom_smooth(method = "lm", se = FALSE)
 
 
 # DPUK data
