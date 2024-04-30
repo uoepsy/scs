@@ -1,6 +1,6 @@
 library(tidyverse)
 library(plotly)
-cogap <- read_csv("day3_practical/acer.csv")
+cogap <- read_csv("acer.csv")
 
 plt1_cloud <- plot_ly(cogap, x=~yrs_educ, y=~lesionload_ml, marker=list(colorscale='Plasma',color=~yrs_educ),z=~acer, type="scatter3d",mode="markers") 
 

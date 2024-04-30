@@ -100,6 +100,8 @@ mod1relevel <- lm(acer ~ age * apoe4status, data = cogap)
 
 summary(mod1relevel)
 
+plot_model(mod1relevel, type="eff", terms=c("age [0:100]","apoe4status"))
+
 
 # =====================
 # BREAK :)
