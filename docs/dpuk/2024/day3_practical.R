@@ -2,6 +2,12 @@
 # Author: Josiah King, Umberto Noe, Tom Booth
 
 
+# Helpful centering reminders:
+# In the model Y ~ X + Z + X:Z
+#   if you replace X with (X - mean(X)), you get effect of Z at the average of X 
+#   if you replace X with (X - A), you get effects of Z when X equals A
+
+
 # Library imports
 # ===============
 library(tidyverse)
@@ -24,6 +30,8 @@ cogap <- cogap %>%
         apoe4status = factor(cogap$apoe4status, levels = c("negative","positive"))
     )
 
+levels(cogap$apoe4status)
+
 
 # ============================
 # CONTINUOUS * CATEGORICAL
@@ -32,16 +40,28 @@ cogap <- cogap %>%
 # Models with no interactions are fitting parallel lines for each category
 mod0 <- lm(acer ~ age + apoe4status, data = cogap)
 
+# Base R
+coef(mod0)
+with(cogap, plot(acer ~ age, col = apoe4status))
+abline(a = 102.2950190, b = -0.1076517)
+abline(a = 102.2950190-4.3200262, b = -0.1076517, col = "red")
+
+# sjPlot
 plot_model(mod0, type="eff", terms=c("age","apoe4status"))
 
-# coefficients are "holding other predictors constant"  
+# Coefficients are "holding other predictors constant"  
 summary(mod0)
 
+
+
+# Let's look again at the point clouds by APOE4 status
 ggplot(cogap, aes(x = age, y = acer, col = apoe4status)) + 
     geom_point() +
     facet_wrap(~apoe4status)
 
+
 # Adding an interaction allows the lines to be non-parallel
+
 
 # A*B is shorthand for A+B+A*B
 # These are the same:  
@@ -49,9 +69,18 @@ ggplot(cogap, aes(x = age, y = acer, col = apoe4status)) +
 # acer ~ age + apoe4status + age:apoe4status
 mod1 <- lm(acer ~ age + apoe4status + age:apoe4status, data = cogap)
 
+# Base R
+coef(mod1)
+with(cogap, plot(acer ~ age, col = apoe4status))
+abline(a = 98.93666557, b = -0.05989865)
+abline(a = 98.93666557+1.07452248, b = -0.05989865-0.07596960, col = "red")
+
+# sjPlot
 plot_model(mod1, type="eff", terms=c("age","apoe4status"))
+
 # also available "int" for interaction:
-# plot_model(mod1, type="int")
+plot_model(mod1, type="int")
+
 summary(mod1)
 
 
@@ -60,17 +89,32 @@ summary(mod1)
 
 
 ## Conditional effects 
-## 
+# 
 # The interaction A:B changes the interpretation of coefficients A and B 
+
+# Base R
 coef(mod1)
+with(cogap, plot(acer ~ age, col = apoe4status, xlim = c(0, 100), ylim = c(80, 105)))
+abline(a = 98.93666557, b = -0.05989865)
+abline(a = 98.93666557+1.07452248, b = -0.05989865-0.07596960, col = "red")
+
+# sjPlot
 plot_model(mod1, type="eff", terms=c("age [0:100]","apoe4status"))
-    
+
 
 # Mean centering changes where "zero" is. 
 cogap$ageC <- scale(cogap$age, center = TRUE, scale = FALSE)
+
 # and changes our coefficients:  
 mod1_c <- lm(acer ~ ageC * apoe4status, data = cogap)
+
+# Base R
 coef(mod1_c)
+with(cogap, plot(acer ~ ageC, col = apoe4status))
+abline(a = 94.65670720, b = -0.05989865)
+abline(a = 94.65670720-4.35375838, b = -0.05989865-0.07596960, col = "red")
+
+# sjPlot
 plot_model(mod1_c, type="eff", terms=c("ageC","apoe4status"))
 
 ## The interaction 
@@ -100,6 +144,13 @@ mod1relevel <- lm(acer ~ age * apoe4status, data = cogap)
 
 summary(mod1relevel)
 
+# Base R
+coef(mod1relevel)
+with(cogap, plot(acer ~ age, col = apoe4status))
+abline(a = 94.65670720, b = -0.05989865)
+abline(a = 94.65670720-4.35375838, b = -0.05989865-0.07596960, col = "red")
+
+# sjPlot
 plot_model(mod1relevel, type="eff", terms=c("age [0:100]","apoe4status"))
 
 
