@@ -80,6 +80,7 @@ If you wish to install RStudio locally on your own laptop, you can find detailed
 - Guided Practice
     + [R script](day4_practical.R)
     + [Influencer data](sillydata.csv)
+    + [Outliers, High Leverage, and Influential Points](out-lev-infl.pdf)
  
 - Further reading from our courses at the University of Edinburgh:
     + [Assumptions & Diagnostics](https://uoepsy.github.io/dapr2/2324/labs/1_08_assump_diag.html)

@@ -35,8 +35,12 @@ ggplot(df, aes(x = avg_Rusage, y = statpref, color = location)) +
 # The model which *should* fit the way the data has been generated:
 # lm(statpref ~ location * avg_Rusage, data = df)
 
+# A * B
+# A + B + A:B
+
 mod <- lm(statpref ~ location * avg_Rusage, data = df)
 
+summary(mod)
 
 # Assumptions, a helpful mnemonic:
 # 
@@ -48,6 +52,8 @@ mod <- lm(statpref ~ location * avg_Rusage, data = df)
 par(mfrow=c(2,2))
 plot(mod)
 par(mfrow=c(1,1))
+
+hist(resid(mod))
 
 # One by one
 plot(mod, which = 1)
@@ -144,16 +150,19 @@ summary(influence.measures(mod))
 # Cook's distances and hat values (the diagonal elements of the hat matrix)
 
 # 4 / (n - k - 1)
+4 / (100 - 3 - 1)
 
 df %>%
     mutate(CooksD = cooks.distance(mod)) %>%
     filter(CooksD > 4 / (100 - 3 - 1))
 
+df_smaller <- df[c(-34, -82), ]
+
 # Why is Umberto not an influencer? 
 ggplot(df, aes(x=avg_Rusage, y=statpref, color=location))+
     geom_point()+
     geom_smooth(method=lm)+
-    geom_label(aes(label = name))
+    geom_label(aes(label = row))
 
 
 # =====================
