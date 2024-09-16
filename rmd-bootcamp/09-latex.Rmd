@@ -1,0 +1,118 @@
+---
+title: "LaTeX Mathematical Symbols & Equations"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.align = 'center')
+```
+
+```{r panelset, echo=FALSE}
+xaringanExtra::use_panelset()
+```
+
+
+```{css echo=FALSE}
+.spc1{
+  background-color: #eaeaea;
+}
+.spc1 code{
+  font-size: .9em !important;
+}
+.frame {
+    border: 1px solid #333333 !important; 
+    border-radius: 5px; 
+    padding: 20px 20px 10px 20px; 
+    margin-top: 20px; 
+    margin-bottom: 20px; 
+}
+.imp{
+  border-left: 5px solid #FF3131;
+  padding: 20px 20px 10px 20px; 
+  margin-top: 20px; 
+  margin-bottom: 20px; 
+}
+```
+
+## Why use LaTeX?
+  
+Integrating LaTeX symbols and equations into RMarkdown documents enhances the presentation of mathematical and statistical content and ensures that complex equations are both visually appealing and easy to read, making it ideal for data analysis reports.
+
+In RMarkdown, model equations can be specified using LaTeX by enclosing the LaTeX code within `$` for inline equations or `$$` for display equations.
+
+## How to use... symbols
+  
+Some of the most common symbols you will use can be specfied as follows (usually using single `$` on either side):
+
+| Symbol        | LaTeX                          | Represents |
+|---------------|--------------------------------|------------|
+| $\alpha$      |  `\alpha`  |                          alpha   |   
+| $\beta$       |  `\beta`  |                           beta    |   
+| $\epsilon$    |  `\epsilon`  |                     error term |         
+| $\mu$         |  `\mu`  |                     population mean |   
+| $\sum$        |  `\sum`  |                     sum of         |  
+| $\pm$        |  `\pm`  |                     plus or minus    |  
+| $\neq$        |  `\neq`  |                   is not equal to  |  
+| $<$           |  `\<`  |                     is less than     |   
+| $\nless$      |  `\nless`  |                is not less than  |  
+| $\leq$        |  `\leq`  |         is less than or equal to   |  
+| $\nleq$       |  `\nleq`  |    is not less than or equal to   |
+| $>$           |  `\>`  |                     is greater than  |   
+| $\ngtr$       |  `\ngtr`  |              is not greater than  |  
+| $\geq$        |  `\geq`  |      is greater than or equal to   |  
+| $\ngeq$       |  `\ngeq`  | is not greater than or equal to   |
+
+
+You can find extensive lists of symbols on the following resource pages [here](https://kapeli.com/cheat_sheets/LaTeX_Math_Symbols.docset/Contents/Resources/Documents/index) and [here](https://oeis.org/wiki/List_of_LaTeX_mathematical_symbols). 
+
+
+## How to specify... models
+  
+Usually you would specify model equations as display equations. 
+
+For example, if we had our DV Reaction Time, and two independent variables Age (in years) and Condition (levels: Easy / Difficult)... 
+
+::: {.panelset}
+
+::: {.panel}
+
+#### Writing like this 
+
+`\text{Reaction Time} = \beta_0 + \beta_1 \cdot \text{Age} + \beta_2 \cdot \text{Condition}_\text{Difficult} + \epsilon`
+
+:::
+
+::: {.panel}
+
+#### Compiles to look like this!  
+
+$$
+\text{Reaction Time} = \beta_0 + \beta_1 \cdot \text{Age} + \beta_2 \cdot \text{Condition}_\text{Difficult} + \epsilon
+$$
+
+:::
+
+:::
+
+If we wanted to specify the fitted model:
+
+::: {.panelset}
+
+::: {.panel}
+
+#### Writing like this 
+
+`\widehat{Reaction Time} = \hat \beta_0 + \hat \beta_1 \cdot \text{Age} + \hat \beta_2 \cdot \text{Condition}_\text{Difficult}`
+
+:::
+
+::: {.panel}
+
+#### Compiles to look like this!  
+
+$$
+\widehat{Reaction Time} = \hat \beta_0 + \hat \beta_1 \cdot \text{Age} + \hat \beta_2 \cdot \text{Condition}_\text{Difficult} 
+$$
+
+:::
+
+:::

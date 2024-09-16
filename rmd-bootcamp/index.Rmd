@@ -25,6 +25,7 @@ Learn through trial and error!
 - [Lesson 6: Plots & Figures](06-figs.html)
 - [Lesson 7: Referencing](07-refs.html)
 - [Lesson 8: Reproducibility](08-reproducibility.html)
+- [Lesson 9: LaTeX Mathematical Symbols & Equations](09-latex.html)
 - [Some Useful Packages](zz-packs.html)
 
 
