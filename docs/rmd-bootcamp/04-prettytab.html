@@ -455,8 +455,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
 
   <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-  <link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet"/>
-  <link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet"/>
+  <link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet"/>
   <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
   <script src="site_libs/autocomplete-0.37.1/autocomplete.min.js"></script>
   <script src="site_libs/fuse-6.4.1/fuse.min.js"></script>
@@ -826,9 +826,21 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     display: none !important;
   }
 
+  hr.section-separator {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    margin: 0px;
+  }
+
+
+  d-byline {
+    border-top: none;
+  }
+
   d-article {
     padding-top: 2.5rem;
     padding-bottom: 30px;
+    border-top: none;
   }
 
   d-appendix {
@@ -923,6 +935,11 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   d-article div.sourceCode pre {
     padding-left: 18px;
     font-size: 14px;
+  }
+
+  /* tweak for Pandoc numbered line within distill */
+  d-article pre.numberSource code > span {
+      left: -2em;
   }
 
   d-article pre {
@@ -1684,6 +1701,12 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     // create d-title
     $('.d-title').changeElementType('d-title');
 
+    // separator
+    var separator = '<hr class="section-separator" style="clear: both"/>';
+    // prepend separator above appendix
+    $('.d-byline').before(separator);
+    $('.d-article').before(separator);
+
     // create d-byline
     var byline = $('<d-byline></d-byline>');
     $('.d-byline').replaceWith(byline);
@@ -1761,8 +1784,9 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     $('.distill-force-highlighting-css').parent().remove();
 
     // remove empty line numbers inserted by pandoc when using a
-    // custom syntax highlighting theme
-    $('code.sourceCode a:empty').remove();
+    // custom syntax highlighting theme, except when numbering line
+    // in code chunk
+    $('pre:not(.numberLines) code.sourceCode a:empty').remove();
 
     // load distill framework
     load_distill_framework();
@@ -1788,12 +1812,13 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
       // add orcid ids
       $('.authors-affiliations').find('.author').each(function(i, el) {
         var orcid_id = front_matter.authors[i].orcidID;
+        var author_name = front_matter.authors[i].author
         if (orcid_id) {
           var a = $('<a></a>');
           a.attr('href', 'https://orcid.org/' + orcid_id);
           var img = $('<img></img>');
           img.addClass('orcid-id');
-          img.attr('alt', 'ORCID ID');
+          img.attr('alt', author_name ? 'ORCID ID for ' + author_name : 'ORCID ID');
           img.attr('src','data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg==');
           a.append(img);
           $(this).append(a);
@@ -2414,7 +2439,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     color: var(--hover-color, white);
   }</style>
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
+  <script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
   <link href="site_libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
   <script src="site_libs/panelset-0.2.6/panelset.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
@@ -2467,6 +2492,7 @@ Lessons
 <a href="06-figs.html">L6: Plots &amp; Figures</a>
 <a href="07-refs.html">L7: Referencing</a>
 <a href="08-reproducibility.html">L8: Reproducibility</a>
+<a href="09-latex.html">L9: LaTeX Mathematical Symbols &amp; Equations</a>
 <a href="zz-packs.html">Useful Packages</a>
 </div>
 </div>
@@ -2480,6 +2506,7 @@ Lessons
 
 <div class="d-title">
 <h1>Making Pretty Tables in RMarkdown</h1>
+
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
 
@@ -2644,23 +2671,23 @@ We can also add captions to our table!</p>
 <span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/count.html'>count</a></span><span class='op'>(</span><span class='va'>Card</span>, <span class='va'>Tip</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
 <span>  <span class='fu'><a href='https://gt.rstudio.com/reference/gt.html'>gt</a></span><span class='op'>(</span>caption <span class='op'>=</span> <span class='st'>"Another lovely table!"</span><span class='op'>)</span></span></code></pre>
 </div>
-<div id="qtcohwqrxu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#qtcohwqrxu table {
+<div id="ljhrnmmzpp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ljhrnmmzpp table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#qtcohwqrxu thead, #qtcohwqrxu tbody, #qtcohwqrxu tfoot, #qtcohwqrxu tr, #qtcohwqrxu td, #qtcohwqrxu th {
+#ljhrnmmzpp thead, #ljhrnmmzpp tbody, #ljhrnmmzpp tfoot, #ljhrnmmzpp tr, #ljhrnmmzpp td, #ljhrnmmzpp th {
   border-style: none;
 }
 
-#qtcohwqrxu p {
+#ljhrnmmzpp p {
   margin: 0;
   padding: 0;
 }
 
-#qtcohwqrxu .gt_table {
+#ljhrnmmzpp .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2686,12 +2713,12 @@ We can also add captions to our table!</p>
   border-left-color: #D3D3D3;
 }
 
-#qtcohwqrxu .gt_caption {
+#ljhrnmmzpp .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#qtcohwqrxu .gt_title {
+#ljhrnmmzpp .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2703,7 +2730,7 @@ We can also add captions to our table!</p>
   border-bottom-width: 0;
 }
 
-#qtcohwqrxu .gt_subtitle {
+#ljhrnmmzpp .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2715,7 +2742,7 @@ We can also add captions to our table!</p>
   border-top-width: 0;
 }
 
-#qtcohwqrxu .gt_heading {
+#ljhrnmmzpp .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2727,13 +2754,13 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#qtcohwqrxu .gt_bottom_border {
+#ljhrnmmzpp .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#qtcohwqrxu .gt_col_headings {
+#ljhrnmmzpp .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2748,7 +2775,7 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#qtcohwqrxu .gt_col_heading {
+#ljhrnmmzpp .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2768,7 +2795,7 @@ We can also add captions to our table!</p>
   overflow-x: hidden;
 }
 
-#qtcohwqrxu .gt_column_spanner_outer {
+#ljhrnmmzpp .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2780,15 +2807,15 @@ We can also add captions to our table!</p>
   padding-right: 4px;
 }
 
-#qtcohwqrxu .gt_column_spanner_outer:first-child {
+#ljhrnmmzpp .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#qtcohwqrxu .gt_column_spanner_outer:last-child {
+#ljhrnmmzpp .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#qtcohwqrxu .gt_column_spanner {
+#ljhrnmmzpp .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2800,11 +2827,11 @@ We can also add captions to our table!</p>
   width: 100%;
 }
 
-#qtcohwqrxu .gt_spanner_row {
+#ljhrnmmzpp .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#qtcohwqrxu .gt_group_heading {
+#ljhrnmmzpp .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2830,7 +2857,7 @@ We can also add captions to our table!</p>
   text-align: left;
 }
 
-#qtcohwqrxu .gt_empty_group_heading {
+#ljhrnmmzpp .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2845,15 +2872,15 @@ We can also add captions to our table!</p>
   vertical-align: middle;
 }
 
-#qtcohwqrxu .gt_from_md > :first-child {
+#ljhrnmmzpp .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#qtcohwqrxu .gt_from_md > :last-child {
+#ljhrnmmzpp .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#qtcohwqrxu .gt_row {
+#ljhrnmmzpp .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2872,7 +2899,7 @@ We can also add captions to our table!</p>
   overflow-x: hidden;
 }
 
-#qtcohwqrxu .gt_stub {
+#ljhrnmmzpp .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2885,7 +2912,7 @@ We can also add captions to our table!</p>
   padding-right: 5px;
 }
 
-#qtcohwqrxu .gt_stub_row_group {
+#ljhrnmmzpp .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2899,15 +2926,15 @@ We can also add captions to our table!</p>
   vertical-align: top;
 }
 
-#qtcohwqrxu .gt_row_group_first td {
+#ljhrnmmzpp .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#qtcohwqrxu .gt_row_group_first th {
+#ljhrnmmzpp .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#qtcohwqrxu .gt_summary_row {
+#ljhrnmmzpp .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2917,16 +2944,16 @@ We can also add captions to our table!</p>
   padding-right: 5px;
 }
 
-#qtcohwqrxu .gt_first_summary_row {
+#ljhrnmmzpp .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#qtcohwqrxu .gt_first_summary_row.thick {
+#ljhrnmmzpp .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#qtcohwqrxu .gt_last_summary_row {
+#ljhrnmmzpp .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2936,7 +2963,7 @@ We can also add captions to our table!</p>
   border-bottom-color: #D3D3D3;
 }
 
-#qtcohwqrxu .gt_grand_summary_row {
+#ljhrnmmzpp .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2946,7 +2973,7 @@ We can also add captions to our table!</p>
   padding-right: 5px;
 }
 
-#qtcohwqrxu .gt_first_grand_summary_row {
+#ljhrnmmzpp .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2956,7 +2983,7 @@ We can also add captions to our table!</p>
   border-top-color: #D3D3D3;
 }
 
-#qtcohwqrxu .gt_last_grand_summary_row_top {
+#ljhrnmmzpp .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2966,11 +2993,11 @@ We can also add captions to our table!</p>
   border-bottom-color: #D3D3D3;
 }
 
-#qtcohwqrxu .gt_striped {
+#ljhrnmmzpp .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#qtcohwqrxu .gt_table_body {
+#ljhrnmmzpp .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2979,7 +3006,7 @@ We can also add captions to our table!</p>
   border-bottom-color: #D3D3D3;
 }
 
-#qtcohwqrxu .gt_footnotes {
+#ljhrnmmzpp .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2993,7 +3020,7 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#qtcohwqrxu .gt_footnote {
+#ljhrnmmzpp .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3002,7 +3029,7 @@ We can also add captions to our table!</p>
   padding-right: 5px;
 }
 
-#qtcohwqrxu .gt_sourcenotes {
+#ljhrnmmzpp .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3016,7 +3043,7 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#qtcohwqrxu .gt_sourcenote {
+#ljhrnmmzpp .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3024,63 +3051,63 @@ We can also add captions to our table!</p>
   padding-right: 5px;
 }
 
-#qtcohwqrxu .gt_left {
+#ljhrnmmzpp .gt_left {
   text-align: left;
 }
 
-#qtcohwqrxu .gt_center {
+#ljhrnmmzpp .gt_center {
   text-align: center;
 }
 
-#qtcohwqrxu .gt_right {
+#ljhrnmmzpp .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#qtcohwqrxu .gt_font_normal {
+#ljhrnmmzpp .gt_font_normal {
   font-weight: normal;
 }
 
-#qtcohwqrxu .gt_font_bold {
+#ljhrnmmzpp .gt_font_bold {
   font-weight: bold;
 }
 
-#qtcohwqrxu .gt_font_italic {
+#ljhrnmmzpp .gt_font_italic {
   font-style: italic;
 }
 
-#qtcohwqrxu .gt_super {
+#ljhrnmmzpp .gt_super {
   font-size: 65%;
 }
 
-#qtcohwqrxu .gt_footnote_marks {
+#ljhrnmmzpp .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#qtcohwqrxu .gt_asterisk {
+#ljhrnmmzpp .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#qtcohwqrxu .gt_indent_1 {
+#ljhrnmmzpp .gt_indent_1 {
   text-indent: 5px;
 }
 
-#qtcohwqrxu .gt_indent_2 {
+#ljhrnmmzpp .gt_indent_2 {
   text-indent: 10px;
 }
 
-#qtcohwqrxu .gt_indent_3 {
+#ljhrnmmzpp .gt_indent_3 {
   text-indent: 15px;
 }
 
-#qtcohwqrxu .gt_indent_4 {
+#ljhrnmmzpp .gt_indent_4 {
   text-indent: 20px;
 }
 
-#qtcohwqrxu .gt_indent_5 {
+#ljhrnmmzpp .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -3130,23 +3157,23 @@ We can also add captions to our table!</p>
 <span>  <span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
 <span>  <span class='fu'><a href='https://gt.rstudio.com/reference/gt.html'>gt</a></span><span class='op'>(</span><span class='op'>)</span></span></code></pre>
 </div>
-<div id="wnnnvzpcro" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#wnnnvzpcro table {
+<div id="aqgoaqgqyt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#aqgoaqgqyt table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#wnnnvzpcro thead, #wnnnvzpcro tbody, #wnnnvzpcro tfoot, #wnnnvzpcro tr, #wnnnvzpcro td, #wnnnvzpcro th {
+#aqgoaqgqyt thead, #aqgoaqgqyt tbody, #aqgoaqgqyt tfoot, #aqgoaqgqyt tr, #aqgoaqgqyt td, #aqgoaqgqyt th {
   border-style: none;
 }
 
-#wnnnvzpcro p {
+#aqgoaqgqyt p {
   margin: 0;
   padding: 0;
 }
 
-#wnnnvzpcro .gt_table {
+#aqgoaqgqyt .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -3172,12 +3199,12 @@ We can also add captions to our table!</p>
   border-left-color: #D3D3D3;
 }
 
-#wnnnvzpcro .gt_caption {
+#aqgoaqgqyt .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#wnnnvzpcro .gt_title {
+#aqgoaqgqyt .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3189,7 +3216,7 @@ We can also add captions to our table!</p>
   border-bottom-width: 0;
 }
 
-#wnnnvzpcro .gt_subtitle {
+#aqgoaqgqyt .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3201,7 +3228,7 @@ We can also add captions to our table!</p>
   border-top-width: 0;
 }
 
-#wnnnvzpcro .gt_heading {
+#aqgoaqgqyt .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3213,13 +3240,13 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#wnnnvzpcro .gt_bottom_border {
+#aqgoaqgqyt .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#wnnnvzpcro .gt_col_headings {
+#aqgoaqgqyt .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3234,7 +3261,7 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#wnnnvzpcro .gt_col_heading {
+#aqgoaqgqyt .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3254,7 +3281,7 @@ We can also add captions to our table!</p>
   overflow-x: hidden;
 }
 
-#wnnnvzpcro .gt_column_spanner_outer {
+#aqgoaqgqyt .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3266,15 +3293,15 @@ We can also add captions to our table!</p>
   padding-right: 4px;
 }
 
-#wnnnvzpcro .gt_column_spanner_outer:first-child {
+#aqgoaqgqyt .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#wnnnvzpcro .gt_column_spanner_outer:last-child {
+#aqgoaqgqyt .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#wnnnvzpcro .gt_column_spanner {
+#aqgoaqgqyt .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3286,11 +3313,11 @@ We can also add captions to our table!</p>
   width: 100%;
 }
 
-#wnnnvzpcro .gt_spanner_row {
+#aqgoaqgqyt .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#wnnnvzpcro .gt_group_heading {
+#aqgoaqgqyt .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3316,7 +3343,7 @@ We can also add captions to our table!</p>
   text-align: left;
 }
 
-#wnnnvzpcro .gt_empty_group_heading {
+#aqgoaqgqyt .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3331,15 +3358,15 @@ We can also add captions to our table!</p>
   vertical-align: middle;
 }
 
-#wnnnvzpcro .gt_from_md > :first-child {
+#aqgoaqgqyt .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#wnnnvzpcro .gt_from_md > :last-child {
+#aqgoaqgqyt .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#wnnnvzpcro .gt_row {
+#aqgoaqgqyt .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3358,7 +3385,7 @@ We can also add captions to our table!</p>
   overflow-x: hidden;
 }
 
-#wnnnvzpcro .gt_stub {
+#aqgoaqgqyt .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3371,7 +3398,7 @@ We can also add captions to our table!</p>
   padding-right: 5px;
 }
 
-#wnnnvzpcro .gt_stub_row_group {
+#aqgoaqgqyt .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3385,15 +3412,15 @@ We can also add captions to our table!</p>
   vertical-align: top;
 }
 
-#wnnnvzpcro .gt_row_group_first td {
+#aqgoaqgqyt .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#wnnnvzpcro .gt_row_group_first th {
+#aqgoaqgqyt .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#wnnnvzpcro .gt_summary_row {
+#aqgoaqgqyt .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3403,16 +3430,16 @@ We can also add captions to our table!</p>
   padding-right: 5px;
 }
 
-#wnnnvzpcro .gt_first_summary_row {
+#aqgoaqgqyt .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#wnnnvzpcro .gt_first_summary_row.thick {
+#aqgoaqgqyt .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#wnnnvzpcro .gt_last_summary_row {
+#aqgoaqgqyt .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3422,7 +3449,7 @@ We can also add captions to our table!</p>
   border-bottom-color: #D3D3D3;
 }
 
-#wnnnvzpcro .gt_grand_summary_row {
+#aqgoaqgqyt .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3432,7 +3459,7 @@ We can also add captions to our table!</p>
   padding-right: 5px;
 }
 
-#wnnnvzpcro .gt_first_grand_summary_row {
+#aqgoaqgqyt .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3442,7 +3469,7 @@ We can also add captions to our table!</p>
   border-top-color: #D3D3D3;
 }
 
-#wnnnvzpcro .gt_last_grand_summary_row_top {
+#aqgoaqgqyt .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3452,11 +3479,11 @@ We can also add captions to our table!</p>
   border-bottom-color: #D3D3D3;
 }
 
-#wnnnvzpcro .gt_striped {
+#aqgoaqgqyt .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#wnnnvzpcro .gt_table_body {
+#aqgoaqgqyt .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3465,7 +3492,7 @@ We can also add captions to our table!</p>
   border-bottom-color: #D3D3D3;
 }
 
-#wnnnvzpcro .gt_footnotes {
+#aqgoaqgqyt .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3479,7 +3506,7 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#wnnnvzpcro .gt_footnote {
+#aqgoaqgqyt .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3488,7 +3515,7 @@ We can also add captions to our table!</p>
   padding-right: 5px;
 }
 
-#wnnnvzpcro .gt_sourcenotes {
+#aqgoaqgqyt .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3502,7 +3529,7 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#wnnnvzpcro .gt_sourcenote {
+#aqgoaqgqyt .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3510,63 +3537,63 @@ We can also add captions to our table!</p>
   padding-right: 5px;
 }
 
-#wnnnvzpcro .gt_left {
+#aqgoaqgqyt .gt_left {
   text-align: left;
 }
 
-#wnnnvzpcro .gt_center {
+#aqgoaqgqyt .gt_center {
   text-align: center;
 }
 
-#wnnnvzpcro .gt_right {
+#aqgoaqgqyt .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#wnnnvzpcro .gt_font_normal {
+#aqgoaqgqyt .gt_font_normal {
   font-weight: normal;
 }
 
-#wnnnvzpcro .gt_font_bold {
+#aqgoaqgqyt .gt_font_bold {
   font-weight: bold;
 }
 
-#wnnnvzpcro .gt_font_italic {
+#aqgoaqgqyt .gt_font_italic {
   font-style: italic;
 }
 
-#wnnnvzpcro .gt_super {
+#aqgoaqgqyt .gt_super {
   font-size: 65%;
 }
 
-#wnnnvzpcro .gt_footnote_marks {
+#aqgoaqgqyt .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#wnnnvzpcro .gt_asterisk {
+#aqgoaqgqyt .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#wnnnvzpcro .gt_indent_1 {
+#aqgoaqgqyt .gt_indent_1 {
   text-indent: 5px;
 }
 
-#wnnnvzpcro .gt_indent_2 {
+#aqgoaqgqyt .gt_indent_2 {
   text-indent: 10px;
 }
 
-#wnnnvzpcro .gt_indent_3 {
+#aqgoaqgqyt .gt_indent_3 {
   text-indent: 15px;
 }
 
-#wnnnvzpcro .gt_indent_4 {
+#aqgoaqgqyt .gt_indent_4 {
   text-indent: 20px;
 }
 
-#wnnnvzpcro .gt_indent_5 {
+#aqgoaqgqyt .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -3603,23 +3630,23 @@ We can also add captions to our table!</p>
 <span>    sdPASS <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/sd.html'>sd</a></span><span class='op'>(</span><span class='va'>PASS</span><span class='op'>)</span></span>
 <span>  <span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> <span class='fu'><a href='https://gt.rstudio.com/reference/gt.html'>gt</a></span><span class='op'>(</span><span class='op'>)</span></span></code></pre>
 </div>
-<div id="kpcxeujlsv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#kpcxeujlsv table {
+<div id="sgrenfffes" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#sgrenfffes table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#kpcxeujlsv thead, #kpcxeujlsv tbody, #kpcxeujlsv tfoot, #kpcxeujlsv tr, #kpcxeujlsv td, #kpcxeujlsv th {
+#sgrenfffes thead, #sgrenfffes tbody, #sgrenfffes tfoot, #sgrenfffes tr, #sgrenfffes td, #sgrenfffes th {
   border-style: none;
 }
 
-#kpcxeujlsv p {
+#sgrenfffes p {
   margin: 0;
   padding: 0;
 }
 
-#kpcxeujlsv .gt_table {
+#sgrenfffes .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -3645,12 +3672,12 @@ We can also add captions to our table!</p>
   border-left-color: #D3D3D3;
 }
 
-#kpcxeujlsv .gt_caption {
+#sgrenfffes .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#kpcxeujlsv .gt_title {
+#sgrenfffes .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3662,7 +3689,7 @@ We can also add captions to our table!</p>
   border-bottom-width: 0;
 }
 
-#kpcxeujlsv .gt_subtitle {
+#sgrenfffes .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3674,7 +3701,7 @@ We can also add captions to our table!</p>
   border-top-width: 0;
 }
 
-#kpcxeujlsv .gt_heading {
+#sgrenfffes .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3686,13 +3713,13 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#kpcxeujlsv .gt_bottom_border {
+#sgrenfffes .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#kpcxeujlsv .gt_col_headings {
+#sgrenfffes .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3707,7 +3734,7 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#kpcxeujlsv .gt_col_heading {
+#sgrenfffes .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3727,7 +3754,7 @@ We can also add captions to our table!</p>
   overflow-x: hidden;
 }
 
-#kpcxeujlsv .gt_column_spanner_outer {
+#sgrenfffes .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3739,15 +3766,15 @@ We can also add captions to our table!</p>
   padding-right: 4px;
 }
 
-#kpcxeujlsv .gt_column_spanner_outer:first-child {
+#sgrenfffes .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#kpcxeujlsv .gt_column_spanner_outer:last-child {
+#sgrenfffes .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#kpcxeujlsv .gt_column_spanner {
+#sgrenfffes .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3759,11 +3786,11 @@ We can also add captions to our table!</p>
   width: 100%;
 }
 
-#kpcxeujlsv .gt_spanner_row {
+#sgrenfffes .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#kpcxeujlsv .gt_group_heading {
+#sgrenfffes .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3789,7 +3816,7 @@ We can also add captions to our table!</p>
   text-align: left;
 }
 
-#kpcxeujlsv .gt_empty_group_heading {
+#sgrenfffes .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3804,15 +3831,15 @@ We can also add captions to our table!</p>
   vertical-align: middle;
 }
 
-#kpcxeujlsv .gt_from_md > :first-child {
+#sgrenfffes .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#kpcxeujlsv .gt_from_md > :last-child {
+#sgrenfffes .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#kpcxeujlsv .gt_row {
+#sgrenfffes .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3831,7 +3858,7 @@ We can also add captions to our table!</p>
   overflow-x: hidden;
 }
 
-#kpcxeujlsv .gt_stub {
+#sgrenfffes .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3844,7 +3871,7 @@ We can also add captions to our table!</p>
   padding-right: 5px;
 }
 
-#kpcxeujlsv .gt_stub_row_group {
+#sgrenfffes .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3858,15 +3885,15 @@ We can also add captions to our table!</p>
   vertical-align: top;
 }
 
-#kpcxeujlsv .gt_row_group_first td {
+#sgrenfffes .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#kpcxeujlsv .gt_row_group_first th {
+#sgrenfffes .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#kpcxeujlsv .gt_summary_row {
+#sgrenfffes .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3876,16 +3903,16 @@ We can also add captions to our table!</p>
   padding-right: 5px;
 }
 
-#kpcxeujlsv .gt_first_summary_row {
+#sgrenfffes .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#kpcxeujlsv .gt_first_summary_row.thick {
+#sgrenfffes .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#kpcxeujlsv .gt_last_summary_row {
+#sgrenfffes .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3895,7 +3922,7 @@ We can also add captions to our table!</p>
   border-bottom-color: #D3D3D3;
 }
 
-#kpcxeujlsv .gt_grand_summary_row {
+#sgrenfffes .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3905,7 +3932,7 @@ We can also add captions to our table!</p>
   padding-right: 5px;
 }
 
-#kpcxeujlsv .gt_first_grand_summary_row {
+#sgrenfffes .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3915,7 +3942,7 @@ We can also add captions to our table!</p>
   border-top-color: #D3D3D3;
 }
 
-#kpcxeujlsv .gt_last_grand_summary_row_top {
+#sgrenfffes .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3925,11 +3952,11 @@ We can also add captions to our table!</p>
   border-bottom-color: #D3D3D3;
 }
 
-#kpcxeujlsv .gt_striped {
+#sgrenfffes .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#kpcxeujlsv .gt_table_body {
+#sgrenfffes .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3938,7 +3965,7 @@ We can also add captions to our table!</p>
   border-bottom-color: #D3D3D3;
 }
 
-#kpcxeujlsv .gt_footnotes {
+#sgrenfffes .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3952,7 +3979,7 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#kpcxeujlsv .gt_footnote {
+#sgrenfffes .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3961,7 +3988,7 @@ We can also add captions to our table!</p>
   padding-right: 5px;
 }
 
-#kpcxeujlsv .gt_sourcenotes {
+#sgrenfffes .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3975,7 +4002,7 @@ We can also add captions to our table!</p>
   border-right-color: #D3D3D3;
 }
 
-#kpcxeujlsv .gt_sourcenote {
+#sgrenfffes .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3983,63 +4010,63 @@ We can also add captions to our table!</p>
   padding-right: 5px;
 }
 
-#kpcxeujlsv .gt_left {
+#sgrenfffes .gt_left {
   text-align: left;
 }
 
-#kpcxeujlsv .gt_center {
+#sgrenfffes .gt_center {
   text-align: center;
 }
 
-#kpcxeujlsv .gt_right {
+#sgrenfffes .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#kpcxeujlsv .gt_font_normal {
+#sgrenfffes .gt_font_normal {
   font-weight: normal;
 }
 
-#kpcxeujlsv .gt_font_bold {
+#sgrenfffes .gt_font_bold {
   font-weight: bold;
 }
 
-#kpcxeujlsv .gt_font_italic {
+#sgrenfffes .gt_font_italic {
   font-style: italic;
 }
 
-#kpcxeujlsv .gt_super {
+#sgrenfffes .gt_super {
   font-size: 65%;
 }
 
-#kpcxeujlsv .gt_footnote_marks {
+#sgrenfffes .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#kpcxeujlsv .gt_asterisk {
+#sgrenfffes .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#kpcxeujlsv .gt_indent_1 {
+#sgrenfffes .gt_indent_1 {
   text-indent: 5px;
 }
 
-#kpcxeujlsv .gt_indent_2 {
+#sgrenfffes .gt_indent_2 {
   text-indent: 10px;
 }
 
-#kpcxeujlsv .gt_indent_3 {
+#sgrenfffes .gt_indent_3 {
   text-indent: 15px;
 }
 
-#kpcxeujlsv .gt_indent_4 {
+#sgrenfffes .gt_indent_4 {
   text-indent: 20px;
 }
 
-#kpcxeujlsv .gt_indent_5 {
+#sgrenfffes .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
