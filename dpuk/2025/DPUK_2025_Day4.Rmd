@@ -1,0 +1,560 @@
+---
+title: "<b> Introduction to the Linear Model </b>"
+subtitle: "DPUK Spring Academy<br><br> "
+author: "Josiah King, Umberto Noe, (and credits to Tom Booth)"
+institute: "Department of Psychology<br>The University of Edinburgh"
+date: "April 2025"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: xaringan-themer.css
+    self_contained: true
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(fig.height = 6)
+```
+
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+style_mono_accent(
+  #  base_color = "#0F4C81", # DAPR1
+  # base_color = "#BF1932", # DAPR2
+  # base_color = "#88B04B", # DAPR3 
+  # base_color = "#FCBB06", # USMR
+  # base_color = "#a41ae4", # MSMR
+    base_color = "#95A5A6", #intro
+  header_color = "#000000",
+  header_font_google = google_font("Source Sans Pro"),
+  header_font_weight = 400,
+  text_font_google = google_font("Source Sans Pro", "400", "400i", "600", "600i"),
+  code_font_google = google_font("Source Code Pro")
+)
+
+library(tidyverse)
+library(kableExtra)
+library(car)
+
+theme_set(theme_gray(base_size = 15))
+```
+
+
+# Overview
+
+- Day 1: What is a linear model?
+- Day 2: But I have more variables, what now?
+- Day 3: Interactions
+- Day 4: Is my model any good?
+
+
+
+---
+class: center, middle
+# Day 4
+**Is my model any good?**
+
+---
+class: inverse, center, middle
+
+<h2>Part 1: Key model assumptions </h2>
+<h2 style="text-align: left;opacity:0.3;">Part 2: Basic model diagnostics </h2>
+<h2 style="text-align: left;opacity:0.3;">Part 3: What we have not covered? </h2>
+
+---
+# Linear model assumptions 
++ So far, we have discussed evaluating linear models with respect to:
+	+ Overall model fit ( $F$ -ratio, $R^2$)
+	+ Individual predictors
+
++ However, the linear model is also built on a set of assumptions.
+
++ If these assumptions are violated, the model will not be very accurate.
+
++ Thus, we also need to assess the extent to which these assumptions are met.
+
+
+---
+# Some data for today
+
+.pull-left[
++ Let's look again at our data predicting salary from years or service and performance ratings (no interaction).
+
+$$y_i = \beta_0 + \beta_1 x_{1} + \beta_2 x_{2} + \epsilon_i$$
+
++ $y$ = Salary (unit = thousands of pounds ).
+
++ $x_1$ = Years of service.
+
++ $x_2$ = Average performance ratings.
+ 
+]
+
+.pull-right[
+
+```{r, echo=FALSE}
+salary2 %>%
+  slice(1:10) %>%
+  kable(.) %>%
+  kable_styling(full_width = F)
+```
+
+
+]
+
+---
+# Our model
+```{r}
+m1 <- lm(salary ~ perf + serv, data = salary2)
+```
+
++ We will run all our assumptions based on the object `m1`
+
+---
+# Visualizations vs tests
++ There exist a variety of ways to assess assumptions, which broadly split into statistical tests and visualizations.
+
++ We will focus on visualization:
+	+ Easier to see the nature and magnitude of the assumption violation
+	+ There is also a very useful function for producing them all.
+
++ Statistical tests often suggest assumptions are violated when problem is small.
+  + This is to do with the statistical power of the tests.
+  + Give no information on what the actual problem is.
+  + A summary table of tests will be given at the end of the lecture.
+
+
+---
+# Visualizations made easy
++ For a majority of assumption and diagnostic plots, we will make use of the `plot()` function.
+  + If we give `plot()` a linear model object (e.g. `m1` or `m2`), we can automatically generate assumption plots.
+
++ We will also make use of some individual functions for specific visualizations.
+
++ Alternatively, we can also use `check_model()` from the `performance` package.
+  + This provides `ggplot` figures as well as some notes to aid interpretation.
+  + Caution that these plots are **not in a format to use directly in reports**
+
+---
+#  Linearity 
++ **Assumption**: The relationship between $y$ and $x$ is linear.
+  + Assuming a linear relation when the true relation is non-linear can result in under-estimating that relation
+
+
++ **Investigated with**:
+  + Scatterplots with loess lines (single variables)
+  + Component-residual plots (when we have multiple predictors)
+
+
+---
+# Linear vs non-linear
+
+.pull-left[
+
+```{r, echo=FALSE, message=FALSE}
+df2 <- tibble(
+  x = rnorm(1000, 10, 2),
+  y = 5 + .8*x + rnorm(1000, 0,.5),
+  y2 = 5 + .6*(x^3) + rnorm(1000, 0,10)
+)
+
+df2 %>%
+  ggplot(., aes(x=x, y=y)) +
+  geom_point() +
+  geom_smooth(method = "lm", se=F) +
+  labs(x= "X", y="Y", title = "Linear Relationship")
+
+```
+
+]
+
+.pull-right[
+
+```{r, message=FALSE, echo=FALSE}
+df2 %>%
+  ggplot(., aes(x=x, y=y2)) +
+  geom_point() +
+  geom_smooth(method = "lm", se=F) +
+  labs(x= "X", y="Y", title = "Non-linear Relationship")
+```
+
+]
+
+---
+#  What is a loess line?
+
++ Method for helping visualize the shape of relationships:
+
++ Stands for...
+  + **LO**cally
+  + **E**stimated
+  + **S**catterplot
+  + **S**moothing
+
++ Essentially produces a line with follows the data.
+
++ Useful for single predictors.
+
+---
+# Visualization
+
+.pull-left[
+```{r, warning=FALSE}
+lin_m1 <- salary2 %>%
+  ggplot(., aes(x=serv, y=perf)) +
+  geom_point()+
+  geom_smooth(method = "lm", se=F) + # <<
+  geom_smooth(method = "loess", se=F, #<<
+              col = "red") +
+  labs(x= "Years of Service", y="Performance", 
+       title = "Scatterplot with linear (blue) 
+       and loess (red) lines")
+```
+]
+
+.pull-right[
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+lin_m1
+```
+
+]
+
+---
+#  Non-linearity
+
++ With multiple predictors, we need to know whether the relations are linear between each predictor and outcome, controlling for the other predictors
+
++ This can be done using **component-residual plots**
+  + Also known as partial-residual plots
+		
++ Component-residual plots have the $x$ values on the X-axis and partial residuals on the Y-axis
+
++ *Partial residuals* for each X variable are:
+
+$$\epsilon_i + B_jX_{ij}$$
+
++ Where :
+	+ $\epsilon_i$ is the residual from the linear model including all the predictors
+	+ $B_jX_{ij}$ is the partial (linear) relation between $x_j$ and $y$
+
+---
+#  `crPlots()` 
+
++ Component-residual plots can be obtained using the `crPlots()` function from `car` package
+
+```{r, eval = F, warning=FALSE}
+m1 <- lm(salary ~ perf + serv, data = salary2)
+crPlots(m1)
+```
+
++ The plots for continuous predictors show a linear (dashed) and loess (solid) line
+
++ The loess line should follow the linear line closely, with deviations suggesting non-linearity
+
+---
+#  `crPlots()`
+```{r, echo= F, warning=FALSE, fig.height=3.8}
+m1 <- lm(salary ~ perf + serv, data = salary2)
+crPlots(m1)
+```
+
+
+???
++ Here the relations look pretty good.
+
++ Deviations of the line are minor
+
+---
+# Normally distributed errors 
++ **Assumption**: The errors ( $\epsilon_i$ ) are normally distributed around each predicted value.
+
++ **Investigated with**:
+  + QQ-plots
+  +	Histograms
+
+	
+---
+# Visualizations 
++ **Histograms**: Plot the frequency distribution of the residuals.
+
+```{r, eval=FALSE}
+hist(m1$residuals)
+```
+
+--
+
++ **Q-Q Plots**: Quantile comparison plots.
+	+ Plot the standardized residuals from the model against their theoretically expected values.
+	+ If the residuals are normally distributed, the points should fall neatly on the diagonal of the plot.
+	+ Non-normally distributed residuals cause deviations of points from the diagonal.
+		+ The specific shape of these deviations are characteristic of the distribution of the residuals.
+
+```{r, eval=FALSE}
+plot(m1, which = 2) #<<
+```
+
+
+---
+# Visualizations
+
+.pull-left[
+
+```{r, echo=FALSE}
+hist(m1$residuals)
+```
+
+]
+
+
+.pull-right[
+
+```{r, echo=FALSE}
+plot(m1, which = 2) #<<
+```
+
+]
+
+
+---
+#  Equal variance (Homoscedasticity) 
+
++ **Assumption**: The equal variances assumption is constant across values of the predictors $x_1$, ... $x_k$, and across values of the fitted values $\hat{y}$
+	+ Heteroscedasticity refers to when this assumption is violated (non-constant variance)
+
++ **Investigated with**:
+  + Plot residual values against the predicted values ( $\hat{y}$ ).
+
+---
+#  Residual-vs-predicted values plot 
++ In R, we can plot the residuals vs predicted values using `residualPlot()` function in the `car` package.
+  + Categorical predictors should show a similar spread of residual values across their levels
+  + The plots for continuous predictors should look like a random array of dots
+	  + The solid line should follow the dashed line closely
+
+```{r, eval=FALSE}
+residualPlot(m1)
+```
+
++ We can also get this plot using:
+
+```{r, eval=FALSE}
+plot(m1, which = 1)
+```
+
+---
+#  Residual-vs-predicted values plot 
+
+.pull-left[
+```{r, echo=FALSE}
+residualPlot(m1)
+```
+
+]
+
+.pull-right[
+```{r, echo=FALSE}
+plot(m1, which = 1)
+```
+]
+
+
+
+---
+#  Independence of errors 
++ **Assumption**: The errors are not correlated with one another
+
++ Difficult to test unless we know the potential source of correlation between cases.
+
++ Essentially, if a design is between person, we will assume the errors to be independent.
+
+
+---
+#  Multi-collinearity 
++ This is **not an assumption of linear model**, but it is something we need to consider. 
+  + It sits between assumptions and case diagnostics.
+  
++ Multi-collinearity refers to the correlation between predictors
+  + We saw this in the formula for the standard error of model slopes for an `lm` with multiple predictors.
+
++ When there are large correlations between predictors, the standard errors are increased
+	+ Therefore, we don't want our predictors to be too correlated
+
+---
+#  Variance Inflation Factor 
++ The **Variance Inflation Factor** or VIF quantifies the extent to which standard errors are increased by predictor inter-correlations
+
++ It can be obtained in R using the `vif()` function:
+
+```{r}
+vif(m1)
+```
+
++ The function gives a VIF value for each predictor
+
++ Ideally, we want values to be close to 1
+
++ VIFs> 10 indicate a problem
+
+---
+#  What to do about multi-collinearity 
+
++ In practice, multi-collinearity is not often a major problem
+
++ When issues arise, consider:
+	+ Combining highly correlated predictors into a single composite
+		  + E.g. create a sum or average of the two predictors
+	+ Dropping an IV that is obviously statistically and conceptually redundant with another from the model
+
+
+---
+class: inverse, center, middle
+
+<h2 style="text-align: left;opacity:0.3;">Part 1: Key model assumptions </h2>
+<h2>Part 2: Basic model diagnostics  </h2>
+<h2 style="text-align: left;opacity:0.3;">Part 3: What we have not covered? </h2>
+
+---
+#  Three important features
+
++ Model outliers
+	+ Cases for which there is a large discrepancy between their predicted value ( $\hat{y_i}$ ) and their observed value ( $y_i$ )
+
+--
+
++ High leverage cases
+	+ Cases with an unusual value of the predictor ( $x_i$ )
+
+--
+
++ High influence cases
+	+ Cases who are having a large impact on the estimation of model
+
+---
+#  Influence
+
++ High leverage cases, when they are also linear model outliers, will have high **influence**
+
++ Cases with high influence, have a strong effect on the coefficients
+
++ If we deleted such a case, the linear model coefficients would change substantially
+
+
+---
+# Influence
+
++ If a handful of influential cases are responsible for the linear model results, the conclusions might not generalise very well
+
++ Multiple ways to consider influence.
+  + Here we will discuss Cook's distance.
+  
++ Cook's Distance of a data point $i$ (can be written many ways):
+
+
+$$D_i = \frac{(\text{StandardizedResidual}_i)^2}{k+1} \times \frac{h_i}{1-h_i}$$
+
+---
+#  Cooks Distance 
+$$\frac{(\text{StandardizedResidual}_i)^2}{k+1} = \text{Outlyingness}$$
+
+
+$$\frac{h_i}{1-h_i} = \text{Leverage}$$
+
++ So $D_i = \text{Outlyingness} \times \text{Leverage}$
+
+
++ Cook's distance refers to **the average distance the $\hat{y}$ values will move if a given case is removed.**
+  + If removing one case changes the predicted values a lot (moves the regression line), then that case is influencing our results.
+
+---
+#  Cooks Distance 
+
++ Many different suggestions for cut-off's:
+  + $D_i > 1$ 
+  + $D_i > \frac{4}{n-k-1}$
+  + Or size relative all values in data set
+
+---
+#  Cook's distance in R
+
+.pull-left[
+```{r}
+salary2 %>%
+  mutate(
+    cook = cooks.distance(m1) #<<
+  ) %>%
+  filter(., cook > 4/(100-3-1)) %>% #<<
+  kable(.)  %>%
+  kable_styling(., full_width = F)
+```
+
+]
+
+.pull-right[
+```{r, echo=F}
+plot(m1, which = 4)
+```
+
+]
+
+
+---
+# Influence of coefficients
++ Cook's distance is a single value summarizing the total influence of a case
+
++ In the context of a lm with 2+ predictors, we may want to look in a little more detail.
+
++ **DFFit**: The difference between the predicted outcome value for a case with versus without a case included
+
++ **DFbeta**: The difference between the value for a coefficient with and without a case included
+
++ **DFbetas**: A standardised version of DFbeta
+  + Obtained by dividing by an estimate of the standard error of the regression coefficient with the case removed
+
+---
+#  COVRATIO 
++ Influence on standard errors can be measured using the **COVRATIO** statistic
+	+ COVRATIO value <1 show that precision is decreased (SE increased)  by a case
+	+ COVRATIO value >1 show that precision is increased (SE decreased) by a case
+
++ Cases with COVRATIOS $> 1+[3(k +1)/n]$ or $< 1-[3( k +1)/ n ]$ can be considered to have a strong influence on the standard errors
+
+---
+#  COVRATIO in R 
++ COVRATIO values can be extracted using the `covratio()` function:
++ We can extract these measures using the `influence.measures()` function
+
+
+---
+class: inverse, center, middle
+
+<h2 style="text-align: left;opacity:0.3;">Part 1: Key model assumptions </h2>
+<h2 style="text-align: left;opacity:0.3;">Part 2: Basic model diagnostics </h2>
+<h2>Part 3: What we have not covered? </h2>
+
+---
+# In short, quite a lot!
+
++ Coding schemes for categorical data
++ Coding specific comparisons
++ Interactions with categorical variables and 2+ levels
++ Detailed probing of interactions
++ Statistical tests for assumptions
++ Assumption corrections for assumption violations
++ Bootstrapping
++ Extended model diagnostics
++ Non-continuous outcome variables
++ ....
+
+---
+# Material links
+
++ All our lecture materials can be found [here](https://uoepsy.github.io/)
+
+---
+class: center, middle
+# Thanks all!

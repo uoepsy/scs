@@ -1,0 +1,824 @@
+---
+title: "<b> Introduction to the Linear Model </b>"
+subtitle: "DPUK Spring Academy<br><br> "
+author: "Josiah King, Umberto Noe, (and credits to Tom Booth)"
+institute: "Department of Psychology<br>The University of Edinburgh"
+date: "April 2025"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: xaringan-themer.css
+    self_contained: true
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(fig.height = 6)
+```
+
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+style_mono_accent(
+  #  base_color = "#0F4C81", # DAPR1
+  # base_color = "#BF1932", # DAPR2
+  # base_color = "#88B04B", # DAPR3 
+  # base_color = "#FCBB06", # USMR
+  # base_color = "#a41ae4", # MSMR
+    base_color = "#95A5A6", #intro
+  header_color = "#000000",
+  header_font_google = google_font("Source Sans Pro"),
+  header_font_weight = 400,
+  text_font_google = google_font("Source Sans Pro", "400", "400i", "600", "600i"),
+  code_font_google = google_font("Source Code Pro")
+)
+
+library(tidyverse)
+library(kableExtra)
+library(car)
+
+theme_set(theme_gray(base_size = 15))
+```
+
+
+# Overview
+
+- Day 1: What is a linear model?
+- Day 2: But I have more variables, what now?
+- Day 3: Interactions
+- Day 4: Is my model any good?
+
+
+---
+class: center, middle
+# Day 2
+**But I have more variables, now what?**
+
+---
+class: inverse, center, middle
+
+<h2>Part 1: Adding more predictors </h2>
+<h2 style="text-align: left;opacity:0.3;">Part 2: Evaluating predictors </h2>
+<h2 style="text-align: left;opacity:0.3;">Part 3: Evaluating my model </h2>
+<h2 style="text-align: left;opacity:0.3;">Part 4: Comparing models </h2>
+
+---
+#  Linear model with more predictors (multiple regression)
++ The aim of a linear model is to explain variance in an outcome.
+
++ In simple linear models, we have a single predictor, but the model can accommodate (in principle) any number of predictors. 
+
++ However, when we include multiple predictors, those predictors are likely to correlate
+
++ Thus, a linear model with multiple predictors finds the optimal prediction of the outcome from several predictors, **taking into account their redundancy with one another**
+
+
+---
+#  Uses of multiple regression 
++ **For prediction:** multiple predictors may lead to improved prediction. 
+
++ **For theory testing:** often our theories suggest that multiple variables together contribute to variation in an outcome
+
++ **For covariate control:** we might want to assess the effect of a specific predictor, controlling for the influence of others.
+	+ E.g., effects of personality on health after removing the effects of age and sex
+
+
+---
+#  Extending the regression model 
+
++ Our model for a single predictor:
+
+$$y_i = \beta_0 + \beta_1 x_{1i} + \epsilon_i$$ 
+
++ is extended to include additional $x$'s:
+
+$$y_i = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \beta_3 x_{3i} + \epsilon_i$$  
+
++ For each $x$, we have an additional $\beta$
+  + $\beta_1$ is the coefficient for the 1st predictor
+  + $\beta_2$ for the second etc.
+
+
+---
+#  Interpreting coefficients in multiple regression 
+
+$$y_i = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \beta_j x_{ji} + \epsilon_i$$
+
++ Given that we have additional variables, our interpretation of the regression coefficients changes a little
+
++ $\beta_0$ = the predicted value for $y$ **all** $x$ are 0.
+	
++ Each $\beta_j$ is now a **partial regression coefficient**
+	+ It captures the change in $y$ for a one unit change in , $x$ **when all other x's are held constant**
+
++ What does holding constant mean? 
+  + Refers to finding the effect of the predictor when the values of the other predictors are fixed
+		+ It may also be expressed as the effect of **controlling for**, or **partialling out**, or **residualizing for** the other $x$'s
+
++ With multiple predictors `lm` isolates the effects and estimates the unique contributions of predictors. 
+
+---
+# Example with interpretations 
+
+```{r, echo=FALSE}
+set.seed(19981)
+dept <- rbinom(100, 1, 0.4)
+location <- rbinom(100, 1, 0.35)
+serv <- rnorm(100, 0, 1.4)
+serv <- serv+3.5
+dl <- dept*location
+
+omit <- rbinom(100, 1, .3)
+
+b0 = 20
+b1 = 3.1
+b2 = -4.5
+b3 = -4.2
+b4 = -6.5
+b5 = 2
+
+eps <- rnorm(100, 0, 4)
+
+salary <- b0 + (b1*serv) + (b2*dept) + (b3*location) + (b4*dl) + (b5*omit) + eps
+salary <- salary+20
+
+salary3 <- tibble(
+  ID = paste("ID", 101:200, sep=""),
+  salary = round(salary,0),
+  department = factor(dept,labels = c("Accounts", "Manager")),
+  location = factor(location, labels = c("London", "Birmingham")),
+  serv = round(serv,1)
+)
+```
+
+.pull-left[
++ Suppose I am conducting a study on work place factors that predict salary.
+
++ $y$ = salary (unit = thousands of pounds)
+
++ $x_1$ = years of service
+
++ $x_2$ = Department (0 = Store managers, 1 = Accounts)
+
++ $x_3$ = Location (0 = Birmingham, 1 = London)
+]
+
+.pull-right[
+
+```{r}
+salary3 %>%
+  slice(1:10)
+```
+
+]
+
+
+---
+# Our model
+```{r}
+res_multi <- lm(salary ~ serv + department + location, data = salary3)
+```
+
+---
+# Our model
+```{r}
+summary(res_multi)
+```
+
+---
+# Our model
+
+.pull-left[
++ $b_0$: The predicted salary for member of accounts, in London, with 0 years service is £41,684 
+
++ $b_1$: For each year of service, salary increases by £2953, holding deparment and location constant.
+
++ $b_2$: Holding years of service and location constant, store managers earn £6952 pounds less than accounts.
+
++ $b_3$: Holding years of service and department constant, those in Birmingham earn £6283 pounds less than those in London.
+
+]
+
+.pull-right[
+
+```{r, echo = FALSE}
+multi_sum <- summary(res_multi)
+round(multi_sum$coefficients,3)[,1:3]
+```
+
+
+]
+
+---
+# Categorical predictors with 2+ levels
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(MASS)
+set.seed(1066)
+mu <- c(54, 2)
+Sigma <- matrix(c(7, 1.4,
+                  1.4, .5), byrow = T, ncol = 2)
+
+rawvars <- mvrnorm(n=10000, mu=mu, Sigma=Sigma)
+
+set.seed(7284)
+df <- rawvars[sample(nrow(rawvars), 100),]
+
+set.seed(7284)
+dum_dat <- tibble(
+  ID = c(paste("ID", 101:200, sep = "")),
+  exam = round(df[,1], 0),
+  method = round(df[,2], 0)
+) %>%
+  mutate(
+    method = factor(if_else(method <= 1, 1,
+                     if_else(method >= 3, 3, 2))),
+    dummy1 = if_else(method == 2, 1, 0), 
+    dummy2 = if_else(method == 3, 1, 0),
+  )
+detach("package:MASS", unload = T)
+```
+
++ When we have a categorical variable with 2+ levels, we will typically assign integers
+
++ For example: What city do you live in?
+  + 1 = Edinburgh; 2 = Glasgow, 3 = Birmingham etc.
+  + Note these numbers are not meaningful, they just denote groups
+
++ When analysing a categorical predictor with $k$ levels, we need to take an additional step.
+
++ This step involves applying a coding scheme, where by each regressor = a difference in means between levels, or sets of levels.
+
++ There are lots of coding schemes.
+  + We will just look at dummy coding (R default)
+
+---
+#  Dummy coding 
++ Dummy coding uses 0's and 1's to represent group membership
+	+ One level is chosen as a baseline
+	+ All other levels are compared against that baseline
+	
++ Notice, this is identical to binary variables already discussed.
+
++ Dummy coding is simply the process of producing a set of binary coded variables
+
++ For any categorical variable, we will create $k$-1 dummy variables
+  + $k$ = number of levels
+
+---
+#  Dummy coding 
++ Imagine 100 students took an exam and were each assigned to use one of three `study methods`
+	+ 1 = Notes re-reading 
+	+ 2 = Notes summarising
+	+ 3 = Self-testing ([see here](https://www.psychologicalscience.org/publications/journals/pspi/learning-techniques.html))
+
+```{r tbl23, echo = FALSE}
+dummy <- tibble(
+  Level = c("Notes re-reading", "Notes summarising", "Self-testing"),
+  D1 = c(0,1,0),
+  D2 = c(0,0,1)
+) 
+
+kable(dummy)%>%
+  kable_styling(., full_width = F)
+```
+
+
+---
+#  Dummy coding with `lm` 
+
++ `lm` automatically applies dummy coding when you include a variable of class `factor` in a model.
+
++ It selects the first group as the baseline group
+
++ We write:
+
+```{r, eval=FALSE}
+
+dummy1 <- lm(exam ~ method, data = dum_dat)
+
+```
+
+
++ And `lm` does all the dummy coding work for us
+
+---
+#  Dummy coding with `lm`
+
+.pull-left[
+
+```{r, echo=FALSE}
+
+dum_dat %>%
+  group_by(method) %>%
+  summarise(
+    Mean = round(mean(exam), 3)
+  )
+```
+
+
++ The intercept is the mean of the baseline group (notes re-reading)
+
++ The coefficient for `method2` is the mean difference between the notes summarising group and the baseline group
+
++ The coefficient for `method3` is the mean difference between the self-test group and the baseline group
+
+]
+
+.pull-right[
+
+```{r}
+dummy1 <- lm(exam ~ method, data = dum_dat)
+dummy1
+```
+
+]
+
+
+---
+#  Dummy coding with `lm` (full results)
+
+```{r}
+summary(dummy1)
+```
+
+
+---
+class: inverse, center, middle
+
+<h2 style="text-align: left;opacity:0.3;">Part 1: Adding more predictors </h2>
+<h2>Part 2: Evaluating predictors </h2>
+<h2 style="text-align: left;opacity:0.3;">Part 3: Evaluating my model </h2>
+<h2 style="text-align: left;opacity:0.3;">Part 4: Comparing models </h2>
+
+
+---
+#  Evaluating individual predictors 
++ Steps in hypothesis testing:
+
+--
+  + Research questions
+    
+--
+  
+  + Statistical hypothesis
+    
+--
+  
+  + Define the null
+    
+--
+  
+  + Calculate an estimate of effect of interest.
+  
+--
+  
+  + Calculate an appropriate test statistic.
+    
+--
+  
+  + Evaluate the test statistic against the null.
+    
+
+---
+# Research question and hypotheses
+
++ **Statistical hypotheses** are testable mathematical statements.
+
++ In typical testing in Psychology, we define have a **null ( $H_0$ )** and an **alternative ( $H_1$ )** hypothesis.
+
++ $H_0$ is precise, and states a specific value for the effect of interest.
+
++ $H_1$ is not specific, and simply says "something else other than the null is more likely"
+
+
+---
+# Defining null
+
++ Conceptually:
+	+ If $x$ yields no information on $y$, then $\beta_1 = 0$
+	
++ **Why would this be the case?**
+
+--
+	+ $\beta$ gives the predicted change in $y$ for a unit change in $x$.
+	+ If $x$ and $y$ are unrelated, then a change in $x$ will not result in any change to the predicted value of $y$
+	+ So for a unit change in $x$, there is no (=0) change in $y$.
+	
++ We can state this formally as a null and alternative:
+
+$$H_0: \beta_1 = 0$$
+$$H_1: \beta_1 \neq 0$$
+
+
+---
+# Point estimate and test statistic
+
++ We have already discussed $\hat \beta_1$.
+
++ The associated test statistic to for $\beta$ coefficients is a $t$-statistic
+
+$$t = \frac{\hat \beta}{SE(\hat \beta)}$$
+
++ where
+
+  + $\hat \beta$ = any beta coefficient we have calculated
+  + $SE(\hat \beta)$ = standard error of $\beta$ 
+
++ The standard error (SE) provides a measure of sampling variability
+  + Smaller SE's suggest more precise estimate (=good)
+  + For details on the calculation of $SE(\hat \beta)$ , see linked material.
+
+
+---
+# Back to the example
+
+```{r}
+summary(res_multi)
+```
+
+
+---
+# Sampling distribution for the null
+
++ Now we have our $t$-statistic, we need to evaluate it.
+
++ For that, we need sampling distribution for the null.
+
++ For $\beta$, this is a $t$-distribution with $n-k-1$ degrees of freedom.
+	+ Where $k$ is the number of predictors, and the additional -1 represents the intercept.
+
+--
+
++ So for our model above, we have 3 predictors, and n = 100 
+  + this is $n-k-1$ = $100-3-1$
+  + 96
+
+---
+# Visualize our result: service
+
+```{r, echo=FALSE}
+ggplot() + 
+  xlim(-12, 12) +
+  stat_function(fun=dt,
+                geom = "line",
+                args = list(df=96)) +
+  stat_function(fun = dt, 
+                geom = "area",
+                xlim = c(qt(0.025, 96), -12),
+                alpha=.25,
+                fill = "blue",
+                args = list(df=96)) +
+    stat_function(fun = dt, 
+                geom = "area",
+                xlim = c(qt(0.975, 96), 12),
+                alpha=.25,
+                fill = "blue",
+                args = list(df=96)) +
+  geom_vline(xintercept = 10.105, col="red") +
+  xlab("\n t") +
+  ylab("") +
+  ggtitle("t-distribution (df=96); t-statistic (10.105; red line)")
+```
+
+
+???
++ discuss this plot.
++ remind them of 2-tailed
++ areas
++ % underneath each end
++ comment on how it would be different one tailed
++ remind about what X is, thus where the line is
+
+
+---
+class: inverse, center, middle
+
+<h2 style="text-align: left;opacity:0.3;">Part 1: Adding more predictors </h2>
+<h2 style="text-align: left;opacity:0.3;">Part 2: Evaluating predictors </h2>
+<h2>Part 3: Evaluating my model </h2>
+<h2 style="text-align: left;opacity:0.3;">Part 4: Comparing models </h2>
+
+---
+#  Quality of the overall model 
++ When we measure an outcome ( $y$ ) in some data, the scores will vary (we hope).
+  + Variation in $y$ = total variation of interest.
+
+--
+
++ The aim of our linear model is to build a model which describes $y$ as a function of $x$.
+	+ That is we are trying to explain variation in $y$ using $x$.
+
+--
+
++ But it won't explain it all.
+  + What is left unexplained is called the residual variance.
+
+--
+
++ So we can breakdown variation in our data based on sums of squares as;
+
+$$SS_{Total} = SS_{Model} + SS_{Residual}$$
+
+---
+#  Coefficient of determination 
++ One way to consider how good our model is, would be to consider the proportion of total variance our model accounts for. 
+
+$$R^2 = \frac{SS_{Model}}{SS_{Total}} = 1 - \frac{SS_{Residual}}{SS_{Total}}$$
+
++ $R^2$ = coefficient of determination
+
+--
+
+  + Quantifies the amount of variability in the outcome accounted for by the predictors.
+  + More variance accounted for, the better.
+  + Represents the extent to which the prediction of $y$ is improved when predictions are based on the linear relation between $x$ and $y$.
+
+
+
+
+---
+# Total Sum of Squares
+
+.pull-left[
++ Sums of squares quantify difference sources of variation.
+
+$$SS_{Total} = \sum_{i=1}^{n}(y_i - \bar{y})^2$$
+
++ Squared distance of each data point from the mean of $y$.
+
++ Mean is our baseline. 
+
++ Without any other information, our best guess at the value of $y$ for any person is the mean.
+
+]
+
+.pull-right[
+
+```{r, echo=FALSE}
+test %>%
+  ggplot(., aes(hours, score)) +
+  geom_point(color="red", size = 2) +
+  theme(axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
+  theme(axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 10, l = 0))) +
+  xlab("Hours of Study") +
+  ylab("Test Score") +
+  ggtitle(latex2exp::TeX('SS_{Total}')) +
+  geom_hline(aes(yintercept = mean(score)),color="blue", size=1) + 
+  geom_segment(aes(x = hours, y = score, xend = hours, yend = c(rep(mean(score),10))), color = "red", lty =2)
+```
+
+]
+
+
+---
+# Residual sum of squares
+
+.pull-left[
++ Sums of squares quantify difference sources of variation.
+
+$$SS_{Residual} = \sum_{i=1}^{n}(y_i - \hat{y}_i)^2$$
+
++ Which you may recognise.
+
++ Squared distance of each point from the predicted value.
+]
+
+.pull-right[
+
+```{r, echo=FALSE}
+test %>%
+  ggplot(., aes(hours, score)) +
+  geom_point(color="red", size = 2) +
+  theme(axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
+  theme(axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 10, l = 0))) +
+  xlab("Hours of Study") +
+  ylab("Test Score") +
+  ggtitle(latex2exp::TeX('SS_{Residual}')) +
+  geom_abline(aes(intercept=res$coefficients[1], slope=res$coefficients[2]), color="lightblue", size=1) + 
+  geom_segment(aes(x = hours, y = score, xend = hours, yend = c(res$fitted.values)), color = "red", lty =2)
+
+```
+
+]
+
+
+
+---
+# Model sums of squares
+
+.pull-left[
++ Sums of squares quantify difference sources of variation.
+
+$$SS_{Model} = \sum_{i=1}^{n}(\hat{y}_i - \bar{y})^2$$
+
++ That is, it is the deviance of the predicted scores from the mean of $y$.
+
++ But it is easier to simply take:
+
+$$SS_{Model} = SS_{Total} - SS_{Residual}$$
+
+]
+
+.pull-right[
+
+```{r, echo=FALSE}
+test %>%
+  ggplot(., aes(hours, score)) +
+  geom_point(color="red", size = 2) +
+  theme(axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0))) +
+  theme(axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 10, l = 0))) +
+  xlab("Hours of Study") +
+  ylab("Test Score") +
+  ggtitle(latex2exp::TeX('SS_{Model}')) +
+  geom_hline(aes(yintercept = mean(score)),color="blue", size=1) + 
+  geom_abline(aes(intercept=res$coefficients[1], slope=res$coefficients[2]), color="lightblue", size=1) + 
+  geom_segment(aes(x = hours, c(res$fitted.values), xend = hours, yend = c(rep(mean(score),10))), color = "red", lty =2)
+```
+
+]
+
+
+
+
+---
+#  Coefficient of determination: Our example
+
+```{r}
+summary(res_multi)
+```
+
+
+---
+#  Adjusted $R^2$ 
++ We can also compute an adjusted $R^2$ when our lm has 2+ predictors.
+  + $R^2$ is an inflated estimate of the corresponding population value
+
++ Due to random sampling fluctuation, even when $R^2 = 0$ in the population, it's value in the sample may $\neq 0$ 
+
++ In **smaller samples** , the fluctuations from zero will be larger on average
+
++ With **more IVs** , there are more opportunities to add to the positive fluctuation
+
+
+$$\hat R^2 = 1 - (1 - R^2)\frac{N-1}{N-k-1}$$
+
++ Adjusted $R^2$ adjusts for both sample size ( $N$ ) and number of predictors ( $k$ )
+
+---
+# Adjusted R-square: Our example
+
+```{r}
+summary(res_multi)
+```
+
+
+---
+#  Significance of the overall model 
++ The test of the individual predictors (IVs, or $x$'s) does not tell us if the overall model is significant or not.
+	+ Neither does R-square
+	+ But both are indicative
+
++ To test the significance of the model as a whole, we conduct an $F$-test.
+
+---
+#  F-ratio
++ $F$-ratio tests the null hypothesis that all the regression slopes in a model are all zero
+
++ $F$-ratio is a ratio of the explained to unexplained variance:
+
+$$F = \frac{MS_{Model}}{MS_{Residual}}$$
+
++ Where MS = mean squares
+
+--
+
++ **What are mean squares?**
+  + Mean squares are sums of squares calculations divided by the associated degrees of freedom.
+  + The degrees of freedom are defined by the number of "independent" values associated with the different calculations.
+
+
+---
+# F-ratio
++ Bigger $F$-ratios indicate better models.
+  + It means the model variance is big compared to the residual variance.
+
+--
+
++ The null hypothesis for the model says that the best guess of any individuals $y$ value is the mean of $y$ plus error.
+	+ Or, that the $x$ variables carry no information collectively about $y$.
+
+--
+
++ $F$-ratio will be close to 1 when the null hypothesis is true
+  + If there is equivalent residual to model variation, $F$=1
+	+ If there is more model than residual $F$ > 1
+
+--
+
++ $F$-ratio is then evaluated against an $F$-distribution with $df_{Model}$ and $df_{Residual}$ and a pre-defined $\alpha$
+
+--
+
++ Testing the $F$-ratio evaluates statistical significance of the overall model
+
+
+---
+#  Our example 
+
+```{r}
+summary(res_multi)
+```
+
+
+---
+class: inverse, center, middle
+
+<h2 style="text-align: left;opacity:0.3;">Part 1: Adding more predictors </h2>
+<h2 style="text-align: left;opacity:0.3;">Part 2: Evaluating predictors </h2>
+<h2 style="text-align: left;opacity:0.3;">Part 3: Evaluating my model </h2>
+<h2>Part 4: Comparing models </h2>
+
+---
+# Why might we compare models?
+
++ Suppose we wanted to know the effect of a key predictor, after first having controlled for some covariates.
+  + In many places described as hierarchical regression
+
++ We can't do this with the skills learned so far. 
+
++ We can using model comparison tools. 
+
+---
+# $F$-test as an incremental test
+
++ One important way we can think about the $F$-test and the $F$-ratio is as an incremental test against an "empty" or null model.
+
++ A null or empty model is a linear model with only the intercept.
+  + In this model, our predicted value of the outcome for every case in our data set, is the mean of the outcome.
+  + That is, with no predictors, we have no information that may help us predict the outcome.
+  + So we will be "least wrong" by guessing the mean of the outcome.
+
++ An empty model is the same as saying all $\beta$ = 0.
+
++ So in this way, the $F$-test we have already seen **is comparing two models**.
+
++ We can extend this idea, and use the $F$-test to compare two models that contain different sets of predictors.
+  + This is the **incremental $F$-test**
+
+---
+# Incremental $F$-test
+.pull-left[
++ The incremental $F$-test evaluates the statistical significance of the improvement in variance explained in an outcome with the addition of further predictor(s)
+
++ It is based on the difference in $F$-values between two models.
+  + We call the model with the additional predictor(s) model 1 or full model
+  + We call the model without model 0 or restricted model
+
+]
+
+.pull-right[
+$$F_{(df_R-df_F),df_F} = \frac{(SSR_R-SSR_F)/(df_R-df_F)}{SSR_F / df_F}$$
+
+
+
+$$
+\begin{align}
+& \text{Where:} \\
+& SSR_R = \text{residual sums of squares for the restricted model} \\
+& SSR_F = \text{residual sums of squares for the full model} \\
+& df_R = \text{residual degrees of freedom from the restricted model} \\
+& df_F = \text{residual degrees of freedom from the full model} \\
+\end{align}
+$$
+]
+
+
+---
+# Incremental $F$-test in R
+
++ In order to apply the $F$-test for model comparison in R, we use the `anova()` function.
+
++ `anova()` takes as its arguments models that we wish to compare
+  + Here we will show examples with 2 models, but we can use more.
+
+---
+# Example
+```{r}
+m0 <- lm(salary ~1, data = salary3)
+m1 <- lm(salary ~ location + department, data = salary3)
+m2 <- lm(salary ~ location + department + serv, data = salary3)
+
+anova(m0, m1, m2)
+
+```
+
+
+---
+class: center, middle
+# Thanks all!
+
