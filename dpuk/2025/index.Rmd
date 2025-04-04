@@ -98,9 +98,9 @@ Material will be released the day prior.
 <!--     + [Writing up](https://uoepsy.github.io/dapr2/2324/labs/1_10_writeup_recap_blk2.html) -->
 
 
-### Day 5: Q&A session
+### Day 5: Friday
 
-No material.
+Q&A session at 11am, no material needed.
 
 
 # Staff
