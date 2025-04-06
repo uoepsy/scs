@@ -263,9 +263,9 @@ children %>%
 # Reading data
 # ============
 
-# Imagine a study into the recovery of stroke patients. 
+# Hypothetical study into the recovery of stroke patients. 
 # We have 32 patients who suffered strokes. The severity of the stroke was recorded, along with whether the left or right side of the brain was affected. 
-# 2 weeks following the stroke, patients recovery was measured with the "Timed Up & Go" test - a measure of physical functioning. We also have data on the number of hours spent in physiotherapy over the 2 week period. 
+# 2 weeks following the stroke, patients' recovery was measured with the "Timed Up & Go" test - a measure of physical functioning. We also have data on the number of hours spent in physiotherapy over the 2 week period. 
 
 # The attributes include:
 #   physio: Hours spent in physiotherapy over 2 weeks
@@ -276,7 +276,7 @@ children %>%
 #   hosp: Hospital patient was admitted at
 
 library(tidyverse)
-stroke <- read_csv("stroke.csv")
+stroke <- read_csv("https://uoepsy.github.io/scs/dpuk/2024/stroke.csv")
 head(stroke)
 
 ggplot(stroke)
@@ -317,7 +317,7 @@ ggplot(stroke, aes(x = TUG)) +
     facet_grid(~ side)
 
 
-# Guided practice
+# Practice
 # ===============
 
 # 1. Locate the path to the stroke data on the shared folder. 
@@ -333,22 +333,4 @@ ggplot(stroke, aes(x = TUG)) +
 #    Hint: geom_abline(intercept = ?, slope = ?)
 
 
-
-
-
-# DPUK data
-# ================
-
-# 1. Locate the path to the DPUK data file on the shared folder. 
-# Read the data into R using that path.
-
-# 2. Choose a numeric variable to be the outcome, and another to be the 
-# explanatory variable. Fit a linear model that uses the explanatory variable 
-# to predict the outcome.
-
-# 3. Write down an interpretation of the model results. This typically includes a
-# few sentences about the coefficients.
-
-# 4. Create a plot of the line. 
-# Hint: geom_abline(intercept = ?, slope = ?)
 
