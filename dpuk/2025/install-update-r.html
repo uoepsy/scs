@@ -9,10 +9,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Department of Psychology  The University of Edinburgh" />
+<meta name="author" content="Umberto Noe, Josiah King" />
 
 
-<title>Installing / Updating R &amp; RStudio</title>
+<title>Installing and Updating R &amp; RStudio</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -361,22 +361,17 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Installing / Updating R &amp; RStudio</h1>
-<h4 class="author">Department of Psychology<br> The University of
-Edinburgh</h4>
+<h1 class="title toc-ignore">Installing and Updating R &amp;
+RStudio</h1>
+<h4 class="author">Umberto Noe, Josiah King</h4>
 
 </div>
 
-<div id="TOC">
-<ul>
-<li><a href="#a.-installing-r-and-rstudio" id="toc-a.-installing-r-and-rstudio">A. Installing R and
-RStudio</a></li>
-<li><a href="#b.-updating-r-and-rstudio" id="toc-b.-updating-r-and-rstudio">B. Updating R and RStudio</a></li>
-<li><a href="#update-pkgs" id="toc-update-pkgs">C. Updating R
-packages</a></li>
-</ul>
-</div>
 
+<div id="section" class="section level1 tabset tabset-fade tabset-pills">
+<h1 class="tabset tabset-fade tabset-pills"></h1>
+<div id="what-is-r-what-is-rstudio" class="section level2">
+<h2>What is R? What is RStudio?</h2>
 <p>R is the name of both:</p>
 <ul>
 <li>the R programming language, i.e. the language you use to tell the PC
@@ -409,14 +404,15 @@ keep packages updated once or twice a year.</p>
 <li>how to update your R packages.</li>
 </ol>
 <hr />
-<div id="a.-installing-r-and-rstudio" class="section level1">
-<h1>A. Installing R and RStudio</h1>
-<div id="a.1-installing-r" class="section level2 tabset tabset-fade tabset-pills">
-<h2 class="tabset tabset-fade tabset-pills">A.1 Installing R</h2>
-<div id="windows-pc" class="section level3">
-<h3>Windows PC</h3>
-<div id="uninstall-any-previous-installations" class="section level4">
-<h4>Uninstall any previous installations</h4>
+</div>
+<div id="a.-installing-r-and-rstudio" class="section level2">
+<h2>A. Installing R and RStudio</h2>
+<div id="a.1-installing-r" class="section level3 tabset tabset-fade tabset-pills">
+<h3 class="tabset tabset-fade tabset-pills">A.1 Installing R</h3>
+<div id="windows-pc" class="section level4">
+<h4>Windows PC</h4>
+<div id="uninstall-any-previous-installations" class="section level5">
+<h5>Uninstall any previous installations</h5>
 <p>If you have a previous R installation, please uninstall the following
 software from your PC if you have it:</p>
 <ul>
@@ -424,13 +420,13 @@ software from your PC if you have it:</p>
 <li>Rtools</li>
 </ul>
 </div>
-<div id="install-r" class="section level4">
-<h4>Install R</h4>
+<div id="install-r" class="section level5">
+<h5>Install R</h5>
 <p>Download the installer: <a href="https://cran.r-project.org/bin/windows/base/R-4.4.3-win.exe" class="uri">https://cran.r-project.org/bin/windows/base/R-4.4.3-win.exe</a></p>
 <p>Open the installer and follow the instructions.</p>
 </div>
-<div id="install-rtools" class="section level4">
-<h4>Install RTools</h4>
+<div id="install-rtools" class="section level5">
+<h5>Install RTools</h5>
 <p>Download RTools:</p>
 <ul>
 <li><p>If you have a Windows 64-bit PC (most likely) click here: <a href="https://cran.r-project.org/bin/windows/Rtools/rtools44/files/rtools44-aarch64-6459-6401.exe" class="uri">https://cran.r-project.org/bin/windows/Rtools/rtools44/files/rtools44-aarch64-6459-6401.exe</a></p></li>
@@ -440,10 +436,10 @@ need to find an older version here: <a href="https://cran.r-project.org/bin/wind
 <p>Open the installer and follow the instructions.</p>
 </div>
 </div>
-<div id="apple-macos-pc" class="section level3">
-<h3>Apple macOS PC</h3>
-<div id="uninstall-any-previous-installations-1" class="section level4">
-<h4>Uninstall any previous installations</h4>
+<div id="apple-macos-pc" class="section level4">
+<h4>Apple macOS PC</h4>
+<div id="uninstall-any-previous-installations-1" class="section level5">
+<h5>Uninstall any previous installations</h5>
 <p>If you have a previous R installation, please go to the Applications
 folder in your Finder window and move the following applications to the
 Bin:</p>
@@ -452,8 +448,8 @@ Bin:</p>
 <li>XQuartz</li>
 </ul>
 </div>
-<div id="install-r-1" class="section level4">
-<h4>Install R</h4>
+<div id="install-r-1" class="section level5">
+<h5>Install R</h5>
 <p>Check which Apple PC you have. On the top-left of your screen click
 the Apple logo, click About This Mac, note what the Processor line says.
 If it has the word “Intel”, you want to follow 1 below, and 2
@@ -464,48 +460,48 @@ otherwise.</p>
 </ol>
 <p>Open the installer and follow the instructions.</p>
 </div>
-<div id="install-xquartz" class="section level4">
-<h4>Install XQuartz</h4>
+<div id="install-xquartz" class="section level5">
+<h5>Install XQuartz</h5>
 <p>Download XQuartz: <a href="https://xquartz.macosforge.org/">https://xquartz.macosforge.org/</a>.</p>
 <p>Open the installer and follow the instructions.</p>
 </div>
 </div>
-<div id="chromebooks" class="section level3">
-<h3>Chromebooks</h3>
+<div id="chromebooks" class="section level4">
+<h4>Chromebooks</h4>
 <p>You cannot install R on Chromebooks. You can use Posit Cloud (<a href="https://posit.cloud/" class="uri">https://posit.cloud/</a>) for
 free for up to 25 hours per month.</p>
 </div>
 </div>
-<div id="a.2-installing-rstudio" class="section level2 tabset tabset-fade tabset-pills">
-<h2 class="tabset tabset-fade tabset-pills">A.2 Installing RStudio</h2>
-<div id="install-win" class="section level3">
-<h3>Windows PC</h3>
+<div id="a.2-installing-rstudio" class="section level3 tabset tabset-fade tabset-pills">
+<h3 class="tabset tabset-fade tabset-pills">A.2 Installing RStudio</h3>
+<div id="install-win" class="section level4">
+<h4>Windows PC</h4>
 <p>Go to <a href="https://posit.co/download/rstudio-desktop/" class="uri">https://posit.co/download/rstudio-desktop/</a> and, under
 section “2: Install RStudio”, click the big blue “Download RStudio
 Desktop” button.</p>
 <p>Open the installer and follow the instructions.</p>
 </div>
-<div id="install-mac" class="section level3">
-<h3>Apple macOS PC</h3>
+<div id="install-mac" class="section level4">
+<h4>Apple macOS PC</h4>
 <p>Go to <a href="https://posit.co/download/rstudio-desktop/" class="uri">https://posit.co/download/rstudio-desktop/</a> and, under
 section “2: Install RStudio”, click the big blue “Download RStudio
 Desktop” button.</p>
 <p>Open the installer and follow the instructions.</p>
 </div>
-<div id="install-chrome" class="section level3">
-<h3>Chromebooks</h3>
+<div id="install-chrome" class="section level4">
+<h4>Chromebooks</h4>
 <p>You cannot install RStudio on Chromebooks. You can use Posit Cloud
 (<a href="https://posit.cloud/" class="uri">https://posit.cloud/</a>)
 for free for up to 25 hours per month.</p>
 </div>
 </div>
-<div id="section" class="section level2 unnumbered">
-<h2 class="unnumbered"></h2>
+<div id="section-1" class="section level3 unnumbered">
+<h3 class="unnumbered"></h3>
 <hr />
 </div>
 </div>
-<div id="b.-updating-r-and-rstudio" class="section level1">
-<h1>B. Updating R and RStudio</h1>
+<div id="b.-updating-r-and-rstudio" class="section level2">
+<h2>B. Updating R and RStudio</h2>
 <p>If your R version or packages are old, you might get errors or find
 that the code required to run some examples is different from the one
 provided.</p>
@@ -514,8 +510,8 @@ is just a wrapper around R providing a nicer user interface (text
 editor, file explorer and graphical window). Updating RStudio (the
 interface) will not update the R programming language which runs your
 code.</p>
-<div id="b.1-check-which-r-version-you-have" class="section level2">
-<h2>B.1 Check which R version you have</h2>
+<div id="b.1-check-which-r-version-you-have" class="section level3">
+<h3>B.1 Check which R version you have</h3>
 <p>Check that your R version is up-to-date by typing into the R
 console:</p>
 <pre><code>version</code></pre>
@@ -532,42 +528,47 @@ minor          4.3
 version is. If you have a different number for “major” than the most
 recent, it may well be time for an update.</p>
 </div>
-<div id="update-r" class="section level2 tabset tabset-fade tabset-pills">
-<h2 class="tabset tabset-fade tabset-pills">2. Update R</h2>
-<div id="windows-pc-1" class="section level3">
-<h3>Windows PC</h3>
+<div id="update-r" class="section level3 tabset tabset-fade tabset-pills">
+<h3 class="tabset tabset-fade tabset-pills">2. Update R</h3>
+<div id="windows-pc-1" class="section level4">
+<h4>Windows PC</h4>
 <p>Open RStudio, and type the following in the R console. Press Enter to
 run the code.</p>
 <pre class="r"><code>install.packages(&quot;installr&quot;)
 installr::updateR()</code></pre>
 </div>
-<div id="apple-macos-pc-1" class="section level3">
-<h3>Apple macOS PC</h3>
+<div id="apple-macos-pc-1" class="section level4">
+<h4>Apple macOS PC</h4>
 <p>To update R, you need to remove any old R installations and then
 reinstall R.</p>
 <p>First, go to Finder, click Applications, and drag and drop R to the
 bin. Then, follow the instructions from <a href="#install-mac">A.1</a>
 to reinstall it.</p>
 </div>
-<div id="chromebooks-1" class="section level3">
-<h3>Chromebooks</h3>
+<div id="chromebooks-1" class="section level4">
+<h4>Chromebooks</h4>
 <p>You cannot install R on Chromebooks. You need to access a version of
 R installed on a remote machine or server.</p>
 <p>You still may want to update packages, though. Check <a href="#update-pkgs">section C</a> for that.</p>
 </div>
 </div>
-<div id="section-1" class="section level2 unnumbered">
-<h2 class="unnumbered"></h2>
+<div id="update-rstudio" class="section level3">
+<h3>3. Update RStudio</h3>
+<p>Check if RStudio needs to be updated by clicking Help &gt; Check for
+updates.</p>
+<p>If an update is available, uninstall your current RStudio (not R,
+only RStudio). Next, follow the instructions in section A.2 of this
+document to install the most recent RStudio release.</p>
 <hr />
 </div>
 </div>
-<div id="update-pkgs" class="section level1">
-<h1>C. Updating R packages</h1>
+<div id="update-pkgs" class="section level2">
+<h2>C. Updating R packages</h2>
 <p>Open RStudio. In the R console, type the following and press
 Enter:</p>
 <pre class="r"><code>options(pkgType = &quot;binary&quot;)
 update.packages(ask = FALSE)</code></pre>
-<p><br></p>
+</div>
 </div>
 
 

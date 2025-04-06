@@ -9,10 +9,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Edinburgh Stats Team" />
+<meta name="author" content="Department of Psychology  The University of Edinburgh" />
 
 
-<title>Linear Models</title>
+<title>Installing / Updating R &amp; RStudio</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -361,149 +361,213 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Linear Models</h1>
-<h4 class="author">Edinburgh Stats Team</h4>
-<h4 class="date">DPUK Spring Academy 2025</h4>
+<h1 class="title toc-ignore">Installing / Updating R &amp; RStudio</h1>
+<h4 class="author">Department of Psychology<br> The University of
+Edinburgh</h4>
 
 </div>
 
+<div id="TOC">
+<ul>
+<li><a href="#a.-installing-r-and-rstudio" id="toc-a.-installing-r-and-rstudio">A. Installing R and
+RStudio</a></li>
+<li><a href="#b.-updating-r-and-rstudio" id="toc-b.-updating-r-and-rstudio">B. Updating R and RStudio</a></li>
+<li><a href="#update-pkgs" id="toc-update-pkgs">C. Updating R
+packages</a></li>
+</ul>
+</div>
 
+<p>R is the name of both:</p>
+<ul>
+<li>the R programming language, i.e. the language you use to tell the PC
+what computations to perform; and</li>
+<li>the R interpreter, which actually executes the computations written
+in the R language.</li>
+</ul>
+<p>RStudio is a user-friendly interface around R that makes the
+programming experience much nicer. It bundles together</p>
+<ul>
+<li>a file editor panel,</li>
+<li>a console panel with the R interpreter,</li>
+<li>an environment panel showing all the objects you have created</li>
+<li>a files and plots panel to see your PC files and the plots you
+create.</li>
+</ul>
+<p>The programming language R comes with built-in functionality, like
+computing the square root with the <code>sqrt()</code> function. Over
+the years, R users have created lots of additional functionalities that
+is available on demand. If you particular application requires extra
+functionality not available with the basic R installation, you can add
+it by <em>installing packages</em>. A package is an additional bit of
+functionality and it needs to be installed only once to bring it from
+the web to your own R installation. However, it is also important to
+keep packages updated once or twice a year.</p>
+<p>This document explains how to</p>
+<ol style="list-style-type: lower-alpha">
+<li>install R and RStudio, if you never used them before;</li>
+<li>update R and RStudio, if you have old versions;</li>
+<li>how to update your R packages.</li>
+</ol>
 <hr />
-<div id="instructors" class="section level2">
-<h2>Instructors</h2>
-<p>The Edinburgh Stats Team:</p>
+<div id="a.-installing-r-and-rstudio" class="section level1">
+<h1>A. Installing R and RStudio</h1>
+<div id="a.1-installing-r" class="section level2 tabset tabset-fade tabset-pills">
+<h2 class="tabset tabset-fade tabset-pills">A.1 Installing R</h2>
+<div id="windows-pc" class="section level3">
+<h3>Windows PC</h3>
+<div id="uninstall-any-previous-installations" class="section level4">
+<h4>Uninstall any previous installations</h4>
+<p>If you have a previous R installation, please uninstall the following
+software from your PC if you have it:</p>
 <ul>
-<li><a href="https://www.ed.ac.uk/profile/josiah-pj-king">Dr Josiah
-King</a></li>
-<li><a href="https://www.ed.ac.uk/profile/umberto-noe">Dr Umberto
-Noè</a></li>
+<li>R</li>
+<li>Rtools</li>
 </ul>
-<p>A big thank you also to Dr Tom Booth, who previously taught this with
-us.</p>
+</div>
+<div id="install-r" class="section level4">
+<h4>Install R</h4>
+<p>Download the installer: <a href="https://cran.r-project.org/bin/windows/base/R-4.4.3-win.exe" class="uri">https://cran.r-project.org/bin/windows/base/R-4.4.3-win.exe</a></p>
+<p>Open the installer and follow the instructions.</p>
+</div>
+<div id="install-rtools" class="section level4">
+<h4>Install RTools</h4>
+<p>Download RTools:</p>
+<ul>
+<li><p>If you have a Windows 64-bit PC (most likely) click here: <a href="https://cran.r-project.org/bin/windows/Rtools/rtools44/files/rtools44-aarch64-6459-6401.exe" class="uri">https://cran.r-project.org/bin/windows/Rtools/rtools44/files/rtools44-aarch64-6459-6401.exe</a></p></li>
+<li><p>If you have a Windows 32-bit PC (if your PC is quite old) you may
+need to find an older version here: <a href="https://cran.r-project.org/bin/windows/Rtools/" class="uri">https://cran.r-project.org/bin/windows/Rtools/</a></p></li>
+</ul>
+<p>Open the installer and follow the instructions.</p>
+</div>
+</div>
+<div id="apple-macos-pc" class="section level3">
+<h3>Apple macOS PC</h3>
+<div id="uninstall-any-previous-installations-1" class="section level4">
+<h4>Uninstall any previous installations</h4>
+<p>If you have a previous R installation, please go to the Applications
+folder in your Finder window and move the following applications to the
+Bin:</p>
+<ul>
+<li>R</li>
+<li>XQuartz</li>
+</ul>
+</div>
+<div id="install-r-1" class="section level4">
+<h4>Install R</h4>
+<p>Check which Apple PC you have. On the top-left of your screen click
+the Apple logo, click About This Mac, note what the Processor line says.
+If it has the word “Intel”, you want to follow 1 below, and 2
+otherwise.</p>
+<ol style="list-style-type: decimal">
+<li><p>Download this if you have an Apple M1-M4 macOS PC: <a href="https://cran.r-project.org/bin/macosx/big-sur-arm64/base/R-4.4.3-arm64.pkg" class="uri">https://cran.r-project.org/bin/macosx/big-sur-arm64/base/R-4.4.3-arm64.pkg</a></p></li>
+<li><p>Download this if you have an older Intel-based macOS PC: <a href="https://cran.r-project.org/bin/macosx/big-sur-x86_64/base/R-4.4.3-x86_64.pkg" class="uri">https://cran.r-project.org/bin/macosx/big-sur-x86_64/base/R-4.4.3-x86_64.pkg</a></p></li>
+</ol>
+<p>Open the installer and follow the instructions.</p>
+</div>
+<div id="install-xquartz" class="section level4">
+<h4>Install XQuartz</h4>
+<p>Download XQuartz: <a href="https://xquartz.macosforge.org/">https://xquartz.macosforge.org/</a>.</p>
+<p>Open the installer and follow the instructions.</p>
+</div>
+</div>
+<div id="chromebooks" class="section level3">
+<h3>Chromebooks</h3>
+<p>You cannot install R on Chromebooks. You can use Posit Cloud (<a href="https://posit.cloud/" class="uri">https://posit.cloud/</a>) for
+free for up to 25 hours per month.</p>
+</div>
+</div>
+<div id="a.2-installing-rstudio" class="section level2 tabset tabset-fade tabset-pills">
+<h2 class="tabset tabset-fade tabset-pills">A.2 Installing RStudio</h2>
+<div id="install-win" class="section level3">
+<h3>Windows PC</h3>
+<p>Go to <a href="https://posit.co/download/rstudio-desktop/" class="uri">https://posit.co/download/rstudio-desktop/</a> and, under
+section “2: Install RStudio”, click the big blue “Download RStudio
+Desktop” button.</p>
+<p>Open the installer and follow the instructions.</p>
+</div>
+<div id="install-mac" class="section level3">
+<h3>Apple macOS PC</h3>
+<p>Go to <a href="https://posit.co/download/rstudio-desktop/" class="uri">https://posit.co/download/rstudio-desktop/</a> and, under
+section “2: Install RStudio”, click the big blue “Download RStudio
+Desktop” button.</p>
+<p>Open the installer and follow the instructions.</p>
+</div>
+<div id="install-chrome" class="section level3">
+<h3>Chromebooks</h3>
+<p>You cannot install RStudio on Chromebooks. You can use Posit Cloud
+(<a href="https://posit.cloud/" class="uri">https://posit.cloud/</a>)
+for free for up to 25 hours per month.</p>
+</div>
+</div>
+<div id="section" class="section level2 unnumbered">
+<h2 class="unnumbered"></h2>
 <hr />
 </div>
-<div id="overview" class="section level2">
-<h2>Overview</h2>
-<p>This is a short course on linear models using the R programming
-language.</p>
-<p>Each day will comprise a lecture in the morning at 11am, followed by
-a tutorial in the afternoon at 1pm.</p>
-<p>During the first session we will cover how to install R and RStudio
-on your laptop, see <a href="install-update-r.html">these
-instructions</a>.</p>
+</div>
+<div id="b.-updating-r-and-rstudio" class="section level1">
+<h1>B. Updating R and RStudio</h1>
+<p>If your R version or packages are old, you might get errors or find
+that the code required to run some examples is different from the one
+provided.</p>
+<p>Recall that R is the underlying programming language, while RStudio
+is just a wrapper around R providing a nicer user interface (text
+editor, file explorer and graphical window). Updating RStudio (the
+interface) will not update the R programming language which runs your
+code.</p>
+<div id="b.1-check-which-r-version-you-have" class="section level2">
+<h2>B.1 Check which R version you have</h2>
+<p>Check that your R version is up-to-date by typing into the R
+console:</p>
+<pre><code>version</code></pre>
+<p>After pressing Enter, you should see something like this:</p>
+<pre><code>platform       &lt;&lt; this will be different for each of you &gt;&gt;     
+arch           &lt;&lt; this will be different for each of you &gt;&gt;                  
+os             &lt;&lt; this will be different for each of you &gt;&gt;     
+system         &lt;&lt; this will be different for each of you &gt;&gt;        
+status                                     
+major          4                           
+minor          4.3                         
+&lt;&lt; and more lines which you can ignore... &gt;&gt;</code></pre>
+<p>Please check here: <a href="https://www.r-project.org/" class="uri">https://www.r-project.org/</a> to see what the most recent
+version is. If you have a different number for “major” than the most
+recent, it may well be time for an update.</p>
+</div>
+<div id="update-r" class="section level2 tabset tabset-fade tabset-pills">
+<h2 class="tabset tabset-fade tabset-pills">2. Update R</h2>
+<div id="windows-pc-1" class="section level3">
+<h3>Windows PC</h3>
+<p>Open RStudio, and type the following in the R console. Press Enter to
+run the code.</p>
+<pre class="r"><code>install.packages(&quot;installr&quot;)
+installr::updateR()</code></pre>
+</div>
+<div id="apple-macos-pc-1" class="section level3">
+<h3>Apple macOS PC</h3>
+<p>To update R, you need to remove any old R installations and then
+reinstall R.</p>
+<p>First, go to Finder, click Applications, and drag and drop R to the
+bin. Then, follow the instructions from <a href="#install-mac">A.1</a>
+to reinstall it.</p>
+</div>
+<div id="chromebooks-1" class="section level3">
+<h3>Chromebooks</h3>
+<p>You cannot install R on Chromebooks. You need to access a version of
+R installed on a remote machine or server.</p>
+<p>You still may want to update packages, though. Check <a href="#update-pkgs">section C</a> for that.</p>
+</div>
+</div>
+<div id="section-1" class="section level2 unnumbered">
+<h2 class="unnumbered"></h2>
 <hr />
 </div>
-<div id="schedule" class="section level2 tabset tabset-pills">
-<h2 class="tabset tabset-pills">Schedule</h2>
-<div id="monday" class="section level3">
-<h3>Monday</h3>
-<p><strong>A practical introduction to R and RStudio</strong></p>
-<p>Lecture:</p>
-<ul>
-<li><a href="DPUK_A_2025.html">Lecture HTML file</a></li>
-<li><a href="DPUK_A_2025.Rmd">Lecture Rmd file</a></li>
-</ul>
-<p>Tutorial:</p>
-<ul>
-<li><a href="day1_practical/day1_exercises.R">Playing around in R</a>
-<ul>
-<li><a href="day1_practical/pets_seattle.csv">pets_seattle.csv</a></li>
-</ul></li>
-<li><a href="day1_practical/day1_extra_sampling.R">Extra: sampling
-variability</a></li>
-<li><a href="day1_practical/day1_extra_function.R">Extra: writing
-functions</a></li>
-</ul>
-<p>Further reading from our courses at the University of Edinburgh:</p>
-<ul>
-<li><a href="https://uoepsy.github.io/dapr1/2122/labs/intro_r_rstudio_year1.html">Introduction
-to R and RStudio</a></li>
-</ul>
 </div>
-<div id="tuesday" class="section level3">
-<h3>Tuesday</h3>
-<p>Material will be released closer to the session.</p>
-<p>Lecture:</p>
-<p>Tutorial:</p>
-<p>Reading:</p>
-<!-- What is a linear model?
-
-- Lecture
-    + [Day 1 Slides](DPUK_2025_Day1.html#1)
-    + [Exam Score Data](dapr2_lec07.csv)
- 
-- Guided Practice
-    + [Introduction to R, RStudio, and linear models](day1_practical/day1_practical.R)
-    + [stroke.csv data](day1_practical/stroke.csv)
-    + [Extra: sampling variability](day1_practical/day1_extra_sampling.R)
-    + [Extra: writing functions](day1_practical/day1_extra_function.R)
- 
-- Further reading from our courses at the University of Edinburgh:
-    + [Introduction to R and RStudio](https://uoepsy.github.io/dapr1/2122/labs/intro_r_rstudio_year1.html)
-    + [Simple linear regression](https://uoepsy.github.io/usmr/2425/labs/05b_slr.html) -->
-</div>
-<div id="wednesday" class="section level3">
-<h3>Wednesday</h3>
-<p>Material will be released closer to the session.</p>
-<p>Lecture:</p>
-<p>Tutorial:</p>
-<p>Reading:</p>
-<!-- Multiple linear regression
-
-- Lecture
-    + [Day 2 Slides](DPUK_2025_Day2.html#1)
-    + [Salary 1](salary_lec.csv)
-
-- Guided Practice
-    + [R script](day2_practical.R)
-    + [stroke.csv data](stroke.csv)
-- Further reading from our courses at the University of Edinburgh:
-    + [Multiple linear regression](https://uoepsy.github.io/dapr2/2324/labs/1_02_mlr.html)
-    + [Multiple linear regression & Standardization](https://uoepsy.github.io/dapr2/2324/labs/1_03_mlr_stz.html)
-    + [Model Comparison](https://uoepsy.github.io/dapr2/2324/labs/1_04_model_fit_comp.html) -->
-</div>
-<div id="thursday" class="section level3">
-<h3>Thursday</h3>
-<p>Material will be released closer to the session.</p>
-<p>Lecture:</p>
-<p>Tutorial:</p>
-<p>Reading:</p>
-<!-- Interactions
-
-- Lecture
-    + [Day 3 Slides](DPUK_2025_Day3.html#1)
-    + [Salary 2](salary2.csv)
-    + Salary 3 data (on it's way)
-
-- Guided Practice
-    + [R script](day3_practical.R)
-    + [acer.csv data](acer.csv)
-
-- Further reading from our courses at the University of Edinburgh:
-    + [Interactions 1: Categorical*Continuous](https://uoepsy.github.io/dapr2/2324/labs/2_01_int1_nc.html)
-    + [Interactions 2: Continuous*Continuous](https://uoepsy.github.io/dapr2/2324/labs/2_02_int2_nn.html)
-    + [Interactions 3: Categorical*Categorical](https://uoepsy.github.io/dapr2/2324/labs/2_03_int3_cc.html) -->
-</div>
-<div id="friday" class="section level3">
-<h3>Friday</h3>
-<p>Material will be released closer to the session.</p>
-<p>Lecture:</p>
-<p>Tutorial:</p>
-<p>Reading:</p>
-<!-- Assumptions and diagnostics
-
-- Lecture
-    + [Day 4 Slides](DPUK_2025_Day4.html#1)
-
-- Guided Practice
-    + [R script](day4_practical.R)
-    + [Influencer data](sillydata.csv)
-    + [Outliers, High Leverage, and Influential Points](out-lev-infl.pdf)
-
-- Further reading from our courses at the University of Edinburgh:
-    + [Assumptions & Diagnostics](https://uoepsy.github.io/dapr2/2324/labs/1_08_assump_diag.html)
-    + [Writing up](https://uoepsy.github.io/dapr2/2324/labs/1_10_writeup_recap_blk2.html) -->
-</div>
+<div id="update-pkgs" class="section level1">
+<h1>C. Updating R packages</h1>
+<p>Open RStudio. In the R console, type the following and press
+Enter:</p>
+<pre class="r"><code>options(pkgType = &quot;binary&quot;)
+update.packages(ask = FALSE)</code></pre>
+<p><br></p>
 </div>
 
 

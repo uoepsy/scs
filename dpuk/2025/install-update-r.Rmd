@@ -1,13 +1,18 @@
 ---
-title: "Installing / Updating R & RStudio"
-author: "Department of Psychology<br> The University of Edinburgh"
+title: "Installing and Updating R & RStudio"
+author: "Umberto Noe, Josiah King"
 output:
   html_document:
     theme: readable
-    toc: true
+    toc: false
     toc_depth: 1
 ---
 
+
+# {.tabset .tabset-fade .tabset-pills}
+
+
+## What is R? What is RStudio?
 
 R is the name of both:
 
@@ -35,26 +40,28 @@ c) how to update your R packages.
 ---
 
 
-# A. Installing R and RStudio
+## A. Installing R and RStudio
 
-## A.1 Installing R {.tabset .tabset-fade .tabset-pills}
 
-### Windows PC
+### A.1 Installing R {.tabset .tabset-fade .tabset-pills}
 
-#### Uninstall any previous installations
+
+#### Windows PC
+
+##### Uninstall any previous installations
 
 If you have a previous R installation, please uninstall the following software from your PC if you have it:
 
 - R
 - Rtools
 
-#### Install R
+##### Install R
 
 Download the installer: https://cran.r-project.org/bin/windows/base/R-4.4.3-win.exe
 
 Open the installer and follow the instructions.
 
-#### Install RTools
+##### Install RTools
 
 Download RTools:
 
@@ -65,10 +72,10 @@ Download RTools:
 Open the installer and follow the instructions.
 
 
+#### Apple macOS PC
 
-### Apple macOS PC
 
-#### Uninstall any previous installations
+##### Uninstall any previous installations
 
 If you have a previous R installation, please go to the Applications folder in your Finder window and move the following applications to the Bin:
 
@@ -76,7 +83,7 @@ If you have a previous R installation, please go to the Applications folder in y
 - XQuartz
 
 
-#### Install R
+##### Install R
 
 Check which Apple PC you have. On the top-left of your screen click the Apple logo, click About This Mac, note what the Processor line says. If it has the word "Intel", you want to follow 1 below, and 2 otherwise.
 
@@ -87,7 +94,7 @@ Check which Apple PC you have. On the top-left of your screen click the Apple lo
 Open the installer and follow the instructions.
 
 
-#### Install XQuartz
+##### Install XQuartz
 
 Download XQuartz: [https://xquartz.macosforge.org/](https://xquartz.macosforge.org/). 
 
@@ -95,45 +102,46 @@ Open the installer and follow the instructions.
 
 
 
-### Chromebooks
+#### Chromebooks
+
 
 You cannot install R on Chromebooks. You can use Posit Cloud (<https://posit.cloud/>) for free for up to 25 hours per month.
 
 
 
-## A.2 Installing RStudio {.tabset .tabset-fade .tabset-pills}
+### A.2 Installing RStudio {.tabset .tabset-fade .tabset-pills}
 
-### Windows PC {#install-win}
-
-Go to <https://posit.co/download/rstudio-desktop/> and, under section "2: Install RStudio", click the big blue "Download RStudio Desktop" button.
-
-Open the installer and follow the instructions.
-
-### Apple macOS PC {#install-mac}
+#### Windows PC {#install-win}
 
 Go to <https://posit.co/download/rstudio-desktop/> and, under section "2: Install RStudio", click the big blue "Download RStudio Desktop" button.
 
 Open the installer and follow the instructions.
 
+#### Apple macOS PC {#install-mac}
 
-### Chromebooks {#install-chrome}
+Go to <https://posit.co/download/rstudio-desktop/> and, under section "2: Install RStudio", click the big blue "Download RStudio Desktop" button.
+
+Open the installer and follow the instructions.
+
+
+#### Chromebooks {#install-chrome}
 
 You cannot install RStudio on Chromebooks. You can use Posit Cloud (<https://posit.cloud/>) for free for up to 25 hours per month.
 
 
-## {-}
+### {-}
 
 
 ---
 
 
-# B. Updating R and RStudio
+## B. Updating R and RStudio
 
 If your R version or packages are old, you might get errors or find that the code required to run some examples is different from the one provided.
 
 Recall that R is the underlying programming language, while RStudio is just a wrapper around R providing a nicer user interface (text editor, file explorer and graphical window). Updating RStudio (the interface) will not update the R programming language which runs your code.  
 
-## B.1 Check which R version you have
+### B.1 Check which R version you have
 
 Check that your R version is up-to-date by typing into the R console:
 
@@ -157,9 +165,10 @@ minor          4.3
 Please check here: https://www.r-project.org/ to see what the most recent version is. If you have a different number for "major" than the most recent, it may well be time for an update.  
 
 
-## 2. Update R {.tabset .tabset-fade .tabset-pills}
+### 2. Update R {.tabset .tabset-fade .tabset-pills}
 
-### Windows PC
+
+#### Windows PC
 
 Open RStudio, and type the following in the R console. Press Enter to run the code.
 
@@ -169,7 +178,7 @@ installr::updateR()
 ```
 
 
-### Apple macOS PC
+#### Apple macOS PC
 
 To update R, you need to remove any old R installations and then reinstall R. 
 
@@ -177,19 +186,24 @@ First, go to Finder, click Applications, and drag and drop R to the bin.
 Then, follow the instructions from [A.1](#install-mac) to reinstall it.
 
 
-### Chromebooks
+#### Chromebooks
 
 You cannot install R on Chromebooks. You need to access a version of R installed on a remote machine or server.
 
 You still may want to update packages, though. Check [section C](#update-pkgs) for that.
 
-## {-}
+
+### 3. Update RStudio
+
+Check if RStudio needs to be updated by clicking Help > Check for updates.
+
+If an update is available, uninstall your current RStudio (not R, only RStudio). Next, follow the instructions in section A.2 of this document to install the most recent RStudio release.
 
 
 ---
 
 
-# C. Updating R packages {#update-pkgs}
+## C. Updating R packages {#update-pkgs}
 
 Open RStudio. In the R console, type the following and press Enter:
 
@@ -197,6 +211,4 @@ Open RStudio. In the R console, type the following and press Enter:
 options(pkgType = "binary")
 update.packages(ask = FALSE)
 ```
-
-<br>
 

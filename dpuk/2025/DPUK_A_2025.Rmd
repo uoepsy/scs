@@ -1,0 +1,354 @@
+---
+title: "Introduction to R and RStudio"
+author: "Edinburgh Stats Team"
+date: "DPUK Spring Academy 2025"
+output: 
+    bookdown::html_document2:
+        theme: readable
+        self_contained: true
+        toc: true
+        toc_depth: 2
+toc-title: "Topics"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(message = FALSE)
+```
+
+---
+
+## Installing and Updating R, RStudio, and R packages
+
+Detailed installation instructions can be found [on this webpage](https://uoepsy.github.io/scs/dpuk/install-update-r.html).
+
+### Installing R
+
+- **Windows:**
+  - Uninstall any previous R and Rtools installations.
+  - Download installer: https://cran.r-project.org/bin/windows/base/R-4.4.3-win.exe.
+  - For RTools (64-bit): https://cran.r-project.org/bin/windows/Rtools/rtools44/files/rtools44-aarch64-6459-6401.exe; for older PCs, see available 32-bit versions.
+- **Apple macOS:**
+  - Remove any previous R and XQuartz installations from Applications.
+  - Download installer for your processor:
+    - If Apple M1-M4: https://cran.r-project.org/bin/macosx/big-sur-arm64/base/R-4.4.3-arm64.pkg.
+    - If Intel-based: https://cran.r-project.org/bin/macosx/big-sur-x86_64/base/R-4.4.3-x86_64.pkg.
+  - Install XQuartz: https://xquartz.macosforge.org/.
+- **Chromebooks:**
+  - R cannot be installed; use Posit Cloud (https://posit.cloud/).
+
+### Installing RStudio
+
+- **Windows & macOS:**
+  - Download RStudio Desktop from https://posit.co/download/rstudio-desktop/ and follow the installation instructions.
+- **Chromebooks:**
+  - RStudio is unavailable; use Posit Cloud (https://posit.cloud/).
+
+### Updating R
+- **Windows:**
+  - In RStudio run:
+    ```r
+    install.packages("installr")
+    installr::updateR()
+    ```
+- **Apple macOS:**
+  - Remove the old R from Applications and reinstall using the appropriate installer.
+  
+### Updating RStudio
+- Check via Help > Check for updates. If an update is available, uninstall RStudio, and then install RStudio again.
+
+### Updating R Packages
+- In RStudio run:
+
+    ```r
+    options(pkgType = "binary")
+    update.packages(ask = FALSE)
+    ```
+
+---
+
+## Introduction to R and RStudio
+
+RStudio Panes and Interface
+
+- **Console:** Execute commands interactively. To execute code, press Enter.
+- **Editor:** Write, modify, and save your R code. Press `Ctrl+Enter` or `Cmd+Enter` to send code to the Console for execution.
+- **Environment:** View your current objects and variables.
+- **Files, Plots, Packages, and Help:** Access your files, see your plots, and access the help page. Install/update packages (more on this later).
+
+Console vs R scripts vs Rmarkdown (.Rmd) files
+
+- **Console:** The Console is used for running commands interactively. It is great for quick calculations or testing small pieces of code, but it does not save your work. Once you close RStudio, the commands in the Console are lost unless explicitly saved elsewhere.
+- **R Scripts (.R files):** R scripts are plain text files where you can write and save R code. They are ideal for creating reusable code and documenting your workflow. You can execute code from an R script by sending it to the Console (e.g., using `Ctrl+Enter` or `Cmd+Enter`).
+- **RMarkdown (.Rmd files):** RMarkdown files combine code, text, and output in a single document. They are used for creating dynamic reports, presentations, or documents that include both analysis and narrative. You can execute code chunks within an RMarkdown file and render the document into formats like HTML, PDF, or Word.
+
+Code vs Comments (vs Text in Rmarkdown)
+
+- **Code:** Code is the actual R commands that are executed to perform tasks. In R scripts, code is written directly in the file. In RMarkdown, code is written inside code chunks (e.g., ` ```{r} ... ``` `).
+
+- **Text in RMarkdown:** In RMarkdown, text outside of code chunks is treated as narrative or explanatory text. It is written in Markdown syntax and is used to provide context, explanations, or documentation alongside the code and its output.
+
+- **Comments:** Comments are lines of text in R scripts (or in RMarkdown code chunks) that are not executed as code. They are used to explain or document the code. In R, comments start with `#`. For example:
+  ```r
+  # This is a comment
+  x <- 5  # Assign 5 to x
+  ```
+
+---
+
+## Basic R Functionality
+
+### Arithmetic and Calculations
+
+R can perform basic arithmetic operations. Here are some examples:
+
+```{r}
+1 + 2   # Addition
+5 - 3   # Subtraction
+2 * 3   # Multiplication
+1 / 2   # Division
+
+# Exponentiation
+2^3
+# Square roots
+sqrt(4)
+9^(1/2)
+
+# Standard functions such as log(), exp(), log10() also exist
+```
+
+Remember, order of operations matters! Use parentheses to ensure the correct order.
+
+```{r}
+# This will give different results
+(1 + 2) * 3   # Parentheses first
+1 + 2 * 3     # Multiplication first
+```
+
+---
+
+### Getting help in R
+
+```r
+?sqrt
+help(sqrt)
+```
+---
+
+### Logical values
+
+```{r}
+# Logical
+TRUE
+FALSE
+!TRUE             # not operator
+2 == 3            # equal to operator
+2 != 2            # not equal to operator
+2 > 3
+2 <= 3
+(2 > 1) & (2 < 3) # and operator
+(2 > 1) | (2 < 3) # or operator
+```
+
+What will R print?
+
+````r
+!(2 == 3)
+!(2 > 3)
+````
+
+---
+
+### Variables and Assignment
+
+- Variables are used to store values.  
+- Use `<-` or `=` for assignment.
+
+```{r}
+x <- 5          # Assign 5 to x
+y <- 10         # Assign 10 to y
+total <- x + y  # Add x and y
+total           # Output 15
+```
+
+---
+
+## Vectors
+
+Vectors are one-dimensional arrays that can hold numeric, character, or logical data. You can create vectors using the combine function, `c()`.
+
+```{r}
+# Creating a numeric vector
+numbers <- c(1, 2, 3, 4, 5)
+
+# Creating a character vector
+characters <- c("apple", "banana", "cherry")
+
+# Creating a logical vector
+logicals <- c(TRUE, FALSE, TRUE)
+
+# Accessing elements of a vector
+numbers[1]       # First element
+characters[2:3]  # Second and third elements
+logicals[c(1, 3)] # First and third elements
+
+# Vectorized operations
+numbers * 2       # Multiply each element by 2
+numbers + 10      # Add 10 to each element
+numbers > 3       # Logical comparison
+
+# Member of a vector
+"cherry" %in% characters
+```
+
+---
+
+## Installing packages
+
+In console:
+
+````r
+install.packages("palmerpenguins")
+install.packages("tidyverse")
+````
+
+Using the Packages tab in RStudio.
+
+---
+
+## Introduction to tidyverse
+
+This is a brief overview of tidyverse, the set of packages for data science in R.
+
+```{r}
+# Load the tidyverse collection of packages
+library(tidyverse)
+```
+
+`tidyverse` is a collection of packages which includes:
+
+- `ggplot2` for data visualization
+- `dplyr` for data manipulation
+- `tidyr` for data tidying
+- `readr` for data import
+- `tibble` for data frames
+- `stringr` for string manipulation
+- `forcats` for categorical variables
+
+and more... 
+
+The good news is: you don't need to remember which package a function comes from. 
+When you load the tidyverse, all of these packages are loaded at once.
+
+---
+
+## palmerpenguins: A tidyverse data example
+
+A demonstration using the `penguins` dataset, provided by the `palmerpenguins` package.
+
+```{r}
+library(palmerpenguins)
+library(tidyverse)
+
+# Look at the first six rows of the dataset
+head(penguins)
+
+# Structure of dataset
+str(penguins)
+
+# Summary of dataset
+summary(penguins)
+
+# A scatterplot exploring penguin body mass vs flipper length
+ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(color = "darkblue", alpha = 0.6) +
+  labs(title = "Penguins: Flipper Length vs Body Mass",
+       x = "Flipper Length (mm)",
+       y = "Body Mass (g)")
+
+# A boxplot to explore the association between body mass and species
+ggplot(penguins, aes(x = species, y = body_mass_g)) +
+  geom_boxplot() +
+  labs(title = "Penguins: Body Mass by Species",
+       x = "Species",
+       y = "Body Mass (g)")
+```
+
+---
+
+## Data subsetting
+
+````r
+penguins[1, ]           # First row
+
+penguins[, 1]           # First column - by number
+penguins[ , "species"]  # First column - by name
+penguins$species        # First column - by name
+
+penguins[c(1,2,3), ]    # First three rows
+
+penguins[, c(1,2,3)]    # First three columns - by number
+penguins[, c("species", "island", "bill_length_mm")] # First three columns - by name
+
+penguins[c(1,2,3), c(1,2,3)] # First three rows and columns and range shortcut
+penguins[1:3, 1:3] # Shortcut : for range of consecutive values
+````
+
+````r
+# Subset the data for only Adelie species
+adelie_penguins <- penguins |> 
+  filter(species == "Adelie")
+
+# Remove specific rows of the penguins dataset
+!is.na(penguins$body_mass_g)    # returns TRUE/FALSE for each row
+
+# Filter out rows with NA values in body_mass_g
+penguins_no_na <- penguins |> 
+  filter( !is.na(body_mass_g) )
+
+# Only keep columns species, body_mass_g
+penguins_subset <- penguins_no_na |> 
+  select(species, body_mass_g)
+````
+
+---
+
+## Reading data into R
+
+Consider [this dataset](https://raw.githubusercontent.com/allisonhorst/palmerpenguins/master/inst/extdata/penguins.csv)
+
+A file path is a string that specifies the location of a file or directory in your computer's file system. It tells your system how to navigate through folders to locate the file. There are two main types:
+
+**Absolute Path:** Specifies the complete directory list from the root folder.
+
+**Relative Path:** Specifies the location relative to the current file or folder.
+
+Paths are essential for accessing or referencing files correctly in your code.
+
+````r
+# Read from local file
+penguins_data <- read_csv("path/to/penguins.csv")
+
+# Read from URL
+penguins_data <- read_csv("https://raw.githubusercontent.com/allisonhorst/palmerpenguins/master/inst/extdata/penguins.csv")
+````
+
+The following functions are also available to read other types of files:
+
+- `read_csv()` for CSV files
+- `read_tsv()` for tab-separated files
+- `read_excel()` for Excel files
+- `library(haven)` and then
+  - `read_dta()` for Stata files
+  - `read_sav()` for SPSS files
+  - `read_sas()` for SAS files
+
+---
+
+## Summary & Questions
+
+This introductory session builds the foundation in R and tidyverse for our forthcoming four days which will focus on the linear model. 
+
+- R & RStudio installation and interface.
+- Basics of R with emphasis on tidyverse.
+- A practical data example with palmerpenguins.
+- Any questions?

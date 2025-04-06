@@ -1,6 +1,7 @@
 ---
-title: "Linear models @ DPUK"
-date: "April 2025"
+title: "Linear Models"
+author: "Edinburgh Stats Team"
+date: "DPUK Spring Academy 2025"
 output:
   html_document:
       theme: readable
@@ -11,20 +12,64 @@ output:
 knitr::opts_chunk$set(cache = TRUE)
 ```
 
+---
 
-## Start here
+## Instructors
 
-This is a short course on linear models using the R programming language. Each day will comprise a lecture in the morning (11am), and a tutorial in the afternoon (1pm).
+The Edinburgh Stats Team:
 
-Before starting, please make sure you have R and RStudio installed on your laptop by following [these instructions](install-update-r.html).
+- [Dr Josiah King](https://www.ed.ac.uk/profile/josiah-pj-king)
+- [Dr Umberto Noè](https://www.ed.ac.uk/profile/umberto-noe)
 
+A big thank you also to Dr Tom Booth, who previously taught this with us.
+
+---
+
+## Overview
+
+This is a short course on linear models using the R programming language. 
+
+Each day will comprise a lecture in the morning at 11am, followed by a tutorial in the afternoon at 1pm.
+
+During the first session we will cover how to install R and RStudio on your laptop, see [these instructions](install-update-r.html).
+
+---
 
 ## Schedule {.tabset .tabset-pills}
 
 
-### Day 1: Monday
+### Monday
 
-What is a linear model?
+**A practical introduction to R and RStudio**
+
+Lecture:
+
+- [Lecture HTML file](DPUK_A_2025.html)
+- [Lecture Rmd file](DPUK_A_2025.Rmd)
+
+Tutorial:
+
+- [Playing around in R](day1_practical/day1_exercises.R)
+    - [pets_seattle.csv](day1_practical/pets_seattle.csv)
+- [Extra: sampling variability](day1_practical/day1_extra_sampling.R)
+- [Extra: writing functions](day1_practical/day1_extra_function.R)
+
+Further reading from our courses at the University of Edinburgh:
+
+- [Introduction to R and RStudio](https://uoepsy.github.io/dapr1/2122/labs/intro_r_rstudio_year1.html)
+
+
+### Tuesday
+
+Material will be released closer to the session.
+
+Lecture:
+
+Tutorial:
+
+Reading:
+
+<!-- What is a linear model?
 
 - Lecture
     + [Day 1 Slides](DPUK_2025_Day1.html#1)
@@ -38,76 +83,85 @@ What is a linear model?
  
 - Further reading from our courses at the University of Edinburgh:
     + [Introduction to R and RStudio](https://uoepsy.github.io/dapr1/2122/labs/intro_r_rstudio_year1.html)
-    + [Simple linear regression](https://uoepsy.github.io/usmr/2425/labs/05b_slr.html)
+    + [Simple linear regression](https://uoepsy.github.io/usmr/2425/labs/05b_slr.html) -->
 
 
-### Day 2: Tuesday
+### Wednesday
 
-Material will be released the day prior.
+Material will be released closer to the session.
 
-<!-- Multiple linear regression -->
+Lecture:
 
-<!-- - Lecture -->
-<!--     + [Day 2 Slides](DPUK_2025_Day2.html#1) -->
-<!--     + [Salary 1](salary_lec.csv) -->
+Tutorial:
 
-<!-- - Guided Practice -->
-<!--     + [R script](day2_practical.R) -->
-<!--     + [stroke.csv data](stroke.csv) -->
-<!-- - Further reading from our courses at the University of Edinburgh: -->
-<!--     + [Multiple linear regression](https://uoepsy.github.io/dapr2/2324/labs/1_02_mlr.html) -->
-<!--     + [Multiple linear regression & Standardization](https://uoepsy.github.io/dapr2/2324/labs/1_03_mlr_stz.html) -->
-<!--     + [Model Comparison](https://uoepsy.github.io/dapr2/2324/labs/1_04_model_fit_comp.html) -->
+Reading:
 
+<!-- Multiple linear regression
 
-### Day 3: Wednesday
+- Lecture
+    + [Day 2 Slides](DPUK_2025_Day2.html#1)
+    + [Salary 1](salary_lec.csv)
 
-Material will be released the day prior.
-
-<!-- Interactions -->
-
-<!-- - Lecture -->
-<!--     + [Day 3 Slides](DPUK_2025_Day3.html#1) -->
-<!--     + [Salary 2](salary2.csv) -->
-<!--     + Salary 3 data (on it's way) -->
-
-<!-- - Guided Practice -->
-<!--     + [R script](day3_practical.R) -->
-<!--     + [acer.csv data](acer.csv) -->
-
-<!-- - Further reading from our courses at the University of Edinburgh: -->
-<!--     + [Interactions 1: Categorical*Continuous](https://uoepsy.github.io/dapr2/2324/labs/2_01_int1_nc.html) -->
-<!--     + [Interactions 2: Continuous*Continuous](https://uoepsy.github.io/dapr2/2324/labs/2_02_int2_nn.html) -->
-<!--     + [Interactions 3: Categorical*Categorical](https://uoepsy.github.io/dapr2/2324/labs/2_03_int3_cc.html) -->
+- Guided Practice
+    + [R script](day2_practical.R)
+    + [stroke.csv data](stroke.csv)
+- Further reading from our courses at the University of Edinburgh:
+    + [Multiple linear regression](https://uoepsy.github.io/dapr2/2324/labs/1_02_mlr.html)
+    + [Multiple linear regression & Standardization](https://uoepsy.github.io/dapr2/2324/labs/1_03_mlr_stz.html)
+    + [Model Comparison](https://uoepsy.github.io/dapr2/2324/labs/1_04_model_fit_comp.html) -->
 
 
-### Day 4: Thursday
+### Thursday
 
-Material will be released the day prior.
+Material will be released closer to the session.
 
-<!-- Assumptions and diagnostics -->
+Lecture:
 
-<!-- - Lecture -->
-<!--     + [Day 4 Slides](DPUK_2025_Day4.html#1) -->
+Tutorial:
 
-<!-- - Guided Practice -->
-<!--     + [R script](day4_practical.R) -->
-<!--     + [Influencer data](sillydata.csv) -->
-<!--     + [Outliers, High Leverage, and Influential Points](out-lev-infl.pdf) -->
+Reading:
 
-<!-- - Further reading from our courses at the University of Edinburgh: -->
-<!--     + [Assumptions & Diagnostics](https://uoepsy.github.io/dapr2/2324/labs/1_08_assump_diag.html) -->
-<!--     + [Writing up](https://uoepsy.github.io/dapr2/2324/labs/1_10_writeup_recap_blk2.html) -->
+<!-- Interactions
+
+- Lecture
+    + [Day 3 Slides](DPUK_2025_Day3.html#1)
+    + [Salary 2](salary2.csv)
+    + Salary 3 data (on it's way)
+
+- Guided Practice
+    + [R script](day3_practical.R)
+    + [acer.csv data](acer.csv)
+
+- Further reading from our courses at the University of Edinburgh:
+    + [Interactions 1: Categorical*Continuous](https://uoepsy.github.io/dapr2/2324/labs/2_01_int1_nc.html)
+    + [Interactions 2: Continuous*Continuous](https://uoepsy.github.io/dapr2/2324/labs/2_02_int2_nn.html)
+    + [Interactions 3: Categorical*Categorical](https://uoepsy.github.io/dapr2/2324/labs/2_03_int3_cc.html) -->
 
 
-### Day 5: Friday
+### Friday
 
-Q&A session at 11am, no material needed.
+Material will be released closer to the session.
+
+Lecture:
+
+Tutorial:
+
+Reading:
+
+<!-- Assumptions and diagnostics
+
+- Lecture
+    + [Day 4 Slides](DPUK_2025_Day4.html#1)
+
+- Guided Practice
+    + [R script](day4_practical.R)
+    + [Influencer data](sillydata.csv)
+    + [Outliers, High Leverage, and Influential Points](out-lev-infl.pdf)
+
+- Further reading from our courses at the University of Edinburgh:
+    + [Assumptions & Diagnostics](https://uoepsy.github.io/dapr2/2324/labs/1_08_assump_diag.html)
+    + [Writing up](https://uoepsy.github.io/dapr2/2324/labs/1_10_writeup_recap_blk2.html) -->
 
 
-# Staff
 
-- [Dr Josiah King](https://www.ed.ac.uk/profile/josiah-pj-king)
-- [Dr Umberto Noe](https://www.ed.ac.uk/profile/umberto-noe)
 
-Acknowledgements: Dr Tom Booth
