@@ -44,8 +44,7 @@ During the first session we will cover how to install R and RStudio on your lapt
 
 Lecture:
 
-- [Lecture HTML file](DPUK_A_2025.html)
-- [Lecture Rmd file](DPUK_A_2025.Rmd)
+- [Lecture material](DPUK_A_2025.html)
 
 Tutorial:
 
@@ -61,7 +60,7 @@ Further reading from our courses at the University of Edinburgh:
 
 ### Tuesday
 
-Material will be released closer to the session.
+**Material will be released closer to the session.**
 
 Lecture:
 
@@ -88,7 +87,7 @@ Reading:
 
 ### Wednesday
 
-Material will be released closer to the session.
+**Material will be released closer to the session.
 
 Lecture:
 
@@ -113,7 +112,7 @@ Reading:
 
 ### Thursday
 
-Material will be released closer to the session.
+**Material will be released closer to the session.**
 
 Lecture:
 
@@ -140,7 +139,7 @@ Reading:
 
 ### Friday
 
-Material will be released closer to the session.
+**Material will be released closer to the session.**
 
 Lecture:
 

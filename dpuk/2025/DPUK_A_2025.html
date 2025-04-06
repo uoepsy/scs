@@ -517,6 +517,8 @@ TRUE</code></pre>
 <pre><code>## [1] FALSE</code></pre>
 <pre class="r"><code>2 != 2            # not equal to operator</code></pre>
 <pre><code>## [1] FALSE</code></pre>
+<pre class="r"><code>!(2 == 2)</code></pre>
+<pre><code>## [1] FALSE</code></pre>
 <pre class="r"><code>2 &gt; 3</code></pre>
 <pre><code>## [1] FALSE</code></pre>
 <pre class="r"><code>2 &lt;= 3</code></pre>
@@ -525,18 +527,13 @@ TRUE</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>(2 &gt; 1) | (2 &lt; 3) # or operator</code></pre>
 <pre><code>## [1] TRUE</code></pre>
-<p>What will R print?</p>
-<pre class="r"><code>!(2 == 3)
-!(2 &gt; 3)</code></pre>
 <hr />
 </div>
 <div id="variables-and-assignment" class="section level3" number="3.4">
 <h3><span class="header-section-number">3.4</span> Variables and Assignment</h3>
-<ul>
-<li>Variables are used to store values.<br />
-</li>
-<li>Use <code>&lt;-</code> or <code>=</code> for assignment.</li>
-</ul>
+<p>Variables are used to store values.</p>
+<p>Use <code>&lt;-</code> or <code>=</code> for assignment into a name.</p>
+<p>You can later retrieve the value by calling the variable name.</p>
 <pre class="r"><code>x &lt;- 5          # Assign 5 to x
 y &lt;- 10         # Assign 10 to y
 total &lt;- x + y  # Add x and y
@@ -602,11 +599,23 @@ library(tidyverse)</code></pre>
 <p>and more…</p>
 <p>The good news is: you don’t need to remember which package a function comes from.
 When you load the tidyverse, all of these packages are loaded at once.</p>
+<p>You can find helpful cheatsheets <a href="https://posit.co/resources/cheatsheets/">here</a>.</p>
 <hr />
 </div>
 <div id="palmerpenguins-a-tidyverse-data-example" class="section level2" number="7">
 <h2><span class="header-section-number">7</span> palmerpenguins: A tidyverse data example</h2>
-<p>A demonstration using the <code>penguins</code> dataset, provided by the <code>palmerpenguins</code> package.</p>
+<p>A demonstration using the <code>penguins</code> dataset, provided by the <a href="https://allisonhorst.github.io/palmerpenguins/index.html">palmerpenguins package</a>.</p>
+<p>The <code>penguins</code> dataset contains 344 rows and 8 variables:</p>
+<ul>
+<li><code>species</code> - a factor denoting penguin species (Adélie, Chinstrap and Gentoo)</li>
+<li><code>island</code> - a factor denoting island in Palmer Archipelago, Antarctica (Biscoe, Dream or Torgersen)</li>
+<li><code>bill_length_mm</code> - a number denoting bill length (millimeters)</li>
+<li><code>bill_depth_mm</code> - a number denoting bill depth (millimeters)</li>
+<li><code>flipper_length_mm</code> - an integer denoting flipper length (millimeters)</li>
+<li><code>body_mass_g</code> - an integer denoting body mass (grams)</li>
+<li><code>sex</code> - a factor denoting penguin sex (female, male)</li>
+<li><code>year</code> - an integer denoting the study year (2007, 2008, or 2009)</li>
+</ul>
 <pre class="r"><code>library(palmerpenguins)
 library(tidyverse)
 
