@@ -1,7 +1,7 @@
 ---
 title: "<b> Introduction to the Linear Model </b>"
 subtitle: "DPUK Spring Academy<br><br> "
-author: "Josiah King, Umberto Noe, (and credits to Tom Booth)"
+author: "Umberto Noè, Josiah King, (and credits to Tom Booth)"
 institute: "Department of Psychology<br>The University of Edinburgh"
 date: "April 2025"
 output:
@@ -47,15 +47,15 @@ theme_set(theme_gray(base_size = 15))
 
 # Overview
 
-- Day 1: What is a linear model?
-- Day 2: But I have more variables, what now?
-- Day 3: Interactions
-- Day 4: Is my model any good?
+- Day 2: What is a linear model?
+- Day 3: But I have more variables, what now?
+- Day 4: Interactions
+- Day 5: Is my model any good?
 
 
 ---
 class: center, middle
-# Day 1
+# Day 2
 **What is a linear model?**
 
 ---
@@ -731,7 +731,7 @@ class: inverse, center, middle
 .pull-right[
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
-df <- read_csv("./dapr2_lec07.csv") 
+df <- read_csv("./data/dapr2_lec07.csv") 
 ```
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}

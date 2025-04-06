@@ -695,6 +695,11 @@ penguins[, c(&quot;species&quot;, &quot;island&quot;, &quot;bill_length_mm&quot;
 
 penguins[c(1,2,3), c(1,2,3)] # First three rows and columns and range shortcut
 penguins[1:3, 1:3] # Shortcut : for range of consecutive values</code></pre>
+<p>Pipe operator: take what’s on the left and use it as the first argument of the function on the right.</p>
+<pre><code>take_this |&gt;
+  and_then_do_this()</code></pre>
+<pre class="r"><code>penguins |&gt;
+  slice(1:3)</code></pre>
 <pre class="r"><code># Subset the data for only Adelie species
 adelie_penguins &lt;- penguins |&gt; 
   filter(species == &quot;Adelie&quot;)
