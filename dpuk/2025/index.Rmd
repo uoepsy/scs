@@ -60,7 +60,7 @@ Further reading from our courses at the University of Edinburgh:
 
 ### Tuesday
 
-**Material will be released closer to the session.**
+**Introduction to linear models**
 
 Lecture:
 
