@@ -565,7 +565,7 @@ numbers[1]       # First element</code></pre>
 <pre><code>## [1] &quot;banana&quot; &quot;cherry&quot;</code></pre>
 <pre class="r"><code>logicals[c(1, 3)] # First and third elements</code></pre>
 <pre><code>## [1] TRUE TRUE</code></pre>
-<pre class="r"><code># Vectorized operations
+<pre class="r"><code># Vectorised operations
 numbers * 2       # Multiply each element by 2</code></pre>
 <pre><code>## [1]  2  4  6  8 10</code></pre>
 <pre class="r"><code>numbers + 10      # Add 10 to each element</code></pre>
@@ -592,7 +592,7 @@ install.packages(&quot;tidyverse&quot;)</code></pre>
 library(tidyverse)</code></pre>
 <p><code>tidyverse</code> is a collection of packages which includes:</p>
 <ul>
-<li><code>ggplot2</code> for data visualization</li>
+<li><code>ggplot2</code> for data visualisation</li>
 <li><code>dplyr</code> for data manipulation</li>
 <li><code>tidyr</code> for data tidying</li>
 <li><code>readr</code> for data import</li>
@@ -815,7 +815,7 @@ data_example &lt;- data_example |&gt;
 data_example &lt;- data_example |&gt;
   mutate(
     species = factor(species,
-                     levels = c(1, 2, 3),
+                     levels = c(3, 2, 1),
                      labels = c(&quot;Gentoo&quot;, &quot;Chinstrap&quot;, &quot;Adelie&quot;))
   )
 
