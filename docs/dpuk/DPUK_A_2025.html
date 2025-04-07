@@ -365,12 +365,11 @@ display: none;
 <li><a href="#introduction-to-tidyverse" id="toc-introduction-to-tidyverse"><span class="toc-section-number">6</span> Introduction to tidyverse</a></li>
 <li><a href="#palmerpenguins-a-tidyverse-data-example" id="toc-palmerpenguins-a-tidyverse-data-example"><span class="toc-section-number">7</span> palmerpenguins: A tidyverse data example</a></li>
 <li><a href="#descriptive-statistics" id="toc-descriptive-statistics"><span class="toc-section-number">8</span> Descriptive statistics</a></li>
-<li><a href="#computing-descriptive-statistics-for-a-variable" id="toc-computing-descriptive-statistics-for-a-variable"><span class="toc-section-number">9</span> Computing Descriptive Statistics for a Variable</a></li>
-<li><a href="#data-subsetting" id="toc-data-subsetting"><span class="toc-section-number">10</span> Data subsetting</a></li>
-<li><a href="#creating-new-columns" id="toc-creating-new-columns"><span class="toc-section-number">11</span> Creating new columns</a></li>
-<li><a href="#factors" id="toc-factors"><span class="toc-section-number">12</span> Factors</a></li>
-<li><a href="#reading-data-into-r" id="toc-reading-data-into-r"><span class="toc-section-number">13</span> Reading data into R</a></li>
-<li><a href="#summary-questions" id="toc-summary-questions"><span class="toc-section-number">14</span> Summary &amp; Questions</a></li>
+<li><a href="#data-subsetting" id="toc-data-subsetting"><span class="toc-section-number">9</span> Data subsetting</a></li>
+<li><a href="#creating-new-columns" id="toc-creating-new-columns"><span class="toc-section-number">10</span> Creating new columns</a></li>
+<li><a href="#factors" id="toc-factors"><span class="toc-section-number">11</span> Factors</a></li>
+<li><a href="#reading-data-into-r" id="toc-reading-data-into-r"><span class="toc-section-number">12</span> Reading data into R</a></li>
+<li><a href="#summary-questions" id="toc-summary-questions"><span class="toc-section-number">13</span> Summary &amp; Questions</a></li>
 </ul>
 </div>
 
@@ -623,7 +622,21 @@ When you load the tidyverse, all of these packages are loaded at once.</p>
 <pre class="r"><code>library(palmerpenguins)
 library(tidyverse)
 
-# Look at the first six rows of the dataset
+# Structure of dataset
+str(penguins)</code></pre>
+<pre><code>## tibble [344 × 8] (S3: tbl_df/tbl/data.frame)
+##  $ species          : Factor w/ 3 levels &quot;Adelie&quot;,&quot;Chinstrap&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ island           : Factor w/ 3 levels &quot;Biscoe&quot;,&quot;Dream&quot;,..: 3 3 3 3 3 3 3 3 3 3 ...
+##  $ bill_length_mm   : num [1:344] 39.1 39.5 40.3 NA 36.7 39.3 38.9 39.2 34.1 42 ...
+##  $ bill_depth_mm    : num [1:344] 18.7 17.4 18 NA 19.3 20.6 17.8 19.6 18.1 20.2 ...
+##  $ flipper_length_mm: int [1:344] 181 186 195 NA 193 190 181 195 193 190 ...
+##  $ body_mass_g      : int [1:344] 3750 3800 3250 NA 3450 3650 3625 4675 3475 4250 ...
+##  $ sex              : Factor w/ 2 levels &quot;female&quot;,&quot;male&quot;: 2 1 1 NA 1 2 1 2 NA NA ...
+##  $ year             : int [1:344] 2007 2007 2007 2007 2007 2007 2007 2007 2007 2007 ...</code></pre>
+<pre class="r"><code># Number of rows and columns - also nrow() and ncol()
+dim(penguins)</code></pre>
+<pre><code>## [1] 344   8</code></pre>
+<pre class="r"><code># Look at the first six rows of the dataset
 head(penguins)</code></pre>
 <pre><code>## # A tibble: 6 × 8
 ##   species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
@@ -635,17 +648,6 @@ head(penguins)</code></pre>
 ## 5 Adelie  Torgersen           36.7          19.3               193        3450
 ## 6 Adelie  Torgersen           39.3          20.6               190        3650
 ## # ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;</code></pre>
-<pre class="r"><code># Structure of dataset
-str(penguins)</code></pre>
-<pre><code>## tibble [344 × 8] (S3: tbl_df/tbl/data.frame)
-##  $ species          : Factor w/ 3 levels &quot;Adelie&quot;,&quot;Chinstrap&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
-##  $ island           : Factor w/ 3 levels &quot;Biscoe&quot;,&quot;Dream&quot;,..: 3 3 3 3 3 3 3 3 3 3 ...
-##  $ bill_length_mm   : num [1:344] 39.1 39.5 40.3 NA 36.7 39.3 38.9 39.2 34.1 42 ...
-##  $ bill_depth_mm    : num [1:344] 18.7 17.4 18 NA 19.3 20.6 17.8 19.6 18.1 20.2 ...
-##  $ flipper_length_mm: int [1:344] 181 186 195 NA 193 190 181 195 193 190 ...
-##  $ body_mass_g      : int [1:344] 3750 3800 3250 NA 3450 3650 3625 4675 3475 4250 ...
-##  $ sex              : Factor w/ 2 levels &quot;female&quot;,&quot;male&quot;: 2 1 1 NA 1 2 1 2 NA NA ...
-##  $ year             : int [1:344] 2007 2007 2007 2007 2007 2007 2007 2007 2007 2007 ...</code></pre>
 <pre class="r"><code># Summary of dataset
 summary(penguins)</code></pre>
 <pre><code>##       species          island    bill_length_mm  bill_depth_mm  
@@ -689,9 +691,9 @@ ggplot(penguins, aes(x = species, y = body_mass_g)) +
 </div>
 <div id="descriptive-statistics" class="section level2" number="8">
 <h2><span class="header-section-number">8</span> Descriptive statistics</h2>
-</div>
-<div id="computing-descriptive-statistics-for-a-variable" class="section level2" number="9">
-<h2><span class="header-section-number">9</span> Computing Descriptive Statistics for a Variable</h2>
+<p>Pipe operator: take what’s on the left and use it as the first argument of the function on the right.</p>
+<pre><code>take_this |&gt;
+  and_then_do_this()</code></pre>
 <p>To compute the number of observations (<code>n</code>), mean (<code>M</code>), and standard deviation (<code>SD</code>) for a variable, you can use the following code:</p>
 <pre class="r"><code># Descriptive statistics for body_mass_g
 penguins |&gt;
@@ -704,6 +706,13 @@ penguins |&gt;
 ##       n     M    SD
 ##   &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
 ## 1   344 4202.  802.</code></pre>
+<p>Without the pipe operator, you would need to always tell R where the variable is located:</p>
+<pre class="r"><code>nrow(penguins)</code></pre>
+<pre><code>## [1] 344</code></pre>
+<pre class="r"><code>mean(penguins$body_mass_g, na.rm = TRUE)</code></pre>
+<pre><code>## [1] 4201.754</code></pre>
+<pre class="r"><code>sd(penguins$body_mass_g, na.rm = TRUE)</code></pre>
+<pre><code>## [1] 801.9545</code></pre>
 <p>To get the same statistics for a variable grouped by another variable (e.g., species), you can use the <code>group_by()</code> function:</p>
 <pre class="r"><code># Descriptive statistics for body mass by species
 penguins |&gt;
@@ -721,8 +730,8 @@ penguins |&gt;
 ## 3 Gentoo      124 5076.  504.</code></pre>
 <hr />
 </div>
-<div id="data-subsetting" class="section level2" number="10">
-<h2><span class="header-section-number">10</span> Data subsetting</h2>
+<div id="data-subsetting" class="section level2" number="9">
+<h2><span class="header-section-number">9</span> Data subsetting</h2>
 <pre class="r"><code>penguins[1, ]           # First row
 
 penguins[, 1]           # First column - by number
@@ -736,9 +745,6 @@ penguins[, c(&quot;species&quot;, &quot;island&quot;, &quot;bill_length_mm&quot;
 
 penguins[c(1,2,3), c(1,2,3)] # First three rows and columns and range shortcut
 penguins[1:3, 1:3] # Shortcut : for range of consecutive values</code></pre>
-<p>Pipe operator: take what’s on the left and use it as the first argument of the function on the right.</p>
-<pre><code>take_this |&gt;
-  and_then_do_this()</code></pre>
 <pre class="r"><code>penguins |&gt;
   slice(1:3)</code></pre>
 <pre class="r"><code># Subset the data for only Adelie species
@@ -757,8 +763,8 @@ penguins_subset &lt;- penguins_no_na |&gt;
   select(species, body_mass_g)</code></pre>
 <hr />
 </div>
-<div id="creating-new-columns" class="section level2" number="11">
-<h2><span class="header-section-number">11</span> Creating new columns</h2>
+<div id="creating-new-columns" class="section level2" number="10">
+<h2><span class="header-section-number">10</span> Creating new columns</h2>
 <p>You can create new columns in a data frame using the <code>mutate()</code> function from the <code>dplyr</code> package from <code>tidyverse</code>.</p>
 <p>The syntax works as follows:</p>
 <pre><code>data_name |&gt;
@@ -777,8 +783,8 @@ penguins &lt;- penguins |&gt;
 <p>If you want to overwrite an existing column, you can do so by using the same name in the <code>mutate()</code> function.</p>
 <hr />
 </div>
-<div id="factors" class="section level2" number="12">
-<h2><span class="header-section-number">12</span> Factors</h2>
+<div id="factors" class="section level2" number="11">
+<h2><span class="header-section-number">11</span> Factors</h2>
 <p>Sometimes categorical variables are not stored as characters/factors. They could be stored as numbers which represent categories.</p>
 <p>For example, <code>species</code> is a categorical variable with three levels: Adélie, Chinstrap, and Gentoo. Suppose we have a dataset where <code>species</code> is stored as numbers (1, 2, 3) instead of characters. This can lead to confusion when analyzing the data, as the numerical representation does not convey the actual categories. Furthermore, you can’t take the mean of those values.</p>
 <p>To convert a numeric variable to a factor, you can use the <code>factor()</code> function.</p>
@@ -824,8 +830,8 @@ levels(data_example$species)</code></pre>
 <pre><code>## [1] &quot;Gentoo&quot;    &quot;Chinstrap&quot; &quot;Adelie&quot;</code></pre>
 <hr />
 </div>
-<div id="reading-data-into-r" class="section level2" number="13">
-<h2><span class="header-section-number">13</span> Reading data into R</h2>
+<div id="reading-data-into-r" class="section level2" number="12">
+<h2><span class="header-section-number">12</span> Reading data into R</h2>
 <p>Consider <a href="https://raw.githubusercontent.com/allisonhorst/palmerpenguins/master/inst/extdata/penguins.csv">this dataset</a></p>
 <p>A file path is a string that specifies the location of a file or directory in your computer’s file system. It tells your system how to navigate through folders to locate the file. There are two main types:</p>
 <p><strong>Absolute Path:</strong> Specifies the complete directory list from the root folder.</p>
@@ -850,8 +856,8 @@ penguins_data &lt;- read_csv(&quot;https://raw.githubusercontent.com/allisonhors
 </ul>
 <hr />
 </div>
-<div id="summary-questions" class="section level2" number="14">
-<h2><span class="header-section-number">14</span> Summary &amp; Questions</h2>
+<div id="summary-questions" class="section level2" number="13">
+<h2><span class="header-section-number">13</span> Summary &amp; Questions</h2>
 <p>This introductory session builds the foundation in R and tidyverse for our forthcoming four days which will focus on the linear model.</p>
 <ul>
 <li>R &amp; RStudio installation and interface.</li>
