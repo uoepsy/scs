@@ -18,7 +18,7 @@ output:
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
-knitr::opts_chunk$set(fig.height = 6)
+knitr::opts_chunk$set(fig.height = 4, fig.width = 5, dpi = 300)
 ```
 
 ```{r xaringan-themer, include = FALSE}
@@ -29,7 +29,7 @@ style_mono_accent(
   # base_color = "#88B04B", # DAPR3 
   # base_color = "#FCBB06", # USMR
   # base_color = "#a41ae4", # MSMR
-    base_color = "#95A5A6", #intro
+  base_color = "#95A5A6", #intro
   header_color = "#000000",
   header_font_google = google_font("Source Sans Pro"),
   header_font_weight = 400,
@@ -162,11 +162,11 @@ m1+
 ```{r, echo=FALSE}
 tibble(
   Age = seq(10, 12, 0.25)
-) %>%
+) |>
   mutate(
     Prediction = 55 + (Age*4)
-  ) %>%
-  kable(.) %>%
+  ) |>
+  kable() |>
   kable_styling(bootstrap_options = "striped", full_width = F)
 ```
 
@@ -196,13 +196,13 @@ tibble(
 ```{r, echo=FALSE}
 tibble(
   Age = seq(216,300, 12)
-) %>%
+) |>
   mutate(
     Year = Age/12,
     Prediction = 55 + (Age*4),
     Prediction_M = Prediction/100
-  ) %>%
-  kable(.) %>%
+  ) |>
+  kable() |>
   kable_styling(bootstrap_options = "striped", full_width = F)
 ```
 
@@ -279,8 +279,9 @@ kable(test)
 ggplot(test, aes(x=hours, y=score)) +
   geom_point(size = 2)+
   ylab("Test Score") +
-  xlab("Hours Studied")
-
+  xlab("Hours Studied") +
+  xlim(0, max(test$hours)) +
+  ylim(0, max(test$score))
 ```
 ]
 
@@ -296,10 +297,11 @@ ggplot(test, aes(x=hours, y=score)) +
 
 ggplot(test, aes(x=hours, y=score)) +
   geom_point(size = 2)+
-  stat_smooth(method="lm", se=FALSE, col="red") +
+  stat_smooth(method="lm", se=FALSE, col="red", fullrange=TRUE) +
   ylab("Test Score") +
-  xlab("Hours Studied")
-
+  xlab("Hours Studied") +
+  xlim(0, max(test$hours)) +
+  ylim(0, max(test$score))
 ```
 
 {{content}}
@@ -333,7 +335,8 @@ intercept <- ggplot(test, aes(x=hours, y=score)) +
   geom_abline(intercept = 5, slope = .3) +
   ylab("Test Score") +
   xlab("Hours Studied") +
-  ggtitle("Different intercepts, same slopes")
+  ggtitle("Different intercepts, same slopes") +
+  xlim(0, max(test$hours))
 
 slope <- ggplot(test, aes(x=hours, y=score)) +
   geom_point(alpha = .1) +
@@ -342,7 +345,8 @@ slope <- ggplot(test, aes(x=hours, y=score)) +
   geom_abline(intercept = 4, slope = -.3) +
   ylab("Test Score") +
   xlab("Hours Studied") +
-  ggtitle("Same intercepts, different slopes")
+  ggtitle("Same intercepts, different slopes") +
+  xlim(0, max(test$hours))
 
 ```
 
@@ -390,9 +394,10 @@ $$y_i = \beta_0 + \beta_1 x_{i} + \epsilon_i$$
 
 + $\epsilon_i$ = residual (we will come to this shortly)
 
-where $\epsilon_i \sim N(0, \sigma)$ independently.
+where $\epsilon_i \sim N(0, \sigma)$ independently. This means:
+
   + $\sigma$ = standard deviation (spread) of the errors
-  + The standard deviation of the errors, $\sigma$, is constant
+  + The standard deviation of the errors, $\sigma$, is constant.
 
 
 ---
@@ -577,6 +582,7 @@ summary(res)
 + **Slope is the number of units by which Y increases, on average, for a unit increase in X.**
 
 --
+
     + Unit of Y = 1 point on the test
     + Unit of X = 1 hour of study
     
@@ -608,6 +614,12 @@ summary(res)
 + Suppose our predictor variable was not hours of study, but age.
 
 + **A person of 0 age has a test score of 0.40.**
+
+    + To make the intercept more meaningful, consider using mean-centred age as the predictor, `age_mc` = `age - mean(age)`.
+    
+    + The intercept will be the estimated test score when `age_mc` = 0, i.e. when `age - mean(age)` = 0, i.e. when `age` = `mean(age)`.
+    
+    + If the predictor is X_mc, the intercept represents the expected value of Y when X is at the mean.
 
 ---
 # Unstandardized vs standardized coefficients
@@ -654,7 +666,7 @@ $$z_{y_i} = \frac{y_i - \bar{y}}{s_y}$$
 # `lm()` using z-scores
 
 ```{r}
-test <- test %>%
+test <- test |>
   mutate(
     z_score = scale(score, center = T, scale = T),
     z_hours = scale(hours, center = T, scale = T)
@@ -683,8 +695,9 @@ round(summary(res_z)$coefficients, 3)
 + In our example, $\hat \beta_{hours}^*$ = 0.72
 
 ```{r}
-round(cor(test$hours, test$score),3)
+round(cor(test$hours, test$score), 3)
 ```
+
 
 + $r$ is a standardized measure of linear association
 
@@ -775,10 +788,10 @@ summary(res2)
 
 .pull-right[
 ```{r warning=FALSE, message=FALSE}
-df %>%
-  group_by(., study) %>% #<<
+df |>
+  group_by(study) |> #<<
   summarise(
-    Average = round(mean(score),4) #<<
+    Average = round(mean(score), 4) #<<
   )
 ```
 
@@ -801,16 +814,16 @@ df %>%
 ---
 #  Visualize the model
 
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
+```{r, echo=FALSE, warning=FALSE, message=FALSE, out.width = "55%"}
 library(latex2exp)
-gpM <- df %>%
-  group_by(study) %>%
+gpM <- df |>
+  group_by(study) |>
   summarise(
     score = mean(score)
   )
 
-df %>%
-  ggplot(., aes(x=factor(study), y=score, colour = study)) +
+df |>
+  ggplot(aes(x=factor(study), y=score, colour = study)) +
   geom_point(alpha=0.4) +
   labs(x = "\n Study", y = "Test Score \n") +
   ylim(0,10) +
@@ -821,7 +834,7 @@ df %>%
   geom_segment(x=1.5, y=gpM[[1,2]], xend=1.5, yend=gpM[[2,2]], size =1, col="red") +
   geom_segment(x=1.48, y=gpM[[1,2]], xend=1.52, yend=gpM[[1,2]], size =1, col="red") +
   geom_segment(x=1.48, y=gpM[[2,2]], xend=1.52, yend=gpM[[2,2]], size =1, col="red") +
-  geom_text(x=1.55, y = 5.5, label = TeX('$\\hat{\\beta}_1$'), size=5, col = "red") +
+  geom_text(x=1.58, y = 5.5, label = TeX('$\\hat{\\beta}_1$'), size=5, col = "red") +
   geom_text(x=0.65, y = gpM[[1,2]] , label = TeX('$\\hat{\\beta}_0$'), size=5, col = "red")
 
 ```
@@ -831,8 +844,7 @@ df %>%
 # Hold on... it's a t-test
 
 ```{r}
-df %>%
-  t.test(score ~ study, .)
+t.test(score ~ study, data = df, var.equal = TRUE)
 ```
 
 ???
