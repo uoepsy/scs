@@ -22,13 +22,13 @@
 
 
 # INSTRUCTIONS:
-# Fill in the blanks ___ where indicated. You can add new lines, rename variables as you see fit. 
+# Fill in the blanks ___ where indicated. You can add new lines, rename variables, etc.
 
 
 # 1) READ DATA
 
-# a) Load tidyverse and read stroke.csv
-#    Fill in the URL or a local path to stroke.csv
+# Load tidyverse and read stroke.csv
+# Fill in the URL or a local path to stroke.csv
 
 library(___)
 stroke <- read_csv("___")  # fill URL or local path
@@ -49,7 +49,6 @@ ggplot(___, aes(x = ___, y = ___)) +
 
 
 # BREAK 1
-# Discuss whether the relationship looks linear.
 
 
 # 3) DESCRIPTIVE STATISTICS
@@ -99,7 +98,6 @@ ggplot(stroke, aes(x = ___, y = ___)) +
 
 
 # BREAK 2
-# Reflect on model fit. Are residuals large or small?
 
 
 # 7) LM WITH A BINARY X
