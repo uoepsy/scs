@@ -273,7 +273,8 @@ ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
   geom_point(color = "darkblue", alpha = 0.6) +
   labs(title = "Penguins: Flipper Length vs Body Mass",
        x = "Flipper Length (mm)",
-       y = "Body Mass (g)")
+       y = "Body Mass (g)") +
+  geom_smooth(method = "lm", color = "red", se = FALSE)
 
 # A boxplot to explore the association between body mass and species
 ggplot(penguins, aes(x = species, y = body_mass_g)) +
@@ -281,6 +282,38 @@ ggplot(penguins, aes(x = species, y = body_mass_g)) +
   labs(title = "Penguins: Body Mass by Species",
        x = "Species",
        y = "Body Mass (g)")
+```
+
+
+---
+
+## Descriptive statistics
+
+## Computing Descriptive Statistics for a Variable
+
+To compute the number of observations (`n`), mean (`M`), and standard deviation (`SD`) for a variable, you can use the following code:
+
+```{r}
+# Descriptive statistics for body_mass_g
+penguins |>
+  summarise(
+    n = n(),
+    M = mean(body_mass_g, na.rm = TRUE),
+    SD = sd(body_mass_g, na.rm = TRUE)
+  )
+```
+
+To get the same statistics for a variable grouped by another variable (e.g., species), you can use the `group_by()` function:
+
+```{r}
+# Descriptive statistics for body mass by species
+penguins |>
+  group_by(species) |>
+  summarise(
+    n = n(),
+    M = mean(body_mass_g, na.rm = TRUE),
+    SD = sd(body_mass_g, na.rm = TRUE)
+  )
 ```
 
 ---
@@ -331,6 +364,81 @@ penguins_no_na <- penguins |>
 penguins_subset <- penguins_no_na |> 
   select(species, body_mass_g)
 ````
+
+
+---
+
+## Creating new columns
+
+You can create new columns in a data frame using the `mutate()` function from the `dplyr` package from `tidyverse`.
+
+The syntax works as follows:
+
+```
+data_name |>
+  mutate(new_column_name = expression)
+```
+
+For example:
+
+```{r}
+# Create a new column for body mass in kg
+penguins <- penguins |>
+  mutate(body_mass_kg = body_mass_g / 1000)
+
+# Create a new column for bill length and depth in cm
+penguins <- penguins |>
+  mutate(
+    bill_length_cm = bill_length_mm / 10,
+    bill_depth_cm = bill_depth_mm / 10
+  )
+```
+
+If you want to overwrite an existing column, you can do so by using the same name in the `mutate()` function.
+
+
+---
+
+## Factors
+
+Sometimes categorical variables are not stored as characters/factors. They could be stored as numbers which represent categories.
+
+For example, `species` is a categorical variable with three levels: Adélie, Chinstrap, and Gentoo. Suppose we have a dataset where `species` is stored as numbers (1, 2, 3) instead of characters. This can lead to confusion when analyzing the data, as the numerical representation does not convey the actual categories. Furthermore, you can't take the mean of those values.
+
+To convert a numeric variable to a factor, you can use the `factor()` function.
+
+
+```{r}
+# Toy dataset with species as number
+data_example <- tibble(species = c(1, 2, 3, 1, 2, 3))
+data_example
+
+mean(data_example$species) # Non-sensical mean. You can't take the mean of a categorical variable.
+
+# Convert species to a factor
+data_example <- data_example |>
+  mutate(species = factor(species))
+
+mean(data_example$species) # R tells you you can't do it
+
+# Convert species to a factor and choose order of levels
+data_example <- data_example |>
+  mutate(
+    species = factor(species,
+                     levels = c(3, 2, 1))
+  )
+
+# Convert species to a factor and use better labels - check the data codebook for the labels
+data_example <- data_example |>
+  mutate(
+    species = factor(species,
+                     levels = c(1, 2, 3),
+                     labels = c("Gentoo", "Chinstrap", "Adelie"))
+  )
+
+# What are the factor levels?
+levels(data_example$species)
+```
 
 ---
 
