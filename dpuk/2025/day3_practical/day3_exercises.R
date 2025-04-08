@@ -204,7 +204,7 @@ anova(___, ___, ___, ___, ___)
 best_model <- ___
 
 
-# PART 5: INTERPRETATION OF BEST MODEL
+# 5) INTERPRETATION OF BEST MODEL
 
 
 # Get detailed summary of the best model
