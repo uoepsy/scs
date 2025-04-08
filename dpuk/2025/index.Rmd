@@ -98,9 +98,13 @@ Reading:
 
 Lecture:
 
+- [Lecture material](JKDPUK_C_2025.html)
+
 Tutorial:
 
 Reading:
+
+- [Multiple Regression](https://uoepsy.github.io/usmr/2425/labs/07a_mlr.html)
 
 <!-- Multiple linear regression
 
