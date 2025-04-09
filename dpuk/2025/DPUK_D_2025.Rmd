@@ -83,44 +83,89 @@ $$y_i = \beta_0 + \beta_1 x_{i} + \beta_2 z_{i} + \beta_3 xz_{i} + \epsilon_i$$
 + $xz$ is their product or interaction predictors
 
 ---
-#  General definition of interaction
+#  General definition
 
 + When the effects of one predictor on the outcome differ across levels of another predictor.
-  + **Important**: When we have an interaction, we can no longer talk about the overall effect of a variable, holding the others constant.
-  + The effects change
-  + The effects at specific variables of the interacting variable are called marginal effects.
+
+  + **Important**: When we have an interaction, we can no longer talk about the overall effect of a variable, *"holding the others constant"*.
+  + The effect changes across values of the interacting variable
+  + The effects at specific variables of the interacting variable are called marginal effects (sometimes also "simple effects")
 
 + Note interactions are symmetrical. 
   + What does this mean?
     + We can talk about interaction of X with Z, or Z with X.
 
 ---
-#  General definition 
+#  Interactions with different types of variables
 
 + Categorical*continuous interaction:
+
 	+ The slope of the regression line between a continuous predictor and the outcome is different across levels of a categorical predictor.
 
 --
 
 + Continuous*continuous interaction:
+
 	+ The slope of the regression line between a continuous predictor and the outcome changes as the values of a second continuous predictor change.
 	+ May have heard this referred to as moderation.
 
 --
 
 + Categorical*categorical interaction:
+
 	+ There is a difference in the differences between groups across levels of a second factor.
-	+ We will discuss this in the context of linear models for experimental design
 
 ---
-# Why are we interested in interactions?
-+ Often we have theories or ideas which relate to an interaction.
+# Why are we interested in interactions?  
+
++ Often we have theories/ideas/questions, which relate to an interaction.
 
 + For example: 
   + different relationships of mood state to cognitive score dependent on disease status
   + different rates of cognitive decline by disease status. 
+  + effect of spending time with partner on relationship satisfaction depends on relationship quality
 
 + Questions like these would be tested via inclusion of an interaction term in our model.
+
+---
+# When should I include an interaction?  
+
+.pull-left[
+
++ If your research question pre-supposes one
+
++ If theory suggests it is necessary in order to reflect the underlying data generating process
+
++ If data visualisations suggest it may be necessary
+
+]
+
+--
+
+.pull-right[
+
++ An interaction term is another predictor. Additional predictors always explains *some* additional variability.  
+
++ In the real world, everything interacts with everything else
+
++ But interactions add complexity and make effects more difficult to interpret because they require the additional context.  
+
++ Be wary of testing for and including interactions based on significance alone, as you'll risk over-fitting to your specific sample.  
+
+]
+
+---
+# How do I include an interaction in R?  
+
+
+```{r eval=FALSE}
+lm( y ~ x + z + x:z, data
+```  
+
+shorthand:  
+```{r eval=FALSE}
+`lm( y ~ x*z, data)`
+```
 
 ---
 class: inverse, center, middle
@@ -163,7 +208,7 @@ $$y_i = \beta_0 + \beta_1 x_{i} + \beta_2 z_{i} + \beta_3 xz_{i} + \epsilon_i$$
 .pull-right[
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
-salary1 <- read_csv("./salary_lec.csv")
+salary1 <- read_csv("https://uoepsy.github.io/scs/dpuk/data/salary_lec.csv")
 salary1 <- salary1 %>%
   mutate(
     service = round(service,1),
@@ -192,7 +237,7 @@ salary1 %>%
   geom_point() +
   xlim(0,8) +
   labs(x = "Years of Service", 
-       y = "Salary (£1000)")
+       y = "Salary (1000gbp)")
 ```
 
 
@@ -207,7 +252,7 @@ salary1 %>%
   geom_point() +
   xlim(0,8) +
   labs(x = "Years of Service", 
-       y = "Salary (£1000)")
+       y = "Salary (1000gbp)")
 ```
 
 ]
@@ -217,24 +262,16 @@ salary1 %>%
 
 
 ---
-# Example: Full results
-
-```{r, eval=FALSE}
-int <- lm(salary ~ service + dept + service*dept, data = salary1)
-summary(int) #<<
-```
-
----
-# Example: Full results
-
-```{r, echo=FALSE}
-int <- lm(salary ~ service + dept + service*dept, data = salary1)
-summary(int) #<<
-```
-
-
----
 #  Example: Categorical*Continuous 
+
+```{r}
+int <- lm(salary ~ service + dept + service*dept, data = salary1)
+summary(int)
+```
+
+
+---
+#  Interpretation: Categorical*Continuous 
 
 .pull-left[
 + **Intercept** ( $\beta_0$ ): Predicted salary for a store manager (`dept`=0) with 0 years of service is £16,894.
@@ -254,8 +291,9 @@ salary1 %>%
   ggplot(., aes(x = service, y = salary, colour = dept)) +
   geom_point() +
   geom_smooth(method="lm", se=FALSE)+
+  geom_smooth(method="lm",se=F,fullrange=T,lty="dashed")+
   xlim(0,8) +
-  labs(x = "Years of Service", y = "Salary (£1000)") 
+  labs(x = "Years of Service", y = "Salary (1000gbp)") 
 ```
 ]
 
@@ -284,6 +322,86 @@ salary1 %>%
 + So what might be meaningful?
 	+ Average age? (mean centering)
 	+ A fixed point? (e.g. 66 if studying retirement)
+
+---
+#  Initial model
+
+.pull-left[
+
+```{r eval=FALSE}
+int <- lm(salary ~ service + dept + service:dept, data = salary1)
+summary(int)
+```
+```
+Coefficients:
+                     Estimate Std. Error t value
+(Intercept)           16.8937     4.4638   3.785
+service                2.7364     0.9166   2.986
+deptAccounts           4.4887     6.3111   0.711
+service:deptAccounts   3.1174     1.2698   2.455
+```
+
+]
+
+
+.pull-right[
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+m1 = lm(salary~dept*service,salary1)
+m2 = lm(salary~dept*scale(service),salary1)
+
+salary1 %>%
+  ggplot(., aes(x = service, y = salary, colour = dept)) +
+  geom_point() +
+  geom_smooth(method="lm", se=FALSE)+
+    geom_smooth(method="lm",se=F,fullrange=T,lty="dashed")+
+    geom_point(x=0,y=coef(m1)[1], size=5)+
+    geom_point(x=0,y=sum(coef(m1)[1:2]), size=5,aes(col="Accounts"))+
+  xlim(-.1,8) +
+  labs(x = "Years of Service", y = "Salary (1000gbp)") 
+```
+]
+
+---
+#  Mean-centered
+
+.pull-left[
+
+```{r eval=FALSE}
+salary1 <- salary1 |>
+    mutate(
+        service_m = service - mean(service)
+    )
+int_a <- lm(salary ~ service_m + dept + service_m:dept, data = salary1)
+summary(int_a)
+```
+```
+Coefficients:
+                       Estimate Std. Error t value
+(Intercept)             30.1982     0.9081  33.256
+service_m                2.7364     0.9166   2.986
+deptAccounts            19.6455     1.3106  14.989
+service_m:deptAccounts   3.1174     1.2698   2.455
+```
+
+]
+
+
+.pull-right[
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+m1 = lm(salary~dept*service,salary1)
+m2 = lm(salary~dept*scale(service),salary1)
+
+salary1 %>%
+  ggplot(., aes(x = service, y = salary, colour = dept)) +
+  geom_point() +
+  geom_smooth(method="lm", se=FALSE)+
+    geom_smooth(method="lm",se=F,fullrange=T,lty="dashed")+
+    geom_point(x=mean(salary1$service),y=coef(m2)[1], size=5)+
+    geom_point(x=mean(salary1$service),y=sum(coef(m2)[1:2]), size=5,aes(col="Accounts"))+
+  xlim(-.1,8) +
+  labs(x = "Years of Service", y = "Salary (1000gbp)") 
+```
+]
 
 ---
 class: inverse, center, middle
@@ -329,7 +447,7 @@ $$y_i = \beta_0 + \beta_1 x_{i} + \beta_2 z_{i} + \beta_3 xz_{i} + \epsilon_i$$
 #  Example: Continuous*Continuous 
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
-salary2 <- read_csv("./salary2.csv")
+salary2 <- read_csv("https://uoepsy.github.io/scs/dpuk/data/salary2.csv")
 ```
 
 ```{r, echo=FALSE}
@@ -437,7 +555,6 @@ round(test2$coefficients,2)
 ```{r, eval = FALSE, warning=FALSE, message=FALSE}
 library(sjPlot)
 plot_model(int3, type = "int")
-
 ```
 ]
 
@@ -445,7 +562,44 @@ plot_model(int3, type = "int")
 ```{r, echo = FALSE, warning=FALSE, message=FALSE}
 library(sjPlot)
 plot_model(int3, type = "int")
+```
 
+]
+
+---
+#  `sjPlot`: Simple Slopes 
+
+.pull-left[
+```{r, eval = FALSE, warning=FALSE, message=FALSE}
+library(sjPlot)
+plot_model(int3, type = "pred",
+           terms = c("servM","perfM [-2,0,2]"))
+```
+]
+
+.pull-right[
+```{r, echo = FALSE, warning=FALSE, message=FALSE}
+plot_model(int3, type = "pred",
+           terms = c("servM","perfM [-2,0,2]"))
+```
+
+]
+
+---
+#  `sjPlot`: Simple Slopes 
+
+.pull-left[
+```{r, eval = FALSE, warning=FALSE, message=FALSE}
+library(sjPlot)
+plot_model(int3, type = "pred",
+           terms = c("servM","perfM [-2,-1,0,1,2]"))
+```
+]
+
+.pull-right[
+```{r, echo = FALSE, warning=FALSE, message=FALSE}
+plot_model(int3, type = "pred",
+           terms = c("servM","perfM [-2,-1,0,1,2]"))
 ```
 
 ]
@@ -646,9 +800,40 @@ $$y_i = \beta_0 + \beta_1 x_{i} + \beta_2 z_{i} + \beta_3 xz_{i} + \epsilon_i$$
 
 ---
 #  Example: Categorical*categorical
+
 ```{r}
-int4 <- lm(salary ~ location*department, salary3)
+#| eval: false
+#| include: false
+library(tidyverse)
+set.seed(47821)
+salary3 <- expand_grid(
+    location = 0:1,
+    department = 0:1,
+    n = 1:25
+) |>
+    mutate(
+        salary = 50.66 - 1.9276*location -3.36*department -8.64*location*department + rnorm(n(),0,5.059),
+        location = factor(ifelse(location==0,"London","Birmingham"),levels=c("London","Birmingham")),
+        department = ifelse(department==0,"Accounts","Manager")
+    )
+write_csv(salary3,file="data/salary3.csv")
 ```
+
+
+```{r message=FALSE}
+salary3 <- read_csv("https://uoepsy.github.io/scs/dpuk/data/salary3.csv") 
+salary3 <- 
+    salary3 |> mutate(
+        location = factor(location, levels = c("London","Birmingham")),
+        department = factor(department)
+)
+
+int4 <- lm(salary ~ location*department, salary3)
+
+```
+
+---
+#  Example: Categorical*categorical
 
 ```{r, echo=FALSE}
 summary(int4)
@@ -660,12 +845,11 @@ summary(int4)
 .pull-left[
 ```{r, eval=FALSE}
 plot_model(int4, type = "int")
-
 ```
 ]
 
 .pull-right[
-```{r, echo=FALSE}
+```{r, echo=FALSE, message=FALSE}
 plot_model(int4, type = "int")
 ```
 
@@ -683,7 +867,7 @@ round(res$coefficients,3)
 .pull-left[
 + $\beta_0$ = Value of $y$ when $x$ and $z$ are 0
 
-+ Expected salary for Accounts in London is £50,660.
++ Expected salary for Accounts in London is £50,481.
 ]
 
 
@@ -708,7 +892,7 @@ round(res$coefficients,3)
 .pull-left[
 + $\beta_1$ = Difference between levels of $x$ when $z$ = 0
 
-+ The difference in salary between Accounts in London and Birmingham is £1,927. The salary is lower in Birmingham. 
++ The difference in salary between Accounts in London and Birmingham is £1,895. The salary is lower in Birmingham. 
 
 ]
 
@@ -735,7 +919,7 @@ round(res$coefficients,3)
 .pull-left[
 + $\beta_2$ = Difference between levels of $z$ when $x$ = 0.
 
-+ The difference in salary between Accounts and Store managers in London is £3,360. The salary is lower for Store Managers. 
++ The difference in salary between Accounts and Store managers in London is £3,956. The salary is lower for Store Managers. 
 ]
 
 
@@ -760,7 +944,7 @@ round(res$coefficients,3)
 .pull-left[
 +  $\beta_3$ = Difference between levels of $x$ across levels of $z$
 
-+ The difference between salary for Accounts and Store managers between London and Birmingham, differs by £8,640. The difference is greater in Birmingham than in London.
++ The difference between salary for Accounts and Store managers between London and Birmingham, differs by £9,601. The difference is greater in Birmingham than in London.
 ]
 
 
@@ -774,6 +958,168 @@ salary3 %>%
   kable(.)
 ```
 ]
+
+---
+class: inverse, center, middle
+
+<h2 style="text-align: left;opacity:0.3;">Part 1: What is an interaction and why are we talking about it? </h2>
+<h2 style="text-align: left;opacity:0.3;">Part 2: Continuous*binary interactions </h2>
+<h2 style="text-align: left;opacity:0.3;">Part 3: Continuous*Continuous interactions </h2>
+<h2 style="text-align: left;opacity:0.3;">Part 4: Categorical*categorical interactions </h2>
+<h2>Pulling it together</h2>
+
+---
+# Non-parallel
+
+.pull-left[
+```{r echo=FALSE,message=FALSE}
+#| out-height: "350px"
+mwdata2<-read_csv("https://uoepsy.github.io/data/wellbeing_rural.csv") %>% mutate(
+  isRural = factor(ifelse(location=="rural","rural","notrural"))
+)
+df <- mwdata2 |> transmute(
+  y = wellbeing,
+  x1 = outdoor_time,
+  x2 = ifelse(isRural=="rural","Level2","Level1")
+)
+
+
+fit<-lm(wellbeing~outdoor_time+isRural, data=mwdata2)
+with(mwdata2, plot(wellbeing ~ outdoor_time, col=isRural, xlab="x1",ylab="y",main="y~x1+x2\n(x2 is categorical)"))
+abline(a = coef(fit)[1],b=coef(fit)[2])
+abline(a = coef(fit)[1]+coef(fit)[3],b=coef(fit)[2], col="red")
+```
+]
+.pull-right[
+```{r echo=FALSE,message=FALSE}
+#| out-height: "350px"
+fit<-lm(wellbeing~outdoor_time*isRural, data=mwdata2)
+with(mwdata2, plot(wellbeing ~ outdoor_time, col=isRural, xlab="x1",ylab="y",main="y~x1+x2+x1:x2\n(x2 is categorical)"))
+abline(a = coef(fit)[1],b=coef(fit)[2])
+abline(a = coef(fit)[1]+coef(fit)[3],b=coef(fit)[2]+coef(fit)[4], col="red")
+```
+]
+
+---
+# Non-parallel
+
+.pull-left[
+```{r echo=FALSE,message=FALSE}
+#| out-height: "350px"
+set.seed(913)
+df <- tibble(
+  x1 = round(pmax(0,rnorm(50,4,2)),1),
+  x2 = round(pmax(0,rnorm(50,4,2)),1),
+  y = 8 + .6*x1 + .5*x2 + .8*x1*x2 + rnorm(50,0,4),
+  yb = rbinom(50,1,plogis(scale(y)))
+)
+
+modl2 <- lm(y~x1+x2,df)
+
+x1_pred <- df |> with(seq(min(x1),max(x1),length.out=20))
+x2_pred <- df |> with(seq(min(x2),max(x2),length.out=20))
+
+ac <- expand.grid(x1=x1_pred,x2=x2_pred) 
+
+ypred <- matrix(predict(modl2,type="response",
+                             newdata=ac),nrow=20)
+
+library(plot3D)
+
+persp3D(x=x1_pred,y=x2_pred,z=ypred,theta=45,phi=15,
+        type="surface",xlab="x1",ylab="x2",zlab="y",
+        xlim=c(0,9), ylim=c(0,8),
+        zlim=c(min(df$y),max(df$y)+2),border="black",
+      #col="white",
+        colkey=FALSE,
+        main="y~x1+x2")
+points3D(x=df$x1,y=df$x2,z=df$y,col="black",pch=16,add=TRUE)
+```
+]
+
+.pull-right[
+```{r echo=FALSE,message=FALSE}
+#| out-height: "350px"
+modl2 <- lm(y~x1*x2,df)
+
+x1_pred <- df |> with(seq(min(x1),max(x1),length.out=20))
+x2_pred <- df |> with(seq(min(x2),max(x2),length.out=20))
+
+ac <- expand.grid(x1=x1_pred,x2=x2_pred) 
+
+ypred <- matrix(predict(modl2,type="response",
+                             newdata=ac),nrow=20)
+
+persp3D(x=x1_pred,y=x2_pred,z=ypred,theta=45,phi=15,
+        type="surface",xlab="x1",ylab="x2",zlab="y",
+        xlim=c(0,9), ylim=c(0,8),
+        zlim=c(min(df$y),max(df$y)+2),
+        #col="white",
+        border="black",
+        colkey=FALSE,
+        main="y~x1+x2+x1:x2")
+points3D(x=df$x1,y=df$x2,z=df$y,col="black",pch=16,add=TRUE)
+```
+
+]
+
+---
+# coefficients in the presence of an interaction
+
+**Y ~ A + B + A:B**
+
+```
+Coefficients:
+                         Estimate 
+(Intercept)               - when A and B are zero
+A                         - slope of A when B is zero
+B                         - slope of B when A is zero
+A:B                       -
+```
+
+---
+# the interaction term is an adjustment
+
+**Y ~ A + B + A:B**
+
+```
+Coefficients:
+                         Estimate 
+(Intercept)               - when A and B are zero
+A                         - slope of A when B is zero
+B                         - slope of B when A is zero
+A:B                       - how the slope of A changes when B increases by 1
+```
+
+---
+# the interaction term is an adjustment
+
+**Y ~ A + B + A:B**
+
+```
+Coefficients:
+                         Estimate 
+(Intercept)               - when A and B are zero
+A                         - slope of A when B is zero
+B                         - slope of B when A is zero
+A:B                       - how the slope of B changes when A increases by 1
+```
+
+---
+# coefficients in the presence of an interaction
+
+**Y ~ A + B + A:B + C**
+
+```
+Coefficients:
+                         Estimate 
+(Intercept)               - when A, B and C are zero
+A                         - slope of A when B is zero, holding C constant
+B                         - slope of B when A is zero, holding C constant
+C                         - slope of C, holding A and B constant
+A:B                       - how the slope of B changes when A increases by 1, holding C constant
+```
+
 
 
 ---

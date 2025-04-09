@@ -114,9 +114,16 @@ Reading:
 
 Lecture:
 
+- [Lecture material](DPUK_D_2025.html)
+
 Tutorial:
 
+- [Tutorial material](day4_practical/day4_exercises.R)
+- [acer.csv data](day4_practical/acer.csv)
+
 Reading:
+
+- [Interactions](https://uoepsy.github.io/usmr/2425/labs/09a_interactions.html)
 
 <!-- Interactions
 
