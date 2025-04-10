@@ -110,7 +110,7 @@ Reading:
 
 ### Thursday
 
-**Material will be released closer to the session.**
+**Interactions**
 
 Lecture:
 
@@ -146,13 +146,16 @@ Reading:
 
 ### Friday
 
-**Material will be released closer to the session.**
+**Is my model any good?**
 
 Lecture:
 
 - [Lecture material](DPUK_E_2025.html)
+- [Demo in R](day5_practical/day5_demo.R)
 
 Tutorial:
+
+- Q&A session on the entire week
 
 Reading:
 
