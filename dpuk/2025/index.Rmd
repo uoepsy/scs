@@ -119,6 +119,8 @@ Lecture:
 Tutorial:
 
 - [Tutorial material](day4_practical/day4_exercises.R)
+    - [(completed)](day4_practical/day4_exercises_completed.R)
+    - [(3d plots)](day4_practical/3dplots.R)
 - [acer.csv data](day4_practical/acer.csv)
 
 Reading:
