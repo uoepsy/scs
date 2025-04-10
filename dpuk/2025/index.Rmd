@@ -150,9 +150,15 @@ Reading:
 
 Lecture:
 
+- [Lecture material](DPUK_E_2025.html)
+
 Tutorial:
 
 Reading:
+
+- [Assumptions, Diagnostics & Troubleshooting](https://uoepsy.github.io/usmr/2425/labs/07b_assumptdiag.html)
+- [Troubleshooting](https://uoepsy.github.io/lmm/00_lm_assumpt.html)
+
 
 <!-- Assumptions and diagnostics
 

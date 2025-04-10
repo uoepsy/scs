@@ -14,11 +14,13 @@ output:
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
-knitr::opts_chunk$set(fig.height = 6)
+knitr::opts_chunk$set(fig.height = 6, message=FALSE,warning=FALSE)
 ```
 
 ```{r xaringan-themer, include = FALSE}
@@ -40,7 +42,7 @@ style_mono_accent(
 library(tidyverse)
 library(kableExtra)
 library(car)
-
+library(patchwork)
 theme_set(theme_gray(base_size = 15))
 ```
 
@@ -69,54 +71,66 @@ class: inverse, center, middle
 ---
 # Linear model assumptions 
 + So far, we have discussed evaluating linear models with respect to:
-	+ Overall model fit ( $F$ -ratio, $R^2$)
-	+ Individual predictors
+	+ Overall model fit, and comparison of nested models ( $F$ -ratio, $R^2$)
+	+ Individual coefficients (and associated $t$ statistics)
 
-+ However, the linear model is also built on a set of assumptions.
++ The linear model is also built on a set of assumptions.
 
-+ If these assumptions are violated, the model will not be very accurate.
++ If these assumptions are violated, we can't generalise from model to broader population
 
-+ Thus, we also need to assess the extent to which these assumptions are met.
++ We therefore need to assess the extent to which these assumptions are met.
+
+---
+# Linear model assumptions
+
+Our model:  
+
+$\color{red}{y} = \color{blue}{\beta_0 + \beta_1x_1 + ... + \beta_kx_k} + \varepsilon \qquad \text{where } \boldsymbol \varepsilon \sim N(0, \sigma) \text{ independently}$
+<br>
+<br>
+Our ability to generalise from the model we fit on sample data to the wider population requires making some _assumptions._
+
+--
+
+- assumptions about the nature of the **model**
+(linear)
+
+--
+
+- assumptions about the nature of the **errors** (normal)
 
 
 ---
-# Some data for today
+# 30,000 foot view
 
-.pull-left[
-+ Let's look again at our data predicting salary from years or service and performance ratings (no interaction).
+All our work here is in
+aim of making **models of the world**.  
 
-$$y_i = \beta_0 + \beta_1 x_{1} + \beta_2 x_{2} + \epsilon_i$$
+- Models are models. They are simplifications. They are therefore wrong.  
 
-+ $y$ = Salary (unit = thousands of pounds ).
+--
 
-+ $x_1$ = Years of service.
+- Our residuals reflect everything that we **don't** account for in our model. $y - \hat{y}$
 
-+ $x_2$ = Average performance ratings.
- 
-]
+--
 
-.pull-right[
+- In an ideal world, our model accounts for _all_ the systematic relationships. The leftovers (our residuals) are just random noise.  
+--
 
-```{r, echo=FALSE}
-salary2 %>%
-  slice(1:10) %>%
-  kable(.) %>%
-  kable_styling(full_width = F)
-```
+  - If our model is mis-specified, or we don't measure some systematic relationship, then our residuals may reflect this.
 
+--
 
-]
+- We check by examining how much "like randomness" the residuals appear to be (zero mean, normally distributed, constant variance, i.i.d ("independent and identically distributed")
+    - _these ideas tend to get referred to as our "assumptions"_
 
----
-# Our model
-```{r}
-m1 <- lm(salary ~ perf + serv, data = salary2)
-```
+--
 
-+ We will run all our assumptions based on the object `m1`
+- We will **never** know whether our residuals contain only randomness
 
 ---
 # Visualizations vs tests
+
 + There exist a variety of ways to assess assumptions, which broadly split into statistical tests and visualizations.
 
 + We will focus on visualization:
@@ -125,87 +139,121 @@ m1 <- lm(salary ~ perf + serv, data = salary2)
 
 + Statistical tests often suggest assumptions are violated when problem is small.
   + This is to do with the statistical power of the tests.
-  + Give no information on what the actual problem is.
-  + A summary table of tests will be given at the end of the lecture.
+  + They give no information on what the actual problem is.
+  
 
 
 ---
-# Visualizations made easy
-+ For a majority of assumption and diagnostic plots, we will make use of the `plot()` function.
-  + If we give `plot()` a linear model object (e.g. `m1` or `m2`), we can automatically generate assumption plots.
+## assumptions - L
 
-+ We will also make use of some individual functions for specific visualizations.
+.pull-left[ 
 
-+ Alternatively, we can also use `check_model()` from the `performance` package.
-  + This provides `ggplot` figures as well as some notes to aid interpretation.
-  + Caution that these plots are **not in a format to use directly in reports**
+What does randomness look like?  
+
+- **_L_**: linear across the predictors
+- I:
+- N:
+- E:
+
+
+- mean of the residuals = zero across the predicted values of the model.  
+
+]
+.pull-right[
+
+```{r echo=FALSE,fig.asp=.8}
+library(ggdist)
+library(tidyverse)
+df<-tibble(x=runif(1000,1,10),xr = round(x), y=1*x+rnorm(1000))
+df$y2 <- resid(lm(y~x,df))
+#df$y[df$x==6]<-6+rnorm(100,0,3)
+df %>% group_by(xr) %>% summarise(m=mean(y2), s=sd(y2)) -> dfd
+p1 <- ggplot(df, aes(x=x,y=y))+
+  geom_point()+
+  geom_smooth(method="lm",se=F, fullrange=T)+
+  scale_x_continuous("x",1:10, breaks=seq(1,10,2))+
+  scale_y_continuous("y")
+p2 <- ggplot(df, aes(x=xr,y=y2))+
+  geom_jitter(height=0,width=1, alpha=.3)+
+  stat_dist_halfeye(inherit.aes=F,data=dfd, aes(x=xr,dist="norm",arg1=m,arg2=s),alpha=.6, fill="orange")+
+  #geom_smooth(method="lm",se=F, fullrange=T)+
+  scale_x_continuous("x",1:10, breaks=seq(1,10,2))+
+  scale_y_continuous("residuals")
+
+p1 / p2
+```
+
+]
 
 ---
-#  Linearity 
-+ **Assumption**: The relationship between $y$ and $x$ is linear.
-  + Assuming a linear relation when the true relation is non-linear can result in under-estimating that relation
+## assumptions - L
 
+.pull-left[
+
+What does randomness look like?  
+
+- **_L_**: linear across the predictors
+- I:
+- N:
+- E:
+
+
+- mean of the residuals = zero across the predicted values of the model.
+
+]
+.pull-right[
+
+```{r echo=FALSE,fig.asp=.8}
+library(ggdist)
+library(tidyverse)
+tibble(x = runif(1000,1,10),
+       xr = round(x),
+       s = abs(5-x)*2,
+       e = map_dbl(s,~rnorm(1,0,1)),
+       y = x + s + e) -> df
+df$y2 <- resid(lm(y~x,df))
+#df$y[df$x==6]<-6+rnorm(100,0,3)
+df %>% group_by(xr) %>% summarise(m=mean(y2), s=sd(y2)) -> dfd
+p1 <- ggplot(df, aes(x=x,y=y))+
+  geom_point()+
+  geom_smooth(method="lm",se=F, fullrange=T)+
+  scale_x_continuous("x",1:10, breaks=seq(1,10,2))+
+  scale_y_continuous("y")
+p2 <- ggplot(df, aes(x=xr,y=y2))+
+  geom_jitter(height=0,width=1, alpha=.3)+
+  stat_dist_halfeye(inherit.aes=F,data=dfd, aes(x=xr,dist="norm",arg1=m,arg2=s),alpha=.6, fill="orange")+
+  scale_x_continuous("x",1:10, breaks=seq(1,10,2))+
+  scale_y_continuous("residuals")
+
+p1 / p2
+```
+]
+
+---
+## assumptions - L
+
+.pull-left[
+
+What does randomness look like?  
+
+- **_L_**: linear across the predictors
+- I:
+- N:
+- E:
+
+
+- mean of the residuals = zero across the predicted values of the model.
 
 + **Investigated with**:
   + Scatterplots with loess lines (single variables)
   + Component-residual plots (when we have multiple predictors)
 
-
----
-# Linear vs non-linear
-
-.pull-left[
-
-```{r, echo=FALSE, message=FALSE}
-df2 <- tibble(
-  x = rnorm(1000, 10, 2),
-  y = 5 + .8*x + rnorm(1000, 0,.5),
-  y2 = 5 + .6*(x^3) + rnorm(1000, 0,10)
-)
-
-df2 %>%
-  ggplot(., aes(x=x, y=y)) +
-  geom_point() +
-  geom_smooth(method = "lm", se=F) +
-  labs(x= "X", y="Y", title = "Linear Relationship")
-
-```
-
 ]
-
 .pull-right[
 
-```{r, message=FALSE, echo=FALSE}
-df2 %>%
-  ggplot(., aes(x=x, y=y2)) +
-  geom_point() +
-  geom_smooth(method = "lm", se=F) +
-  labs(x= "X", y="Y", title = "Non-linear Relationship")
-```
-
-]
-
----
-#  What is a loess line?
-
-+ Method for helping visualize the shape of relationships:
-
-+ Stands for...
-  + **LO**cally
-  + **E**stimated
-  + **S**catterplot
-  + **S**moothing
-
-+ Essentially produces a line with follows the data.
-
-+ Useful for single predictors.
-
----
-# Visualization
-
-.pull-left[
-```{r, warning=FALSE}
-lin_m1 <- salary2 %>%
+```{r, warning=FALSE, eval=FALSE}
+salary2 <- read_csv("https://uoepsy.github.io/scs/dpuk/data/salary2.csv")
+salary2 %>%
   ggplot(., aes(x=serv, y=perf)) +
   geom_point()+
   geom_smooth(method = "lm", se=F) + # <<
@@ -217,165 +265,296 @@ lin_m1 <- salary2 %>%
 ```
 ]
 
+
+---
+## assumptions - L
+
+.pull-left[
+
+What does randomness look like?  
+
+- **_L_**: linear across the predictors
+- I:
+- N:
+- E:
+
+
+- mean of the residuals = zero across the predicted values of the model.
+
++ **Investigated with**:
+  + Scatterplots with loess lines (single variables)
+  + Component-residual plots (when we have multiple predictors)
+
+]
 .pull-right[
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
-lin_m1
+
+```{r, warning=FALSE, echo=FALSE}
+salary2 <- read_csv("https://uoepsy.github.io/scs/dpuk/data/salary2.csv")
+salary2 %>%
+  ggplot(., aes(x=serv, y=perf)) +
+  geom_point()+
+  geom_smooth(method = "lm", se=F) + # <<
+  geom_smooth(method = "loess", se=F, #<<
+              col = "red") +
+  labs(x= "Years of Service", y="Performance", 
+       title = "Scatterplot with linear (blue) 
+       and loess (red) lines")
+```
+]
+
+
+
+---
+## assumptions - N
+
+.pull-left[
+
+What does randomness look like?  
+
+- L:
+- I:
+- **_N_**: normally distributed at each level of the predictor 
+- E:
+
+
+- residuals are normally distributed 
+
+]
+.pull-right[
+
+```{r echo=FALSE,fig.asp=.8}
+library(ggdist)
+library(tidyverse)
+df<-tibble(x=runif(1000,1,10),xr = round(x), y=1*x+rchisq(1000,2))
+df$y2 <- resid(lm(y~x,df))
+#df$y[df$x==6]<-6+rnorm(100,0,3)
+df %>% group_by(xr) %>% summarise(m=mean(y2), s=sd(y2)) -> dfd
+p1 <- ggplot(df, aes(x=x,y=y))+
+  geom_point()+
+  geom_smooth(method="lm",se=F, fullrange=T)+
+  scale_x_continuous("x",1:10, breaks=seq(1,10,2))+
+  scale_y_continuous("y")
+p2 <- ggplot(df, aes(x=xr,y=y2))+
+  geom_jitter(height=0,width=1, alpha=.3)+
+  stat_dist_halfeye(inherit.aes=F,data=dfd, aes(x=xr,dist="norm",arg1=m,arg2=s),alpha=.6, fill="orange")+
+  #geom_smooth(method="lm",se=F, fullrange=T)+
+  scale_x_continuous("x",1:10, breaks=seq(1,10,2))+
+  scale_y_continuous("residuals")
+
+p1 / p2
 ```
 
 ]
 
----
-#  Non-linearity
 
-+ With multiple predictors, we need to know whether the relations are linear between each predictor and outcome, controlling for the other predictors
-
-+ This can be done using **component-residual plots**
-  + Also known as partial-residual plots
-		
-+ Component-residual plots have the $x$ values on the X-axis and partial residuals on the Y-axis
-
-+ *Partial residuals* for each X variable are:
-
-$$\epsilon_i + B_jX_{ij}$$
-
-+ Where :
-	+ $\epsilon_i$ is the residual from the linear model including all the predictors
-	+ $B_jX_{ij}$ is the partial (linear) relation between $x_j$ and $y$
 
 ---
-#  `crPlots()` 
+## assumptions - N
 
-+ Component-residual plots can be obtained using the `crPlots()` function from `car` package
+.pull-left[
 
-```{r, eval = F, warning=FALSE}
-m1 <- lm(salary ~ perf + serv, data = salary2)
-crPlots(m1)
-```
+What does randomness look like?  
 
-+ The plots for continuous predictors show a linear (dashed) and loess (solid) line
-
-+ The loess line should follow the linear line closely, with deviations suggesting non-linearity
-
----
-#  `crPlots()`
-```{r, echo= F, warning=FALSE, fig.height=3.8}
-m1 <- lm(salary ~ perf + serv, data = salary2)
-crPlots(m1)
-```
+- L:
+- I:
+- **_N_**: normally distributed at each level of the predictor 
+- E:
 
 
-???
-+ Here the relations look pretty good.
-
-+ Deviations of the line are minor
-
----
-# Normally distributed errors 
-+ **Assumption**: The errors ( $\epsilon_i$ ) are normally distributed around each predicted value.
+- residuals are normally distributed 
 
 + **Investigated with**:
   + QQ-plots
   +	Histograms
-
-	
----
-# Visualizations 
-+ **Histograms**: Plot the frequency distribution of the residuals.
-
-```{r, eval=FALSE}
-hist(m1$residuals)
+  
+]
+.pull-right[
+```{r echo=FALSE}
+model <- lm(salary~serv+perf,data = salary2)
 ```
 
---
-
-+ **Q-Q Plots**: Quantile comparison plots.
-	+ Plot the standardized residuals from the model against their theoretically expected values.
-	+ If the residuals are normally distributed, the points should fall neatly on the diagonal of the plot.
-	+ Non-normally distributed residuals cause deviations of points from the diagonal.
-		+ The specific shape of these deviations are characteristic of the distribution of the residuals.
-
-```{r, eval=FALSE}
-plot(m1, which = 2) #<<
+```{r}
+hist(resid(model))
 ```
 
+]
 
 ---
-# Visualizations
+## assumptions - N
 
 .pull-left[
 
-```{r, echo=FALSE}
-hist(m1$residuals)
-```
+What does randomness look like?  
 
+- L:
+- I:
+- **_N_**: normally distributed at each level of the predictor 
+- E:
+
+
+- residuals are normally distributed 
+
++ **Investigated with**:
+  + QQ-plots
+  +	Histograms
+  
 ]
-
-
 .pull-right[
+```{r echo=FALSE}
+model <- lm(salary~serv+perf,data = salary2)
+```
 
-```{r, echo=FALSE}
-plot(m1, which = 2) #<<
+```{r eval=FALSE}
+qqnorm(resid(model))
+qqline(resid(model))
+```
+```{r echo=FALSE}
+qqnorm(resid(model));qqline(resid(model))
 ```
 
 ]
-
 
 ---
-#  Equal variance (Homoscedasticity) 
+## assumptions - E
 
-+ **Assumption**: The equal variances assumption is constant across values of the predictors $x_1$, ... $x_k$, and across values of the fitted values $\hat{y}$
-	+ Heteroscedasticity refers to when this assumption is violated (non-constant variance)
+.pull-left[
+
+What does randomness look like?  
+
+- L:
+- I:
+- N:
+- **_E_**: equal variance across the predictor
+
+
+- spread of residuals is constant across the predicted values of the model.  
+
+]
+.pull-right[
+
+```{r echo=FALSE,fig.asp=.8}
+library(ggdist)
+library(tidyverse)
+tibble(x = runif(1000,1,10),
+       xr = round(x),
+       s = abs(x)/2,
+       e = map_dbl(s,~rnorm(1,0,.)),
+       y = x + e) -> df
+df$y2 <- resid(lm(y~x,df))
+#df$y[df$x==6]<-6+rnorm(100,0,3)
+df %>% group_by(xr) %>% summarise(m=mean(y2), s=sd(y2)) -> dfd
+p1 <- ggplot(df, aes(x=x,y=y))+
+  geom_point()+
+  geom_smooth(method="lm",se=F, fullrange=T)+
+  scale_x_continuous("x",1:10, breaks=seq(1,10,2))+
+  scale_y_continuous("y")
+p2 <- ggplot(df, aes(x=xr,y=y2))+
+  geom_jitter(height=0,width=1, alpha=.3)+
+  stat_dist_halfeye(inherit.aes=F,data=dfd, aes(x=xr,dist="norm",arg1=m,arg2=s),alpha=.6, fill="orange")+
+  scale_x_continuous("x",1:10, breaks=seq(1,10,2))+
+  scale_y_continuous("residuals")
+
+p1 / p2
+```
+
+]
+
+---
+## assumptions - E
+
+.pull-left[
+
+What does randomness look like?  
+
+- L:
+- I:
+- N:
+- **_E_**: equal variance across the predictor
+
+
+- spread of residuals is constant across the predicted values of the model.  
 
 + **Investigated with**:
   + Plot residual values against the predicted values ( $\hat{y}$ ).
 
----
-#  Residual-vs-predicted values plot 
-+ In R, we can plot the residuals vs predicted values using `residualPlot()` function in the `car` package.
-  + Categorical predictors should show a similar spread of residual values across their levels
-  + The plots for continuous predictors should look like a random array of dots
-	  + The solid line should follow the dashed line closely
+]
+.pull-right[
 
-```{r, eval=FALSE}
-residualPlot(m1)
+```{r}
+plot(model, which = 1)
 ```
 
-+ We can also get this plot using:
-
-```{r, eval=FALSE}
-plot(m1, which = 1)
-```
+]
 
 ---
-#  Residual-vs-predicted values plot 
+## assumptions - LNE
 
 .pull-left[
-```{r, echo=FALSE}
-residualPlot(m1)
-```
+
+What does randomness look like?  
+
+- **_L_**: linear across the predictors
+- I: 
+- **_N_**: normally distributed at each level of the predictor 
+- **_E_**: equal variance across the predictor
 
 ]
-
 .pull-right[
-```{r, echo=FALSE}
-plot(m1, which = 1)
+__`plot(model)`__
+```{r echo=FALSE}
+df<-tibble(x=runif(1000,1,10),xr = round(x),z=rnorm(1000),y=1*x+.4*z+rnorm(1000))
 ```
-]
 
+```{r echo=TRUE,eval=FALSE}
+my_model <- lm(y ~ x1 + x2 + ... + xk, data = df)
+plot(my_model)
+```
+
+```{r echo=FALSE, fig.asp=.7}
+par(mfrow=c(2,2))
+my_model <- lm(y ~ z + x, data = df)
+plot(my_model)
+par(mfrow=c(1,1))
+```
+
+]
 
 
 ---
-#  Independence of errors 
-+ **Assumption**: The errors are not correlated with one another
+## assumptions - I
 
-+ Difficult to test unless we know the potential source of correlation between cases.
+.pull-left[
 
-+ Essentially, if a design is between person, we will assume the errors to be independent.
+What does randomness look like?  
+
+- L: linear across the predictors
+- **_I_**: Independence
+- N: normally distributed at each level of the predictor 
+- E: equal variance across the predictor
+
+]
+.pull-right[
+
+- need to know about your study design
+
+```{r echo=FALSE}
+tibble(
+  ppt = paste0("p_",1:10),
+  x1 = round(rnorm(10,10,5)),
+  x2 = round(runif(10,18,100)),
+  x3 = round(rnorm(10),2),
+  y = round(rnorm(10,45,4),1)
+) |> head() |> knitr::kable()
+```
+
+
+]
 
 
 ---
 #  Multi-collinearity 
-+ This is **not an assumption of linear model**, but it is something we need to consider. 
+
++ This is **not strictly an assumption of linear model**, but it is something we need to consider. 
   + It sits between assumptions and case diagnostics.
   
 + Multi-collinearity refers to the correlation between predictors
@@ -386,12 +565,25 @@ plot(m1, which = 1)
 
 ---
 #  Variance Inflation Factor 
+
+```{r echo=FALSE}
+df <- tibble(
+  x1 = rnorm(100),
+  x2 = rnorm(100,x1),
+  x3 = rnorm(100,.5*x1),
+  x4 = rnorm(100),
+  y=rnorm(100)
+)
+model <- lm(y~.,df)
+```
+
+
 + The **Variance Inflation Factor** or VIF quantifies the extent to which standard errors are increased by predictor inter-correlations
 
 + It can be obtained in R using the `vif()` function:
 
 ```{r}
-vif(m1)
+vif(model)
 ```
 
 + The function gives a VIF value for each predictor
@@ -422,16 +614,19 @@ class: inverse, center, middle
 #  Three important features
 
 + Model outliers
+
 	+ Cases for which there is a large discrepancy between their predicted value ( $\hat{y_i}$ ) and their observed value ( $y_i$ )
 
 --
 
 + High leverage cases
+
 	+ Cases with an unusual value of the predictor ( $x_i$ )
 
 --
 
 + High influence cases
+
 	+ Cases who are having a large impact on the estimation of model
 
 ---
@@ -443,6 +638,54 @@ class: inverse, center, middle
 
 + If we deleted such a case, the linear model coefficients would change substantially
 
+---
+# Influence
+
+
+```{r}
+#| echo: false
+#| fig-width: 12
+#| fig-asp: .3
+#| fig-align: "center"
+set.seed(18)
+tibble(
+  x = rnorm(20),
+  y = 2*x + rnorm(20,0,.3)
+) -> df
+loo = coef(lm(y~x,df))
+df[21,]<-cbind(4,8)
+ggplot(df,aes(x=x,y=y))+geom_point(alpha=.5)+
+  theme_minimal()+
+  geom_abline(intercept=loo[1],slope=loo[2], lty="dotted", lwd=1)+
+  scale_y_continuous(limits=c(-3,8))+
+  scale_x_continuous(limits=c(-2,4))+
+  geom_point(x=4,y=8,size=2,col="red")+
+  geom_smooth(method="lm",se=F) +
+  labs(title="not outlying, high leverage") -> p1
+
+df[21,]<-cbind(0,6)
+ggplot(df,aes(x=x,y=y))+geom_point(alpha=.5)+
+  theme_minimal()+
+  geom_abline(intercept=loo[1],slope=loo[2], lty="dotted", lwd=1)+
+  scale_y_continuous(NULL,limits=c(-3,8))+
+  scale_x_continuous(limits=c(-2,4))+
+  geom_point(x=0,y=6,size=2,col="red")+
+  geom_smooth(method="lm",se=F) +
+  labs(title="high outlier, low leverage") -> p2
+
+df[21,]<-cbind(4,0)
+ggplot(df,aes(x=x,y=y))+geom_point(alpha=.5)+
+  theme_minimal()+
+  geom_abline(intercept=loo[1],slope=loo[2], lty="dotted", lwd=1)+
+  scale_y_continuous(NULL, limits=c(-3,8))+
+  scale_x_continuous(limits=c(-2,4))+
+  geom_point(x=4,y=0,size=2,col="red")+
+  geom_smooth(method="lm",se=F) +
+  labs(title="high outlier, high leverage") -> p3
+
+p1 + p2 + p3
+
+```
 
 ---
 # Influence
@@ -482,28 +725,25 @@ $$\frac{h_i}{1-h_i} = \text{Leverage}$$
 #  Cook's distance in R
 
 .pull-left[
-```{r}
-salary2 %>%
-  mutate(
-    cook = cooks.distance(m1) #<<
-  ) %>%
-  filter(., cook > 4/(100-3-1)) %>% #<<
-  kable(.)  %>%
-  kable_styling(., full_width = F)
+```{r eval=FALSE}
+cooks.distance(model)
+
+influence.measures(model)
 ```
 
 ]
 
 .pull-right[
-```{r, echo=F}
-plot(m1, which = 4)
+```{r}
+plot(model, which = 4)
 ```
 
 ]
 
 
 ---
-# Influence of coefficients
+# Other Influence Measures  
+
 + Cook's distance is a single value summarizing the total influence of a case
 
 + In the context of a lm with 2+ predictors, we may want to look in a little more detail.
@@ -516,7 +756,8 @@ plot(m1, which = 4)
   + Obtained by dividing by an estimate of the standard error of the regression coefficient with the case removed
 
 ---
-#  COVRATIO 
+# Other Influence Measures - COVRATIO   
+
 + Influence on standard errors can be measured using the **COVRATIO** statistic
 	+ COVRATIO value <1 show that precision is decreased (SE increased)  by a case
 	+ COVRATIO value >1 show that precision is increased (SE decreased) by a case
@@ -525,9 +766,15 @@ plot(m1, which = 4)
 
 ---
 #  COVRATIO in R 
-+ COVRATIO values can be extracted using the `covratio()` function:
-+ We can extract these measures using the `influence.measures()` function
 
+.pull-left[
+```{r eval=FALSE}
+covratio(model)
+
+influence.measures(model)
+```
+
+]
 
 ---
 class: inverse, center, middle
